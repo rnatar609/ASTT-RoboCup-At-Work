@@ -1,4 +1,4 @@
 places: D0, D1, D2, O1, O2, O3, S1, S2, S3, T2, T4, T6
 orientations: N, S, W, E, NW, NE, SW, SE
-pauses: 1, 2, 3, 4
+pauses: 1, 2, 3, 4, 5
 
