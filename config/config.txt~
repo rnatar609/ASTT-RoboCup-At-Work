@@ -1,0 +1,4 @@
+places: ABC
+orientations: N, S, W, E, NW, NE, SW, SE
+pauses: 1, 2, 3, 4
+

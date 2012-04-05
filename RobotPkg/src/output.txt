@@ -1,0 +1,27 @@
+Task spec string received: <(S1, N, 3), (T4, E, 3), (O1, E, 3), (O3, NE, 4), (D0, NE, 4)>
+After removing spaces <(S1,N,3),(T4,E,3),(O1,E,3),(O3,NE,4),(D0,NE,4)>
+Valid place pattern: (D0|D1|D2|O1|O2|O3|S1|S2|S3|T2|T4|T6)
+Valid orientation pattern: (N|S|W|E|NW|NE|SW|SE)
+Valid pause pattern: (1|2|3|4)
+Valid triplet pattern \((D0|D1|D2|O1|O2|O3|S1|S2|S3|T2|T4|T6)\,(N|S|W|E|NW|NE|SW|SE)\,(1|2|3|4)\)
+Task Triplet 0
+	Place: S1
+	Orientation: N
+	Pause: 3
+Task Triplet 1
+	Place: T4
+	Orientation: E
+	Pause: 3
+Task Triplet 2
+	Place: O1
+	Orientation: E
+	Pause: 3
+Task Triplet 3
+	Place: O3
+	Orientation: NE
+	Pause: 4
+Task Triplet 4
+	Place: D0
+	Orientation: NE
+	Pause: 4
+Task specifications are identical.
