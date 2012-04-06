@@ -1,7 +1,10 @@
+package Triplet;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TaskSpec 
 {
@@ -74,5 +77,9 @@ public class TaskSpec
 			System.out.println( "Caught exception in TaskServer.getTaskSpec(): " + e.getMessage() );
 			throw e;
 		}
+	}
+
+	public List<TaskTriplet> getTaskTripletList() {
+		return taskTripletList;
 	}
 }

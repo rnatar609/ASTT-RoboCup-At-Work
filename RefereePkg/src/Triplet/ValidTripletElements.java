@@ -1,5 +1,11 @@
+package Triplet;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Scanner;
 
 /**
  This class is implemented as a Singleton. 
@@ -197,5 +203,21 @@ public class ValidTripletElements
 			instance = new ValidTripletElements();
 		}
 		return instance;
+	}
+	
+	
+	public List<String> getValidPlaces() 
+	{
+		return validPlaces;
+	}
+
+	public List<String> getValidOrientations() 
+	{
+		return validOrientations;
+	}
+
+	public List<Short> getValidPauses() 
+	{
+		return validPauses;
 	}
 }

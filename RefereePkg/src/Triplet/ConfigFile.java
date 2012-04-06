@@ -1,6 +1,8 @@
+package Triplet;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.Properties;
-import java.io.*;
 
 public class ConfigFile
 {
