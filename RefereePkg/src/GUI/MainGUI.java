@@ -136,6 +136,8 @@ public class MainGUI extends SingleFrameApplication {
 						statusLine = new JLabel();
 						jPanel3.add(statusLine);
 						statusLine.setName("statusLine");
+						statusLine.setHorizontalAlignment(JLabel.CENTER);
+						statusLine.setPreferredSize(new java.awt.Dimension(490, 14));
 					}
 				}
 				{
@@ -272,6 +274,7 @@ public class MainGUI extends SingleFrameApplication {
 				jMenuItem7.setAction(getAppActionMap().get("delete"));
 			}
 		}
+		fc.setFileFilter(new TspFilter());
 		getMainFrame().setJMenuBar(menuBar);
 		show(topPanel);
 	}
@@ -318,29 +321,30 @@ public class MainGUI extends SingleFrameApplication {
 			} catch (Exception e) {// Catch exception if any
 				System.err.println("Error: " + e.getMessage());
 			}
-			statusLine.setText("Opened: " + file.getName());
+			//statusLine.setText("opened task specification >" + file.getName() + "<");	
+			statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> opened task specification </html>");
 		} else {
-			statusLine.setText("Open command cancelled by user.");
+			statusLine.setText("open command cancelled by user");
 		}
 	}
 
 	@Action
 	public void save() {
 		int returnVal = fc.showSaveDialog(contentPanel);
-		File file = fc.getSelectedFile();
+		
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = Utils.correctFile(fc.getSelectedFile());
 			try {
-				FileWriter fstream = new FileWriter(file + ".txt");
+				FileWriter fstream = new FileWriter(file);
 				BufferedWriter out = new BufferedWriter(fstream);
 				out.write(taskSpec.getTaskSpecString());
 				out.close();
-			} catch (Exception e) {// Catch exception if any
+			} catch (Exception e) {
 				System.err.println("Error: " + e.getMessage());
 			}
-			statusLine.setText("Saved: " + file.getName() + ".txt");
+			statusLine.setText("saved actual task specification in >" + file.getName() + "<");
 		} else {
-			statusLine.setText("Error: " + file.getName()
-					+ " could not be saved");
+			statusLine.setText("save command cancelled by user");
 		}
 	}
 
@@ -348,9 +352,14 @@ public class MainGUI extends SingleFrameApplication {
 		return Application.getInstance().getContext().getActionMap(this);
 	}
 
+	public void copy(){
+		statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> copy triplet </html>");
+		
+	}
 	@Action
 	public void sendTriplets() {
-		// todo
+		// TODO 
+		statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> send task specification </html>");
 	}
 
 	@Action
@@ -360,7 +369,7 @@ public class MainGUI extends SingleFrameApplication {
 				&& t.setOrientation((String) orientationsBox.getSelectedItem())
 				&& t.setPause((String) pausesBox.getSelectedItem().toString())) {
 			taskSpec.addTriplet(t);
-			statusLine.setText("added triplet");
+			statusLine.setText("added triplet (" + t.getPlace() + ", " + t.getOrientation() + ", " + t.getPause() + ")");
 			updateTripletListBox();
 		} else {
 			statusLine.setText("error triplet");
