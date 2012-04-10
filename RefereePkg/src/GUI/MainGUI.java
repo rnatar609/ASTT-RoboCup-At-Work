@@ -94,6 +94,7 @@ public class MainGUI extends SingleFrameApplication {
 
 	@Override
 	protected void startup() {
+		initializeValidTriplets();
 		{
 			topPanel = new JPanel();
 			BorderLayout panelLayout = new BorderLayout();
@@ -137,7 +138,8 @@ public class MainGUI extends SingleFrameApplication {
 						jPanel3.add(statusLine);
 						statusLine.setName("statusLine");
 						statusLine.setHorizontalAlignment(JLabel.CENTER);
-						statusLine.setPreferredSize(new java.awt.Dimension(490, 14));
+						statusLine.setPreferredSize(new java.awt.Dimension(490,
+								14));
 					}
 				}
 				{
@@ -280,7 +282,6 @@ public class MainGUI extends SingleFrameApplication {
 	}
 
 	public static void main(String[] args) {
-		initializeValidTriplets();
 		launch(MainGUI.class, args);
 	}
 
@@ -321,8 +322,10 @@ public class MainGUI extends SingleFrameApplication {
 			} catch (Exception e) {// Catch exception if any
 				System.err.println("Error: " + e.getMessage());
 			}
-			//statusLine.setText("opened task specification >" + file.getName() + "<");	
-			statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> opened task specification </html>");
+			// statusLine.setText("opened task specification >" + file.getName()
+			// + "<");
+			statusLine
+					.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> opened task specification </html>");
 		} else {
 			statusLine.setText("open command cancelled by user");
 		}
@@ -331,7 +334,7 @@ public class MainGUI extends SingleFrameApplication {
 	@Action
 	public void save() {
 		int returnVal = fc.showSaveDialog(contentPanel);
-		
+
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = Utils.correctFile(fc.getSelectedFile());
 			try {
@@ -342,7 +345,8 @@ public class MainGUI extends SingleFrameApplication {
 			} catch (Exception e) {
 				System.err.println("Error: " + e.getMessage());
 			}
-			statusLine.setText("saved actual task specification in >" + file.getName() + "<");
+			statusLine.setText("saved actual task specification in >"
+					+ file.getName() + "<");
 		} else {
 			statusLine.setText("save command cancelled by user");
 		}
@@ -352,14 +356,18 @@ public class MainGUI extends SingleFrameApplication {
 		return Application.getInstance().getContext().getActionMap(this);
 	}
 
-	public void copy(){
-		statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> copy triplet </html>");
-		
+	public void copy() {
+		statusLine
+				.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> copy triplet </html>");
+
 	}
+	
+
 	@Action
 	public void sendTriplets() {
-		// TODO 
-		statusLine.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> send task specification </html>");
+		// TODO
+		statusLine
+				.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> send task specification </html>");
 	}
 
 	@Action
@@ -369,7 +377,8 @@ public class MainGUI extends SingleFrameApplication {
 				&& t.setOrientation((String) orientationsBox.getSelectedItem())
 				&& t.setPause((String) pausesBox.getSelectedItem().toString())) {
 			taskSpec.addTriplet(t);
-			statusLine.setText("added triplet (" + t.getPlace() + ", " + t.getOrientation() + ", " + t.getPause() + ")");
+			statusLine.setText("added triplet (" + t.getPlace() + ", "
+					+ t.getOrientation() + ", " + t.getPause() + ")");
 			updateTripletListBox();
 		} else {
 			statusLine.setText("error triplet");
