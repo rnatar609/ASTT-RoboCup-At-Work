@@ -1,4 +1,4 @@
-package Triplet;
+package model;
 
 
 import java.util.ArrayList;
@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  This class is implemented as a Singleton. 
@@ -132,7 +135,7 @@ public class ValidTripletElements
 	public static void displayValidTripletElements()
 	{
 		ValidTripletElements vte = ValidTripletElements.getInstance();
-		System.out.println( "Here are the valid Triplet Elements:" );
+		System.out.println( "Here are the valid model Elements:" );
 		System.out.print( "Valid Places: " );
 		for ( int i = 0; i < vte.validPlaces.size(); i++ )
 		{
@@ -207,7 +210,7 @@ public class ValidTripletElements
 	
 	
 	public List<String> getValidPlaces() 
-	{
+	{			
 		return validPlaces;
 	}
 

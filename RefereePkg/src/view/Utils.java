@@ -1,4 +1,4 @@
-package GUI;
+package view;
 
 import java.io.File;
 
