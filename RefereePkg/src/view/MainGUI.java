@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -410,6 +411,10 @@ public class MainGUI extends JFrame implements TripletListener {
 
 	public void setStatusLine(String status) {
 		statusLine.setText(status);
+	}
+	
+	public int getUserConfirmation(String msg, String title) {
+	    return JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION);
 	}
 
 	public JComboBox<String> getOrientationsBox() {

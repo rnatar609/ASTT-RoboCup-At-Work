@@ -114,12 +114,18 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-
+			
 			if (!mG.getTripletsList().isSelectionEmpty()) {
 			    int pos = mG.getTripletsList().getSelectedIndex();
-			    TaskTriplet t = tS.deleteTriplet(pos);
-			    mG.setStatusLine("removed triplet (" + t.getPlace() + ", "
+			    String msg = "Do you want to delete the triplet" + tS.getTaskTripletList().get(pos).getTaskTripletString() + "?";
+			    if(mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
+			        TaskTriplet t = tS.deleteTriplet(pos);
+			        mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
+			    }
+			    else {
+                    mG.setStatusLine("Triplet not deleted.");
+			    }
 			}
 			else {
 				mG.setStatusLine("No triplet selected for deletion.");
