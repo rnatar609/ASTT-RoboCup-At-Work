@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+
 import view.MainGUI;
 import view.Utils;
 
@@ -23,7 +24,7 @@ public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
 
-	private Action save = new AbstractAction("save", new ImageIcon("src/view/recources/icons/save.png")) {
+	private Action save = new AbstractAction("Save", new ImageIcon("src/view/recources/icons/save.png")) {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -48,7 +49,7 @@ public class MainController {
 		}
 	};
 
-	private Action open = new AbstractAction("open...", new ImageIcon(
+	private Action open = new AbstractAction("Open", new ImageIcon(
 			"view/recources/icons/open.png")) {
 		private static final long serialVersionUID = 1L;
 
@@ -80,7 +81,7 @@ public class MainController {
 		}
 	};
 
-	private Action close = new AbstractAction("close") {
+	private Action close = new AbstractAction("Close") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -88,7 +89,7 @@ public class MainController {
 		}
 	};
 
-	private Action addTriplet = new AbstractAction("add triplet") {
+	private Action addTriplet = new AbstractAction("Add Triplet") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -109,7 +110,25 @@ public class MainController {
 		}
 	};
 
-	private Action sendTriplets = new AbstractAction("send Triplets") {
+	private Action deleteTriplet = new AbstractAction("Delete Triplet") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+
+			if (!mG.getTripletsList().isSelectionEmpty()) {
+			    int pos = mG.getTripletsList().getSelectedIndex();
+			    TaskTriplet t = tS.deleteTriplet(pos);
+			    mG.setStatusLine("removed triplet (" + t.getPlace() + ", "
+						+ t.getOrientation() + ", " + t.getPause() + ")");
+			}
+			else {
+				mG.setStatusLine("No triplet selected for deletion.");
+			}
+				// mG.updateTripletListBox();
+		}
+	};
+	
+	private Action sendTriplets = new AbstractAction("Send Triplets") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -133,6 +152,7 @@ public class MainController {
 		mG.connectCloseAction(close);
 		mG.connectSendTriplets(sendTriplets);
 		mG.connectAddTriplet(addTriplet);
+		mG.connectDeleteTriplet(deleteTriplet);
 		tS.addTripletListener(mG);
 	}
 

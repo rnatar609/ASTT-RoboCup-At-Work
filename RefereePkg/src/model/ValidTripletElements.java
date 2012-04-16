@@ -7,13 +7,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-
 /**
  This class is implemented as a Singleton. 
 */
-
 public class ValidTripletElements
 {
 	static private ValidTripletElements instance;
@@ -158,7 +154,7 @@ public class ValidTripletElements
 	
 	public boolean isPlaceValid( String s )
 	{
-		System.out.println( "User-given place " + s );
+		//System.out.println( "User-given place " + s );
 		Iterator<String> iterator = validPlaces.iterator();
 		while ( iterator.hasNext( ))
 		{
@@ -172,7 +168,7 @@ public class ValidTripletElements
 	
 	public boolean isOrientationValid( String s )
 	{
-		System.out.println( "User-given Orientation: " + s );
+		//System.out.println( "User-given Orientation: " + s );
 		Iterator<String> iterator = validOrientations.iterator();
 		while ( iterator.hasNext() )
 		{
@@ -186,7 +182,7 @@ public class ValidTripletElements
 	
 	public boolean isPauseValid( String s )
 	{
-		System.out.println( "User-given Pause " + s );
+		//System.out.println( "User-given Pause " + s );
 		short in = Short.parseShort( s );
 		Iterator<Short> iterator = validPauses.iterator();
 		while ( iterator.hasNext() )

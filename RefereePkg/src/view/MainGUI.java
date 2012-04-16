@@ -57,8 +57,10 @@ public class MainGUI extends JFrame implements TripletListener {
 	private JButton saveButton;
 	private JButton openButton;
 	private JLabel statusLine;
+	private JButton jButton3;
 	private JButton jButton2;
 	private JButton jButton1;
+	private JPanel jPanel8;
 	private JPanel jPanel7;
 	private JPanel jPanel6;
 	private JPanel jPanel5;
@@ -94,7 +96,7 @@ public class MainGUI extends JFrame implements TripletListener {
 	public MainGUI() {
 		try {
 			UIManager
-					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+					.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -210,6 +212,15 @@ public class MainGUI extends JFrame implements TripletListener {
 									jButton1 = new JButton();
 									jPanel7.add(jButton1);
 									jButton1.setName("jButton1");
+								}
+							}
+							{
+								jPanel8 = new JPanel();
+								jPanel4.add(jPanel8);
+								{
+									jButton3 = new JButton();
+									jPanel8.add(jButton3);
+									jButton3.setName("jButton3");
 								}
 							}
 						}
@@ -379,6 +390,10 @@ public class MainGUI extends JFrame implements TripletListener {
 		jButton2.setAction(addTriplet);
 	}
 
+	public void connectDeleteTriplet(Action deleteTriplet) {
+		jButton3.setAction(deleteTriplet);
+	}
+	
 	public File showSaveDialog() {
 		if (fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
@@ -409,6 +424,9 @@ public class MainGUI extends JFrame implements TripletListener {
 		return placesBox;
 	}
 
+	public JList<String> getTripletsList() {
+		return tripletsList;
+	}
 	@Override
 	public void tripletAdded(TripletEvent evt) {
 		int pos = tripletsList.getModel().getSize();
@@ -418,7 +436,9 @@ public class MainGUI extends JFrame implements TripletListener {
 
 	@Override
 	public void tripletDeleted(TripletEvent evt) {
-		// TODO Auto-generated method stub
-
+		int pos = tripletsList.getSelectedIndex();
+        tripletLm.remove(pos); 
+        //Assumption: the user does not change the selection while deletion is going on.
+        //If not, then compare the string being deleted from the list to the one that has been deleted.
 	}
 }

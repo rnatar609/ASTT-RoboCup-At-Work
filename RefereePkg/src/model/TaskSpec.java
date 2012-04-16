@@ -38,6 +38,13 @@ public class TaskSpec {
 		notifyTripletAdded(new TripletEvent(triplet));
 	}
 
+	public TaskTriplet deleteTriplet(int tripletIndex)
+	{
+		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
+		notifyTripletDeleted(new TripletEvent(triplet));
+		return triplet;
+	}
+	
 	/**
 	 * This method reads a task specification from the user and stores in the
 	 * invoking object.
@@ -105,4 +112,15 @@ public class TaskSpec {
             }
         }
     }
+	
+	private void notifyTripletDeleted(TripletEvent evt) {
+		Object[] listeners = listOfTripletListeners.getListenerList();
+        // Each listener occupies two elements - the first is the listener class
+        // and the second is the listener instance
+        for (int i=0; i<listeners.length; i+=2) {
+            if (listeners[i]==TripletListener.class) {
+                ((TripletListener)listeners[i+1]).tripletDeleted(evt);
+            }
+        }
+	}
 }
