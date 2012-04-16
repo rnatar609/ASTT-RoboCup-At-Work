@@ -3,11 +3,15 @@ package view;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.util.List;
-
+//
+import javax.swing.*;//{Modified by JeyaPrakash, Ramesh, Marc}
+import java.awt.*;   //{     14412                           }
+//
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -70,6 +74,12 @@ public class MainGUI extends JFrame implements TripletListener {
 	private JToolBar toolBar;
 	private JPanel toolBarPanel;
 	private JPanel contentPanel;
+	//Added by Jeyaprakash, Ramesh, Marc
+	private JPanel jPanelImgArea;
+	private JLabel jLblImg;
+	private ImageIcon imgIcn;	
+	private BorderLayout panelLay;
+	//170412
 	private JMenuItem helpMenuItem;
 	private JMenu jMenu5;
 	private JMenuItem deleteMenuItem;
@@ -120,8 +130,10 @@ public class MainGUI extends JFrame implements TripletListener {
 			this.setTitle("RoboCup@work");
 			BorderLayout panelLayout = new BorderLayout();
 			this.setLayout(panelLayout);
-			this.setPreferredSize(new java.awt.Dimension(500, 300));
-			this.setMinimumSize(new java.awt.Dimension(500, 300));
+			//changed dimensions from (500,300) to (800,500) by Jeyaprakash, Ramesh, Marc
+			this.setPreferredSize(new java.awt.Dimension(800, 500));
+			this.setMinimumSize(new java.awt.Dimension(800, 500));
+			//170412//
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			{
 				contentPanel = new JPanel();
@@ -224,6 +236,18 @@ public class MainGUI extends JFrame implements TripletListener {
 								}
 							}
 						}
+						//Modified by Jeyaprakash, Ramesh, Marc
+						{
+							jPanelImgArea = new JPanel();
+							jLblImg = new JLabel();
+							imgIcn = new ImageIcon("/home/1.png");
+							panelLay = new BorderLayout();
+							jPanelImgArea.setLayout(panelLay);
+							jPanelImgArea.setPreferredSize(new java.awt.Dimension(500, 350));
+							jLblImg.setIcon(imgIcn);
+							jPanelImgArea.add(jLblImg);
+							contentPanel.add(jPanelImgArea, BorderLayout.EAST);	
+						}//14412
 					}
 				}
 			}
