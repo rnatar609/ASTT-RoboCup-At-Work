@@ -1,4 +1,4 @@
-package RefereeSystem;
+package RefereePkg;
 
 import controller.MainController;
 
