@@ -15,7 +15,7 @@ public class ConfigFile
 	public void loadProperties() throws Exception
 	{
 		try
-		{			
+		{	
 			FileInputStream in = new FileInputStream( ConfigFile.configFileFullName );
 			tripletProperties.load( in );
 			in.close();			

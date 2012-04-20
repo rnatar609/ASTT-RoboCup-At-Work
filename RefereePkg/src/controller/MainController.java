@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -14,8 +15,11 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import view.MainGUI;
+import view.MapArea;
+import view.MapArea.MapPane;
 import view.Utils;
 
+import model.Map;
 import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
@@ -24,7 +28,8 @@ public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
 
-	private Action save = new AbstractAction("Save", new ImageIcon("src/view/recources/icons/save.png")) {
+	private Action save = new AbstractAction("Save", new ImageIcon(
+			"src/view/recources/icons/save.png")) {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -114,26 +119,26 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			
+
 			if (!mG.getTripletsList().isSelectionEmpty()) {
-			    int pos = mG.getTripletsList().getSelectedIndex();
-			    String msg = "Do you want to delete the triplet" + tS.getTaskTripletList().get(pos).getTaskTripletString() + "?";
-			    if(mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
-			        TaskTriplet t = tS.deleteTriplet(pos);
-			        mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
-						+ t.getOrientation() + ", " + t.getPause() + ")");
-			    }
-			    else {
-                    mG.setStatusLine("Triplet not deleted.");
-			    }
-			}
-			else {
+				int pos = mG.getTripletsList().getSelectedIndex();
+				String msg = "Do you want to delete the triplet"
+						+ tS.getTaskTripletList().get(pos)
+								.getTaskTripletString() + "?";
+				if (mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
+					TaskTriplet t = tS.deleteTriplet(pos);
+					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause() + ")");
+				} else {
+					mG.setStatusLine("Triplet not deleted.");
+				}
+			} else {
 				mG.setStatusLine("No triplet selected for deletion.");
 			}
-				// mG.updateTripletListBox();
+			// mG.updateTripletListBox();
 		}
 	};
-	
+
 	private Action sendTriplets = new AbstractAction("Send Triplets") {
 		private static final long serialVersionUID = 1L;
 
@@ -160,6 +165,7 @@ public class MainController {
 		mG.connectAddTriplet(addTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		tS.addTripletListener(mG);
+		tS.addTripletListener(mG.getMapArea().getMapPane());
 	}
 
 	private void initializeValidTriplets() {

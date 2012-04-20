@@ -1,17 +1,16 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.List;
-//
-import javax.swing.*;//{Modified by JeyaPrakash, Ramesh, Marc}
-import java.awt.*;   //{     14412                           }
-//
+
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -29,10 +28,8 @@ import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import controller.TripletListener;
-
 import model.TripletEvent;
-
+import controller.TripletListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -50,6 +47,10 @@ import model.TripletEvent;
  * 
  */
 public class MainGUI extends JFrame implements TripletListener {
+	public MapArea getMapArea() {
+		return mapArea;
+	}
+
 	private static final long serialVersionUID = 1L;
 	private JList<String> tripletsList;
 	private JScrollPane jScrollPane1;
@@ -65,7 +66,6 @@ public class MainGUI extends JFrame implements TripletListener {
 	private JButton jButton3;
 	private JButton jButton2;
 	private JButton jButton1;
-	private JPanel jPanel8;
 	private JPanel jPanel7;
 	private JPanel jPanel6;
 	private JPanel jPanel5;
@@ -75,12 +75,7 @@ public class MainGUI extends JFrame implements TripletListener {
 	private JToolBar toolBar;
 	private JPanel toolBarPanel;
 	private JPanel contentPanel;
-	//Added by Jeyaprakash, Ramesh, Marc
-	private JPanel jPanelImgArea;
-	private JLabel jLblImg;
-	private ImageIcon imgIcn;	
-	private BorderLayout panelLay;
-	//170412
+	private MapArea mapArea;
 	private JMenuItem helpMenuItem;
 	private JMenu jMenu5;
 	private JMenuItem deleteMenuItem;
@@ -103,11 +98,12 @@ public class MainGUI extends JFrame implements TripletListener {
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
 	private DefaultListModel<String> tripletLm = new DefaultListModel<String>();
+	private JPanel jPanel10;
+	private BorderLayout jPanel10Layout;
 
 	public MainGUI() {
 		try {
-			UIManager
-					.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,32 +127,29 @@ public class MainGUI extends JFrame implements TripletListener {
 			this.setTitle("RoboCup@work");
 			BorderLayout panelLayout = new BorderLayout();
 			this.setLayout(panelLayout);
-			//changed dimensions from (500,300) to (800,500) by Jeyaprakash, Ramesh, Marc
-			this.setPreferredSize(new java.awt.Dimension(800, 500));
-			this.setMinimumSize(new java.awt.Dimension(800, 500));
-			//170412//
+			this.setPreferredSize(new Dimension(1000, 660));
+			this.setMaximumSize(new Dimension(2000, 660));
+			// 170412//
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			{
 				contentPanel = new JPanel();
 				BorderLayout contentPanelLayout = new BorderLayout();
 				contentPanel.setLayout(contentPanelLayout);
+
 				this.add(contentPanel, BorderLayout.CENTER);
 				{
 					jPanel1 = new JPanel();
 					contentPanel.add(jPanel1, BorderLayout.WEST);
-					jPanel1.setPreferredSize(new java.awt.Dimension(120, 220));
 					{
 						jScrollPane1 = new JScrollPane(
 								JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 								JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 						jPanel1.add(jScrollPane1);
 						jScrollPane1.setPreferredSize(new java.awt.Dimension(
-								100, 200));
+								120, 500));
 						{
 							tripletsList = new JList<String>(tripletLm);
 							jScrollPane1.setViewportView(tripletsList);
-							// tripletsList.setPreferredSize(new
-							// java.awt.Dimension(0,0));
 						}
 					}
 				}
@@ -183,10 +176,19 @@ public class MainGUI extends JFrame implements TripletListener {
 					BoxLayout jPanel4Layout = new BoxLayout(jPanel4,
 							javax.swing.BoxLayout.Y_AXIS);
 					jPanel4.setLayout(jPanel4Layout);
-					contentPanel.add(jPanel4, BorderLayout.CENTER);
-					jPanel4.setPreferredSize(new java.awt.Dimension(379, 212));
+					jPanel4.setPreferredSize(new java.awt.Dimension(150, 400));
+					jPanel10 = new JPanel();
+					jPanel10Layout = new BorderLayout();
+					jPanel10.setLayout(jPanel10Layout);
+					jPanel10.add(jPanel4, BorderLayout.WEST);
+					contentPanel.add(jPanel10, BorderLayout.CENTER);
 					{
 						jPanel5 = new JPanel();
+						JLabel header = new JLabel("Place  Orientation  Time");
+						header.setMinimumSize(new java.awt.Dimension(400, 40));
+						header.setHorizontalAlignment(JLabel.CENTER);
+						jPanel4.add(Box.createVerticalStrut(20));
+						jPanel4.add(header);
 						jPanel4.add(jPanel5);
 						jPanel5.setPreferredSize(new java.awt.Dimension(404, 39));
 						{
@@ -215,40 +217,34 @@ public class MainGUI extends JFrame implements TripletListener {
 									404, 149));
 							{
 								jButton2 = new JButton();
+								jButton2.setPreferredSize(new java.awt.Dimension(
+										100, 25));
 								jPanel6.add(jButton2);
 								jButton2.setName("jButton2");
+								jButton3 = new JButton();
+								jButton3.setPreferredSize(new java.awt.Dimension(
+										100, 25));
+								jPanel6.add(jButton3);
+								jButton3.setName("jButton3");
 							}
 							{
 								jPanel7 = new JPanel();
 								jPanel4.add(jPanel7);
 								{
 									jButton1 = new JButton();
+									jButton1.setPreferredSize(new java.awt.Dimension(
+											100, 25));
 									jPanel7.add(jButton1);
 									jButton1.setName("jButton1");
 								}
 							}
-							{
-								jPanel8 = new JPanel();
-								jPanel4.add(jPanel8);
-								{
-									jButton3 = new JButton();
-									jPanel8.add(jButton3);
-									jButton3.setName("jButton3");
-								}
-							}
 						}
-						//Modified by Jeyaprakash, Ramesh, Marc
+						// Modified by Jeyaprakash, Ramesh, Marc
 						{
-							jPanelImgArea = new JPanel();
-							jLblImg = new JLabel();
-							imgIcn = new ImageIcon("/home/1.png");
-							panelLay = new BorderLayout();
-							jPanelImgArea.setLayout(panelLay);
-							jPanelImgArea.setPreferredSize(new java.awt.Dimension(500, 350));
-							jLblImg.setIcon(imgIcn);
-							jPanelImgArea.add(jLblImg);
-							contentPanel.add(jPanelImgArea, BorderLayout.EAST);	
-						}//14412
+							mapArea = new MapArea();
+							mapArea.setBackground(Color.black);
+							jPanel10.add(mapArea, BorderLayout.CENTER);
+						}// 14412
 					}
 				}
 			}
@@ -359,14 +355,8 @@ public class MainGUI extends JFrame implements TripletListener {
 				helpMenuItem.setText("Help");
 			}
 		}
-		// fc.set
-		// (UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"));
+		pack();
 		fc.setFileFilter(new TspFilter());
-		// Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(getContentPane());
-	}
-
-	public static void main(String[] args) {
-		// launch(MainGUI.class, args);
 	}
 
 	public void copy() {
@@ -418,7 +408,7 @@ public class MainGUI extends JFrame implements TripletListener {
 	public void connectDeleteTriplet(Action deleteTriplet) {
 		jButton3.setAction(deleteTriplet);
 	}
-	
+
 	public File showSaveDialog() {
 		if (fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
@@ -436,9 +426,10 @@ public class MainGUI extends JFrame implements TripletListener {
 	public void setStatusLine(String status) {
 		statusLine.setText(status);
 	}
-	
+
 	public int getUserConfirmation(String msg, String title) {
-	    return JOptionPane.showConfirmDialog(null, msg, title, JOptionPane.YES_NO_OPTION);
+		return JOptionPane.showConfirmDialog(null, msg, title,
+				JOptionPane.YES_NO_OPTION);
 	}
 
 	public JComboBox<String> getOrientationsBox() {
@@ -456,6 +447,7 @@ public class MainGUI extends JFrame implements TripletListener {
 	public JList<String> getTripletsList() {
 		return tripletsList;
 	}
+
 	@Override
 	public void tripletAdded(TripletEvent evt) {
 		int pos = tripletsList.getModel().getSize();
@@ -466,8 +458,10 @@ public class MainGUI extends JFrame implements TripletListener {
 	@Override
 	public void tripletDeleted(TripletEvent evt) {
 		int pos = tripletsList.getSelectedIndex();
-        tripletLm.remove(pos); 
-        //Assumption: the user does not change the selection while deletion is going on.
-        //If not, then compare the string being deleted from the list to the one that has been deleted.
+		tripletLm.remove(pos);
+		// Assumption: the user does not change the selection while deletion is
+		// going on.
+		// If not, then compare the string being deleted from the list to the
+		// one that has been deleted.
 	}
 }
