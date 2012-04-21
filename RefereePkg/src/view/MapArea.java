@@ -10,7 +10,7 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -26,6 +26,9 @@ public class MapArea extends JScrollPane {
 
 	BufferedImage backgroundMap = Map.loadBackgroundMap();;
 	private MapPane mapPane = new MapPane();
+
+	private List<String> places;
+	private List<Point> points;
 
 	// private JScrollPane areaScrollPane = new JScrollPane(mapPane);
 
@@ -43,7 +46,7 @@ public class MapArea extends JScrollPane {
 		mapPane.setLayout(null);
 
 		this.getViewport().add(mapPane, BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(100, 100));
+		//this.setPreferredSize(new Dimension(100, 100));
 		this.setMaximumSize(new Dimension(backgroundMap.getWidth(),
 				backgroundMap.getHeight()));
 		mapPane.setMaximumSize(new Dimension(backgroundMap.getWidth(),
@@ -53,20 +56,14 @@ public class MapArea extends JScrollPane {
 	/** The component inside the scroll pane. */
 	public class MapPane extends JPanel implements TripletListener {
 		private static final long serialVersionUID = 1L;
-		private HashMap<String, Integer[]> posMap = new HashMap<String, Integer[]>();
-		private Vector<String> names = new Vector<String>(); // this is not a good idea, better to get real the whole list by the listener
-		private Vector<Integer[]> poses = new Vector<Integer[]>(); // this is not a good idea, better to get the real whole list by the listener
+		private Vector<String> names = new Vector<String>();
+		// this is not a good idea, better to get real the whole list by the
+		// listener
+		private Vector<Integer[]> poses = new Vector<Integer[]>();
 		private static final int R_ARROW = 30;
 		private static final double R140 = Math.PI / 180 * 140;
 		private static final double R180 = Math.PI;
 		private static final double R220 = Math.PI / 180 * 220;
-
-		public MapPane() {
-			posMap.put("D0", new Integer[] { 65, 260 });
-			posMap.put("D1", new Integer[] { 190, 80 });
-			posMap.put("D2", new Integer[] { 190, 445 });
-			//TODO get this from configFile
-		}
 
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2 = (Graphics2D) g;
@@ -77,10 +74,10 @@ public class MapArea extends JScrollPane {
 				g.setColor(Color.cyan);
 				Point p = new Point(poses.get(names.indexOf(pos))[0],
 						poses.get(names.indexOf(pos))[1]);
-				drawArrow(g, p, (double) poses.get(names.indexOf(pos))[2] * Math.PI
-						/ 180.0);
+				drawArrow(g, p, (double) poses.get(names.indexOf(pos))[2]
+						* Math.PI / 180.0);
 				g2.setColor(Color.black);
-				g2.drawString(pos, p.x-5, p.y+4);
+				g2.drawString(pos, p.x - 5, p.y + 4);
 			}
 			// g2.setStroke(new BasicStroke(8.0f));
 			// g2.drawArc(100, 100, 50, 50, 45, 45);
@@ -114,11 +111,12 @@ public class MapArea extends JScrollPane {
 
 		@Override
 		public void tripletAdded(TripletEvent evt) {
-			// TripletEvent: this is not a good idea, better to get the real whole list by the listener
+			// TripletEvent: this is not a good idea, better to get the real
+			// whole list by the listener
 			String s = evt.getTaskTriplet().getPlace();
 			Integer[] pos = new Integer[3];
-			pos[0] = posMap.get(s)[0];
-			pos[1] = posMap.get(s)[1];
+			pos[0] = points.get(places.indexOf(s)).x;
+			pos[1] = points.get(places.indexOf(s)).y;
 			switch (evt.getTaskTriplet().getOrientation()) {
 			case "N":
 				pos[2] = 90;
@@ -155,5 +153,13 @@ public class MapArea extends JScrollPane {
 			// TODO Auto-generated method stub
 
 		}
+	}
+
+	public void setValidPlaces(List<String> places) {
+		this.places = places;
+	}
+
+	public void setValidPoints(List<Point> validPoints) {
+		this.points = validPoints;
 	}
 }

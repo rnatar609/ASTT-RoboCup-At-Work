@@ -175,6 +175,7 @@ public class MainController {
 				mG.setValidPlaces(vte.getValidPlaces());
 				mG.setValidOrientations(vte.getValidOrientations());
 				mG.setValidPauses(vte.getValidPauses());
+				mG.setValidPoints(vte.getValidPoints());
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

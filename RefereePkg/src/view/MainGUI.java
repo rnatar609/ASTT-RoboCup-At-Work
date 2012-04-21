@@ -2,7 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Point;
 import java.io.File;
 import java.util.List;
 
@@ -127,8 +127,8 @@ public class MainGUI extends JFrame implements TripletListener {
 			this.setTitle("RoboCup@work");
 			BorderLayout panelLayout = new BorderLayout();
 			this.setLayout(panelLayout);
-			this.setPreferredSize(new Dimension(1000, 660));
-			this.setMaximumSize(new Dimension(2000, 660));
+			// this.setPreferredSize(new Dimension(1000, 660));
+			// this.setMaximumSize(new Dimension(2000, 660));
 			// 170412//
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			{
@@ -146,7 +146,7 @@ public class MainGUI extends JFrame implements TripletListener {
 								JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 						jPanel1.add(jScrollPane1);
 						jScrollPane1.setPreferredSize(new java.awt.Dimension(
-								120, 500));
+						120, 400));
 						{
 							tripletsList = new JList<String>(tripletLm);
 							jScrollPane1.setViewportView(tripletsList);
@@ -239,12 +239,11 @@ public class MainGUI extends JFrame implements TripletListener {
 								}
 							}
 						}
-						// Modified by Jeyaprakash, Ramesh, Marc
 						{
 							mapArea = new MapArea();
 							mapArea.setBackground(Color.black);
 							jPanel10.add(mapArea, BorderLayout.CENTER);
-						}// 14412
+						}
 					}
 				}
 			}
@@ -369,6 +368,11 @@ public class MainGUI extends JFrame implements TripletListener {
 		placesCbm = new DefaultComboBoxModel<String>(
 				places.toArray(new String[places.size()]));
 		placesBox.setModel(placesCbm);
+		mapArea.setValidPlaces(places);
+	}
+
+	public void setValidPoints(List<Point> validPoints) {
+		mapArea.setValidPoints(validPoints);
 	}
 
 	public void setValidOrientations(List<String> orientations) {

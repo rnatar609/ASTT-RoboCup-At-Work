@@ -5,11 +5,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.swing.event.EventListenerList;
-
 import controller.TripletListener;
-
 
 public class TaskSpec {
 	private List<TaskTriplet> taskTripletList;
@@ -38,13 +35,12 @@ public class TaskSpec {
 		notifyTripletAdded(new TripletEvent(triplet));
 	}
 
-	public TaskTriplet deleteTriplet(int tripletIndex)
-	{
+	public TaskTriplet deleteTriplet(int tripletIndex) {
 		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 		notifyTripletDeleted(new TripletEvent(triplet));
 		return triplet;
 	}
-	
+
 	/**
 	 * This method reads a task specification from the user and stores in the
 	 * invoking object.
@@ -101,26 +97,26 @@ public class TaskSpec {
 	public void removeTripletListener(TripletListener tL) {
 		listOfTripletListeners.remove(TripletListener.class, tL);
 	}
-	
+
 	private void notifyTripletAdded(TripletEvent evt) {
-        Object[] listeners = listOfTripletListeners.getListenerList();
-        // Each listener occupies two elements - the first is the listener class
-        // and the second is the listener instance
-        for (int i=0; i<listeners.length; i+=2) {
-            if (listeners[i]==TripletListener.class) {
-                ((TripletListener)listeners[i+1]).tripletAdded(evt);
-            }
-        }
-    }
-	
+		Object[] listeners = listOfTripletListeners.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TripletListener.class) {
+				((TripletListener) listeners[i + 1]).tripletAdded(evt);
+			}
+		}
+	}
+
 	private void notifyTripletDeleted(TripletEvent evt) {
 		Object[] listeners = listOfTripletListeners.getListenerList();
-        // Each listener occupies two elements - the first is the listener class
-        // and the second is the listener instance
-        for (int i=0; i<listeners.length; i+=2) {
-            if (listeners[i]==TripletListener.class) {
-                ((TripletListener)listeners[i+1]).tripletDeleted(evt);
-            }
-        }
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TripletListener.class) {
+				((TripletListener) listeners[i + 1]).tripletDeleted(evt);
+			}
+		}
 	}
 }
