@@ -9,13 +9,14 @@ import zmq
 import sys
 
 context = zmq.Context()
-for arg in sys.argv:
-	print arg
+
+connection_address = "tcp://" + sys.argv[1] + ":" + sys.argv[2]
+print "Start connection to " + connection_address
 #  Socket to talk to server
 print "Connecting to server..."
 socket = context.socket(zmq.REQ)
 #socket.connect ("tcp://localhost:5555")
-socket.connect (arg)
+socket.connect (connection_address)
 
 #for request in range (1,10):
 print "Sending request ..."
