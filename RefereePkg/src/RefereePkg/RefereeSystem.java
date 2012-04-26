@@ -13,5 +13,4 @@ public class RefereeSystem {
 		mC = new MainController(args);
 		mC.showView();
 	}
-	// MainGUI.launch(MainGUI.class, args);
 }

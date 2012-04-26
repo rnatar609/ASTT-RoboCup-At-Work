@@ -1,96 +1,72 @@
 package controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-import view.MainGUI;
-import view.MapArea;
-import view.MapArea.MapPane;
-import view.Utils;
-
 import model.Map;
 import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
+import view.MainGUI;
 
 public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
 
-	private Action save = new AbstractAction("Save", new ImageIcon(
-			"src/view/recources/icons/save.png")) {
+	private Action save = new AbstractAction("Save") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 
 			File file = mG.showSaveDialog();
-
 			if (file != null) {
-				file = Utils.correctFile(file);
-				try {
-					FileWriter fstream = new FileWriter(file);
-					BufferedWriter out = new BufferedWriter(fstream);
-					out.write(tS.getTaskSpecString());
-					out.close();
-				} catch (Exception e) {
-					System.err.println("Error: " + e.getMessage());
+				if (tS.saveTaskSpec(file)
+						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
+					mG.setStatusLine("saved actual task specification in >"
+							+ file.getName() + "<");
+				} else {
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+							+ "</FONT> No map saved </html>");
 				}
-				mG.setStatusLine("saved actual task specification in >"
-						+ file.getName() + "<");
 			} else {
 				mG.setStatusLine("save command cancelled by user");
 			}
 		}
 	};
 
-	private Action open = new AbstractAction("Open", new ImageIcon(
-			"view/recources/icons/open.png")) {
+	private Action open = new AbstractAction("Open") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 			File file = mG.showOpenDialog();
-
 			if (file != null) {
-				try {
-					FileInputStream fstream = new FileInputStream(file);
-					DataInputStream in = new DataInputStream(fstream);
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(in));
-					@SuppressWarnings("unused")
-					String strLine;
-					while ((strLine = br.readLine()) != null) {
-						// TODO
-					}
-					in.close();
-				} catch (Exception e) {// Catch exception if any
-					System.err.println("Error: " + e.getMessage());
+				if (tS.openTaskSpec(file)) {
+					mG.setStatusLine("Opened actual task specification >"
+							+ file.getName() + "<");
+				} else {
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+							+ "</FONT> No map opened </html>");
 				}
-				// statusLine.setText("opened task specification >" +
-				// file.getName()
-				// + "<");
 				mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> opened task specification </html>");
 			} else {
-				mG.setStatusLine("open command cancelled by user");
+				mG.setStatusLine("Open command cancelled by user");
 			}
 		}
 	};
 
-	private Action close = new AbstractAction("Close") {
+	private Action exit = new AbstractAction("Exit") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			System.out.println("Action close");
+			System.exit(0);
 		}
 	};
 
@@ -122,7 +98,7 @@ public class MainController {
 
 			if (!mG.getTripletsList().isSelectionEmpty()) {
 				int pos = mG.getTripletsList().getSelectedIndex();
-				String msg = "Do you want to delete the triplet"
+				String msg = "Do you want to delete the triplet "
 						+ tS.getTaskTripletList().get(pos)
 								.getTaskTripletString() + "?";
 				if (mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
@@ -148,6 +124,14 @@ public class MainController {
 		}
 	};
 
+	private Action help = new AbstractAction("Help") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+			mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> Sorry, no help available </html>");
+		}
+	};
+
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
 		// special config file.
@@ -158,24 +142,46 @@ public class MainController {
 
 	private void init() {
 		initializeValidTriplets();
+		save.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/save16.gif")));
+		open.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/open16.gif")));
+		exit.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/exit.png")));
+		help.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/help16.gif")));
+		addTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/back16.gif")));
+		deleteTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/delete16.gif")));
+		sendTriplets.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/export16.gif")));
 		mG.connectSaveAction(save);
 		mG.connectOpenAction(open);
-		mG.connectCloseAction(close);
+		mG.connectExitAction(exit);
+		mG.connectHelpAction(help);
 		mG.connectSendTriplets(sendTriplets);
 		mG.connectAddTriplet(addTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		tS.addTripletListener(mG);
-		tS.addTripletListener(mG.getMapArea().getMapPane());
+		tS.addTripletListener(mG.getMapArea());
 	}
 
 	private void initializeValidTriplets() {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		try {
 			if (vte.readFromConfigFile()) {
-				mG.setValidPlaces(vte.getValidPlaces());
+				mG.setValidPositions(vte.getValidPositions());
 				mG.setValidOrientations(vte.getValidOrientations());
 				mG.setValidPauses(vte.getValidPauses());
-				mG.setValidPoints(vte.getValidPoints());
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -185,6 +191,5 @@ public class MainController {
 
 	public void showView() {
 		mG.setVisible(true);
-
 	}
 }

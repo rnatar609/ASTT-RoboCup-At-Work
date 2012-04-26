@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-public class ConfigFile
+class ConfigFile
 {
-	static final String configFileFullName = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
-	Properties tripletProperties;
+	private static final String configFileFullName = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
+	private Properties tripletProperties;
 
 	public ConfigFile()
 	{
 		tripletProperties = new Properties();
 	}
 	
-	public void loadProperties() throws Exception
+	void loadProperties() throws Exception
 	{
 		try
 		{			

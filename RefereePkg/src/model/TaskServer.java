@@ -23,7 +23,7 @@ public class TaskServer
 	{
 		//At present, we are reading only one task spec.
 		//Can be later extended to read n-number of task specs.
-		taskSpec.getTaskSpecFromUser();
+		//taskSpec.getTaskSpecFromUser();
 	}
 	
 	private void startTCPService()

@@ -4,12 +4,12 @@ import java.io.File;
 
 public class Utils {
 
-	public final static String taskSpecExtension = "tsp";
+	private final static String taskSpecExtension = "tsp";
 
 	/*
 	 * Get the extension of the tsp file.
 	 */
-	public static String getExtension(File f) {
+	static String getExtension(File f) {
 		String extension = null;
 		String s = f.getName();
 		int i = s.lastIndexOf('.');
@@ -41,7 +41,7 @@ public class Utils {
 	}
 
 
-	public static String getTaskspecextension() {
+	static String getTaskspecextension() {
 		return taskSpecExtension;
 	}
 }

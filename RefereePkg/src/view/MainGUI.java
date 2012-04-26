@@ -2,8 +2,10 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.swing.Action;
@@ -11,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -25,15 +28,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import model.TaskTriplet;
 import model.TripletEvent;
 import controller.TripletListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
- * SWT/Swing view Builder, which is free for non-commercial
+ * SWT/Swing GUI Builder, which is free for non-commercial
  * use. If Jigloo is being used commercially (ie, by a corporation,
  * company or business for any purpose whatever) then you
  * should purchase a license for each developer using Jigloo.
@@ -47,28 +52,21 @@ import controller.TripletListener;
  * 
  */
 public class MainGUI extends JFrame implements TripletListener {
-	public MapArea getMapArea() {
-		return mapArea;
-	}
-
 	private static final long serialVersionUID = 1L;
+	private static final Dimension buttonDimension = new Dimension(120, 25);
 	private JList<String> tripletsList;
-	private JScrollPane jScrollPane1;
-	private JLabel tripletsLabel;
-	private JPanel jPanel4;
-	private JPanel jPanel3;
-	private JPanel jPanel2;
-	private JPanel jPanel1;
+	private JScrollPane tripletListScrollPane;
+	private JPanel editTripletPane;
+	private JPanel statusPanel;
+	private JPanel westPanel;
 	private JSeparator jSeparator;
 	private JButton saveButton;
 	private JButton openButton;
 	private JLabel statusLine;
-	private JButton jButton3;
-	private JButton jButton2;
-	private JButton jButton1;
-	private JPanel jPanel7;
-	private JPanel jPanel6;
-	private JPanel jPanel5;
+	private JButton deleteTripletButton;
+	private JButton addTripletButton;
+	private JButton sendTripletsButton;
+	private JPanel boxPanel;
 	private JComboBox<String> orientationsBox;
 	private JComboBox<Short> pausesBox;
 	private JComboBox<String> placesBox;
@@ -77,44 +75,32 @@ public class MainGUI extends JFrame implements TripletListener {
 	private JPanel contentPanel;
 	private MapArea mapArea;
 	private JMenuItem helpMenuItem;
-	private JMenu jMenu5;
+	private JMenu helpMenu;
 	private JMenuItem deleteMenuItem;
-	private JSeparator jSeparator1;
-	private JMenuItem pasteMenuItem;
-	private JMenuItem copyMenuItem;
-	private JMenuItem cutMenuItem;
-	private JMenu jMenu4;
+	private JMenuItem addMenuItem;
+	private JMenu editMenu;
 	private JMenuItem exitMenuItem;
-	private JSeparator jSeparator2;
-	private JMenuItem closeFileMenuItem;
-	private JMenuItem saveAsMenuItem;
 	private JMenuItem saveMenuItem;
+	private JLabel connectedIcon;
+	private JButton disconnectButton;
+	private JLabel serverHeader;
+	private JLabel tripletsHeader;
+	private JPanel upperServerPanel;
+	private JLabel connectedLabel;
+	private JPanel serverPanel;
 	private JMenuItem openFileMenuItem;
-	private JMenuItem newFileMenuItem;
-	private JMenu jMenu3;
-	private JMenuBar jMenuBar1;
+	private JMenu fileMenu;
+	private JMenuBar menuBar;
 	private JFileChooser fc;
 	private DefaultComboBoxModel<String> placesCbm;
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
 	private DefaultListModel<String> tripletLm = new DefaultListModel<String>();
-	private JPanel jPanel10;
-	private BorderLayout jPanel10Layout;
 
 	public MainGUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		fc = new JFileChooser();
@@ -123,256 +109,274 @@ public class MainGUI extends JFrame implements TripletListener {
 
 	private void initGUI() {
 
+		this.setTitle("RoboCup@work");
+		BorderLayout panelLayout = new BorderLayout();
+		this.setLayout(panelLayout);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		{
-			this.setTitle("RoboCup@work");
-			BorderLayout panelLayout = new BorderLayout();
-			this.setLayout(panelLayout);
-			// this.setPreferredSize(new Dimension(1000, 660));
-			// this.setMaximumSize(new Dimension(2000, 660));
-			// 170412//
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			{
-				contentPanel = new JPanel();
-				BorderLayout contentPanelLayout = new BorderLayout();
-				contentPanel.setLayout(contentPanelLayout);
+			contentPanel = new JPanel();
+			BorderLayout contentPanelLayout = new BorderLayout();
+			contentPanel.setLayout(contentPanelLayout);
 
-				this.add(contentPanel, BorderLayout.CENTER);
+			this.add(contentPanel, BorderLayout.CENTER);
+			{
+				westPanel = new JPanel();
+				BorderLayout westPanelLayout = new BorderLayout();
+				westPanel.setLayout(westPanelLayout);
+				contentPanel.add(westPanel, BorderLayout.WEST);
 				{
-					jPanel1 = new JPanel();
-					contentPanel.add(jPanel1, BorderLayout.WEST);
+					tripletListScrollPane = new JScrollPane(
+							JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+					westPanel.add(tripletListScrollPane, BorderLayout.WEST);
+					tripletListScrollPane
+							.setPreferredSize(new java.awt.Dimension(120, 0));
 					{
-						jScrollPane1 = new JScrollPane(
-								JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-								JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-						jPanel1.add(jScrollPane1);
-						jScrollPane1.setPreferredSize(new java.awt.Dimension(
-						120, 400));
-						{
-							tripletsList = new JList<String>(tripletLm);
-							jScrollPane1.setViewportView(tripletsList);
-						}
+						tripletsList = new JList<String>(tripletLm);
+						tripletListScrollPane.setViewportView(tripletsList);
 					}
 				}
+			}
+			{
+				statusPanel = new JPanel();
+				contentPanel.add(statusPanel, BorderLayout.SOUTH);
 				{
-					jPanel2 = new JPanel();
-					contentPanel.add(jPanel2, BorderLayout.NORTH);
-					jPanel2.setPreferredSize(new java.awt.Dimension(500, 28));
+					statusLine = new JLabel();
+					statusPanel.add(statusLine);
+					statusLine.setName("statusLine");
+					statusLine.setHorizontalAlignment(JLabel.CENTER);
+					statusPanel.setPreferredSize(new java.awt.Dimension(0, 25));
 				}
+			}
+			{
+				editTripletPane = new JPanel();
+				BoxLayout jPanel4Layout = new BoxLayout(editTripletPane,
+						javax.swing.BoxLayout.Y_AXIS);
+				editTripletPane.setLayout(jPanel4Layout);
+				editTripletPane
+						.setPreferredSize(new java.awt.Dimension(150, 0));
+				westPanel.add(editTripletPane, BorderLayout.CENTER);
 				{
-					jPanel3 = new JPanel();
-					contentPanel.add(jPanel3, BorderLayout.SOUTH);
-					jPanel3.setPreferredSize(new java.awt.Dimension(500, 33));
+					boxPanel = new JPanel();
+					JLabel header = new JLabel("Place  Orientation  Time");
+					header.setMinimumSize(new java.awt.Dimension(400, 40));
+					header.setHorizontalAlignment(JLabel.CENTER);
+					editTripletPane.add(Box.createVerticalStrut(20));
+					editTripletPane.add(header);
+					header.setHorizontalTextPosition(SwingConstants.CENTER);
+					header.setIconTextGap(0);
+					header.setAlignmentX(0.5f);
+					editTripletPane.add(boxPanel);
+					boxPanel.setPreferredSize(new java.awt.Dimension(200, 39));
+					boxPanel.setMinimumSize(new java.awt.Dimension(120, 40));
+					boxPanel.setMaximumSize(new java.awt.Dimension(200, 40));
+					boxPanel.setRequestFocusEnabled(false);
+					boxPanel.setSize(200, 40);
 					{
-						statusLine = new JLabel();
-						jPanel3.add(statusLine);
-						statusLine.setName("statusLine");
-						statusLine.setHorizontalAlignment(JLabel.CENTER);
-						statusLine.setPreferredSize(new java.awt.Dimension(490,
-								14));
-					}
-				}
-				{
-					jPanel4 = new JPanel();
-					BoxLayout jPanel4Layout = new BoxLayout(jPanel4,
-							javax.swing.BoxLayout.Y_AXIS);
-					jPanel4.setLayout(jPanel4Layout);
-					jPanel4.setPreferredSize(new java.awt.Dimension(150, 400));
-					jPanel10 = new JPanel();
-					jPanel10Layout = new BorderLayout();
-					jPanel10.setLayout(jPanel10Layout);
-					jPanel10.add(jPanel4, BorderLayout.WEST);
-					contentPanel.add(jPanel10, BorderLayout.CENTER);
-					{
-						jPanel5 = new JPanel();
-						JLabel header = new JLabel("Place  Orientation  Time");
-						header.setMinimumSize(new java.awt.Dimension(400, 40));
-						header.setHorizontalAlignment(JLabel.CENTER);
-						jPanel4.add(Box.createVerticalStrut(20));
-						jPanel4.add(header);
-						jPanel4.add(jPanel5);
-						jPanel5.setPreferredSize(new java.awt.Dimension(404, 39));
-						{
-							tripletsLabel = new JLabel();
-							jPanel5.add(tripletsLabel);
-							tripletsLabel.setName("tripletsLabel");
-						}
-						{
 
-							placesBox = new JComboBox<String>();
-							jPanel5.add(placesBox);
-						}
-						{
-							orientationsBox = new JComboBox<String>();
-							jPanel5.add(orientationsBox);
+						placesBox = new JComboBox<String>();
+						boxPanel.add(placesBox);
+					}
+					{
+						orientationsBox = new JComboBox<String>();
+						boxPanel.add(orientationsBox);
 
-						}
-						{
-							pausesBox = new JComboBox<Short>();
-							jPanel5.add(pausesBox);
-						}
-						{
-							jPanel6 = new JPanel();
-							jPanel4.add(jPanel6);
-							jPanel6.setPreferredSize(new java.awt.Dimension(
-									404, 149));
-							{
-								jButton2 = new JButton();
-								jButton2.setPreferredSize(new java.awt.Dimension(
-										100, 25));
-								jPanel6.add(jButton2);
-								jButton2.setName("jButton2");
-								jButton3 = new JButton();
-								jButton3.setPreferredSize(new java.awt.Dimension(
-										100, 25));
-								jPanel6.add(jButton3);
-								jButton3.setName("jButton3");
-							}
-							{
-								jPanel7 = new JPanel();
-								jPanel4.add(jPanel7);
-								{
-									jButton1 = new JButton();
-									jButton1.setPreferredSize(new java.awt.Dimension(
-											100, 25));
-									jPanel7.add(jButton1);
-									jButton1.setName("jButton1");
-								}
-							}
-						}
-						{
-							mapArea = new MapArea();
-							mapArea.setBackground(Color.black);
-							jPanel10.add(mapArea, BorderLayout.CENTER);
-						}
-					}
-				}
-			}
-			{
-				toolBarPanel = new JPanel();
-				contentPanel.add(toolBarPanel, BorderLayout.NORTH);
-				BorderLayout jPanel1Layout = new BorderLayout();
-				toolBarPanel.setLayout(jPanel1Layout);
-				{
-					toolBar = new JToolBar();
-					toolBarPanel.add(toolBar, BorderLayout.CENTER);
-					{
-						openButton = new JButton("open...");
-						toolBar.add(openButton);
-						openButton.setName("openButton");
-						openButton.setFocusable(false);
 					}
 					{
-						saveButton = new JButton();
-						toolBar.add(saveButton);
-						// saveButton.setName("saveButton");
-						saveButton.setFocusable(false);
+						pausesBox = new JComboBox<Short>();
+						boxPanel.add(pausesBox);
 					}
+					{
+						editTripletPane.add(Box.createVerticalGlue());
+						addTripletButton = new JButton();
+						addTripletButton.setPreferredSize(buttonDimension);
+						editTripletPane.add(addTripletButton);
+						addTripletButton.setAlignmentX(0.5f);
+						addTripletButton.setMaximumSize(buttonDimension);
+						addTripletButton.setMinimumSize(buttonDimension);
+						editTripletPane.add(Box.createVerticalStrut(10));
+						deleteTripletButton = new JButton();
+						deleteTripletButton.setPreferredSize(buttonDimension);
+						editTripletPane.add(deleteTripletButton);
+						deleteTripletButton.setAlignmentX(0.5f);
+						deleteTripletButton.setMinimumSize(buttonDimension);
+						deleteTripletButton.setMaximumSize(buttonDimension);
+						editTripletPane.add(Box.createVerticalStrut(40));
+					}
+					{
+						mapArea = new MapArea();
+						mapArea.setBackground(Color.black);
+						contentPanel.add(mapArea, BorderLayout.CENTER);
+					}
+
 				}
 				{
-					jSeparator = new JSeparator();
-					toolBarPanel.add(jSeparator, BorderLayout.SOUTH);
+					toolBarPanel = new JPanel();
+					contentPanel.add(toolBarPanel, BorderLayout.NORTH);
+					BorderLayout jPanel1Layout = new BorderLayout();
+					toolBarPanel.setLayout(jPanel1Layout);
+					{
+						toolBar = new JToolBar();
+						toolBarPanel.add(toolBar, BorderLayout.CENTER);
+						{
+							openButton = new JButton("open...");
+							toolBar.add(openButton);
+							openButton.setName("openButton");
+							openButton.setFocusable(false);
+						}
+						{
+							saveButton = new JButton();
+							toolBar.add(saveButton);
+							saveButton.setFocusable(false);
+						}
+					}
+					{
+						jSeparator = new JSeparator();
+						toolBarPanel.add(jSeparator, BorderLayout.SOUTH);
+					}
 				}
 			}
-		}
-		jMenuBar1 = new JMenuBar();
-		setJMenuBar(jMenuBar1);
-		{
-			jMenu3 = new JMenu();
-			jMenuBar1.add(jMenu3);
-			jMenu3.setText("File");
 			{
-				newFileMenuItem = new JMenuItem();
-				jMenu3.add(newFileMenuItem);
-				newFileMenuItem.setText("New");
+				serverPanel = new JPanel();
+				BoxLayout serverPanelLayout = new BoxLayout(serverPanel,
+						javax.swing.BoxLayout.Y_AXIS);
+				serverPanel.setLayout(serverPanelLayout);
+				westPanel.add(serverPanel, BorderLayout.SOUTH);
+				serverPanel.setPreferredSize(new java.awt.Dimension(300, 89));
+				{
+					serverPanel.add(Box.createVerticalStrut(10));
+					serverPanel.add(new JSeparator());
+					serverPanel.add(Box.createVerticalStrut(5));
+					{
+						serverHeader = new JLabel();
+						serverPanel.add(serverHeader);
+						serverHeader.setText("Server Stuff");
+						serverHeader.setAlignmentX(0.5f);
+					}
+					upperServerPanel = new JPanel();
+					serverPanel.add(upperServerPanel);
+					upperServerPanel.setPreferredSize(new java.awt.Dimension(
+							300, 57));
+					{
+
+						connectedIcon = new JLabel(
+								new ImageIcon(
+										getClass()
+												.getResource(
+														"/view/resources/icons/status-busy.png")));
+						// should be overwritten by
+						// "/view/resources/icons/status-busy.png", if client
+						// connected
+						upperServerPanel.add(connectedIcon);
+					}
+					{
+						connectedLabel = new JLabel();
+						upperServerPanel.add(connectedLabel);
+						connectedLabel.setText("no client connected");
+						// should be overwritten by connected client
+						connectedLabel.setPreferredSize(new Dimension(150, 25));
+					}
+					{
+						disconnectButton = new JButton();
+						upperServerPanel.add(disconnectButton);
+						disconnectButton.setText("disconnect");
+						disconnectButton.setEnabled(false);
+					}
+					{
+						sendTripletsButton = new JButton();
+						serverPanel.add(sendTripletsButton);
+						sendTripletsButton.setAlignmentX(0.5f);
+						sendTripletsButton.setEnabled(false);
+						sendTripletsButton.setPreferredSize(buttonDimension);
+						sendTripletsButton.setMaximumSize(buttonDimension);
+					}
+				}
 			}
 			{
-				openFileMenuItem = new JMenuItem();
-				jMenu3.add(openFileMenuItem);
-				openFileMenuItem.setText("Open");
+				tripletsHeader = new JLabel();
+				westPanel.setAlignmentY(CENTER_ALIGNMENT);
+				westPanel.setAlignmentX(CENTER_ALIGNMENT);
+				westPanel.add(tripletsHeader, BorderLayout.NORTH);
+				tripletsHeader.setText("Triplets Stuff");
+				tripletsHeader.setAlignmentX(0.5f);
+				tripletsHeader.setPreferredSize(new java.awt.Dimension(0, 25));
+				tripletsHeader.setSize(0, 0);
+				tripletsHeader.setHorizontalTextPosition(SwingConstants.CENTER);
+				tripletsHeader.setHorizontalAlignment(SwingConstants.CENTER);
+			}
+			menuBar = new JMenuBar();
+			setJMenuBar(menuBar);
+			{
+				fileMenu = new JMenu();
+				menuBar.add(fileMenu);
+				fileMenu.setText("File");
+				{
+					openFileMenuItem = new JMenuItem();
+					fileMenu.add(openFileMenuItem);
+					openFileMenuItem.setText("Open");
+				}
+				{
+					saveMenuItem = new JMenuItem();
+					fileMenu.add(saveMenuItem);
+					saveMenuItem.setText("Save");
+				}
+				{
+					new JSeparator();
+					fileMenu.add(new JSeparator());
+				}
+				{
+					exitMenuItem = new JMenuItem();
+					fileMenu.add(exitMenuItem);
+					exitMenuItem.setText("Exit");
+				}
 			}
 			{
-				saveMenuItem = new JMenuItem();
-				jMenu3.add(saveMenuItem);
-				saveMenuItem.setText("Save");
+				editMenu = new JMenu();
+				menuBar.add(editMenu);
+				editMenu.setText("Edit");
+				{
+					addMenuItem = new JMenuItem();
+					editMenu.add(addMenuItem);
+					addMenuItem.setText("Add");
+				}
+				{
+					editMenu.add(new JSeparator());
+				}
+				{
+					deleteMenuItem = new JMenuItem();
+					editMenu.add(deleteMenuItem);
+					deleteMenuItem.setText("Delete");
+				}
 			}
 			{
-				saveAsMenuItem = new JMenuItem();
-				jMenu3.add(saveAsMenuItem);
-				saveAsMenuItem.setText("Save As ...");
-			}
-			{
-				closeFileMenuItem = new JMenuItem();
-				jMenu3.add(closeFileMenuItem);
-				closeFileMenuItem.setText("Close");
-			}
-			{
-				jSeparator2 = new JSeparator();
-				jMenu3.add(jSeparator2);
-			}
-			{
-				exitMenuItem = new JMenuItem();
-				jMenu3.add(exitMenuItem);
-				exitMenuItem.setText("Exit");
-			}
-		}
-		{
-			jMenu4 = new JMenu();
-			jMenuBar1.add(jMenu4);
-			jMenu4.setText("Edit");
-			{
-				cutMenuItem = new JMenuItem();
-				jMenu4.add(cutMenuItem);
-				cutMenuItem.setText("Cut");
-			}
-			{
-				copyMenuItem = new JMenuItem();
-				jMenu4.add(copyMenuItem);
-				copyMenuItem.setText("Copy");
-			}
-			{
-				pasteMenuItem = new JMenuItem();
-				jMenu4.add(pasteMenuItem);
-				pasteMenuItem.setText("Paste");
-			}
-			{
-				jSeparator1 = new JSeparator();
-				jMenu4.add(jSeparator1);
-			}
-			{
-				deleteMenuItem = new JMenuItem();
-				jMenu4.add(deleteMenuItem);
-				deleteMenuItem.setText("Delete");
-			}
-		}
-		{
-			jMenu5 = new JMenu();
-			jMenuBar1.add(jMenu5);
-			jMenu5.setText("Help");
-			{
-				helpMenuItem = new JMenuItem();
-				jMenu5.add(helpMenuItem);
-				helpMenuItem.setText("Help");
+				helpMenu = new JMenu();
+				menuBar.add(helpMenu);
+				helpMenu.setText("Help");
+				{
+					helpMenuItem = new JMenuItem();
+					helpMenu.add(helpMenuItem);
+					helpMenuItem.setText("Help");
+				}
 			}
 		}
 		pack();
 		fc.setFileFilter(new TspFilter());
 	}
 
-	public void copy() {
-		statusLine
-				.setText("<html><FONT COLOR=RED>not implemented yet! </FONT> copy triplet </html>");
-
+	public MapArea getMapArea() {
+		return mapArea;
 	}
 
-	public void setValidPlaces(List<String> places) {
-		placesCbm = new DefaultComboBoxModel<String>(
-				places.toArray(new String[places.size()]));
+	public void setValidPositions(LinkedHashMap<String, Point> positions) {
+		String[] posString = new String[positions.size()];
+		int i = 0;
+		for (String pos : positions.keySet()) {
+			posString[i] = pos;
+			i++;
+		}
+		placesCbm = new DefaultComboBoxModel<String>(posString);
 		placesBox.setModel(placesCbm);
-		mapArea.setValidPlaces(places);
-	}
-
-	public void setValidPoints(List<Point> validPoints) {
-		mapArea.setValidPoints(validPoints);
+		mapArea.setValidPositions(positions);
 	}
 
 	public void setValidOrientations(List<String> orientations) {
@@ -397,20 +401,27 @@ public class MainGUI extends JFrame implements TripletListener {
 		openFileMenuItem.setAction(open);
 	}
 
-	public void connectCloseAction(Action close) {
-		closeFileMenuItem.setAction(close);
+	public void connectExitAction(Action exit) {
+		exitMenuItem.setAction(exit);
 	}
 
 	public void connectSendTriplets(Action sendTriplets) {
-		jButton1.setAction(sendTriplets);
+		sendTripletsButton.setAction(sendTriplets);
+		sendTripletsButton.setEnabled(false);
+	}
+
+	public void connectHelpAction(Action help) {
+		helpMenuItem.setAction(help);
 	}
 
 	public void connectAddTriplet(Action addTriplet) {
-		jButton2.setAction(addTriplet);
+		addTripletButton.setAction(addTriplet);
+		addMenuItem.setAction(addTriplet);
 	}
 
 	public void connectDeleteTriplet(Action deleteTriplet) {
-		jButton3.setAction(deleteTriplet);
+		deleteTripletButton.setAction(deleteTriplet);
+		deleteMenuItem.setAction(deleteTriplet);
 	}
 
 	public File showSaveDialog() {
@@ -432,7 +443,7 @@ public class MainGUI extends JFrame implements TripletListener {
 	}
 
 	public int getUserConfirmation(String msg, String title) {
-		return JOptionPane.showConfirmDialog(null, msg, title,
+		return JOptionPane.showConfirmDialog(deleteTripletButton, msg, title,
 				JOptionPane.YES_NO_OPTION);
 	}
 
@@ -454,18 +465,19 @@ public class MainGUI extends JFrame implements TripletListener {
 
 	@Override
 	public void tripletAdded(TripletEvent evt) {
-		int pos = tripletsList.getModel().getSize();
-		String s = new String(evt.getTaskTriplet().getTaskTripletString());
-		tripletLm.add(pos, s);
+		tripletLm.removeAllElements();
+		for (TaskTriplet tT : evt.getTaskTripletList()) {
+			tripletLm.addElement(tT.getTaskTripletString());
+		}
+		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
+				"/view/resources/icons/status.png")));
 	}
 
 	@Override
 	public void tripletDeleted(TripletEvent evt) {
-		int pos = tripletsList.getSelectedIndex();
-		tripletLm.remove(pos);
-		// Assumption: the user does not change the selection while deletion is
-		// going on.
-		// If not, then compare the string being deleted from the list to the
-		// one that has been deleted.
+		tripletLm.removeAllElements();
+		for (TaskTriplet tT : evt.getTaskTripletList()) {
+			tripletLm.addElement(tT.getTaskTripletString());
+		}
 	}
 }

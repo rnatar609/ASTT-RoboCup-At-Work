@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-public class TspFilter extends FileFilter {
+class TspFilter extends FileFilter {
 
 	// Accept all directories and tsp files.
 	public boolean accept(File f) {

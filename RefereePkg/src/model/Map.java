@@ -6,11 +6,13 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class Map {
-	static private Map instance;
-	static BufferedImage map;
+import view.MapArea;
+import view.Utils;
 
-	static String mapFullName;
+public class Map {
+	private static final String imageFormat = new String("png");
+	private static BufferedImage map;
+	private static String mapFullName;
 
 	public static BufferedImage loadBackgroundMap() {
 		 mapFullName = System.getProperty("user.home") + File.separator
@@ -26,12 +28,18 @@ public class Map {
 		}
 	}
 	
-	public static Map getInstance()
-	{
-		if ( instance == null )
-		{
-			instance = new Map();
+	public static boolean saveTaskSpecMap(File file, MapArea mapArea) {
+
+		file = Utils.correctFile(file);
+		try {
+			BufferedImage image = new BufferedImage(mapArea.getMapPane().getWidth(),
+					mapArea.getMapPane().getHeight(), BufferedImage.TYPE_INT_RGB);
+			mapArea.getMapPane().paintAll(image.getGraphics());
+			ImageIO.write(image, imageFormat, new File(file.getPath().substring(0, file.getPath().length()-4) + "." + imageFormat));
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+			return false;
 		}
-		return instance;
+		return true;
 	}
 }

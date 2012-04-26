@@ -3,6 +3,7 @@ package model;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
@@ -12,14 +13,12 @@ import java.util.Scanner;
  */
 public class ValidTripletElements {
 	static private ValidTripletElements instance;
-	List<String> validPlaces;
-	List<String> validOrientations;
-	List<Short> validPauses;
-	List<Point> validPoints;
-
+	private LinkedHashMap<String, Point> validPositions;
+	private List<String> validOrientations;
+	private List<Short> validPauses;
+	
 	private ValidTripletElements() {
-		validPlaces = new ArrayList<String>();
-		validPoints = new ArrayList<Point>();
+		validPositions = new LinkedHashMap<String, Point>();
 		validOrientations = new ArrayList<String>();
 		validPauses = new ArrayList<Short>();
 	}
@@ -48,7 +47,29 @@ public class ValidTripletElements {
 			if (s.length() == 2 && Character.isLetter(s.charAt(0))
 					&& Character.isUpperCase(s.charAt(0))
 					&& Character.isDigit(s.charAt(1))) {
-				validPlaces.add(s);
+				String sx = new String(scnr1.next());
+				int x = 0;
+				try {
+					x = Integer.parseInt(sx);
+				} catch (NumberFormatException e) {
+					System.out
+							.println("Ivalid place label "
+									+ s
+									+ " in Config File. Place label format should be ([A-Z][0-9]).");
+					allValid = false;
+				}
+				String sy = new String(scnr1.next());
+				int y = 0;
+				try {
+					y = Integer.parseInt(sy);
+				} catch (NumberFormatException e) {
+					System.out
+							.println("Ivalid place label "
+									+ s
+									+ " in Config File. Place label format should be ([A-Z][0-9]).");
+					allValid = false;
+				}
+				validPositions.put(s, new Point(x,y));
 			} else {
 				System.out
 						.println("Ivalid place label "
@@ -56,29 +77,7 @@ public class ValidTripletElements {
 								+ " in Config File. Place label format should be ([A-Z][0-9]).");
 				allValid = false;
 			}
-			String sx = new String(scnr1.next());
-			int x = 0;
-			try {
-				x = Integer.parseInt(sx);
-			} catch (NumberFormatException e) {
-				System.out
-						.println("Ivalid place label "
-								+ s
-								+ " in Config File. Place label format should be ([A-Z][0-9]).");
-				allValid = false;
-			}
-			String sy = new String(scnr1.next());
-			int y = 0;
-			try {
-				y = Integer.parseInt(sy);
-			} catch (NumberFormatException e) {
-				System.out
-						.println("Ivalid place label "
-								+ s
-								+ " in Config File. Place label format should be ([A-Z][0-9]).");
-				allValid = false;
-			}
-			validPoints.add(new Point(x, y));
+			
 		}
 		return allValid;
 	}
@@ -145,38 +144,18 @@ public class ValidTripletElements {
 		return allValid;
 	}
 
-	public static void displayValidTripletElements() {
-		ValidTripletElements vte = ValidTripletElements.getInstance();
-		System.out.println("Here are the valid model Elements:");
-		System.out.print("Valid Places: ");
-		for (int i = 0; i < vte.validPlaces.size(); i++) {
-			System.out.print(vte.validPlaces.get(i) + " ");
-		}
-		System.out.println();
-		System.out.print("Valid Orientations: ");
-		for (int i = 0; i < vte.validOrientations.size(); i++) {
-			System.out.print(vte.validOrientations.get(i) + " ");
-		}
-		System.out.println();
-		System.out.print("Valid Pauses: ");
-		for (int i = 0; i < vte.validPauses.size(); i++) {
-			System.out.print(vte.validPauses.get(i) + " ");
-		}
-		System.out.println();
-	}
-
-	public boolean isPlaceValid(String s) {
+	/*boolean isPlaceValid(String s) {
 		// System.out.println( "User-given place " + s );
-		Iterator<String> iterator = validPlaces.iterator();
+		Iterator<Position> iterator = validPositions.iterator();
 		while (iterator.hasNext()) {
 			if (s.equals(iterator.next())) {
 				return true;
 			}
 		}
 		return false;
-	}
+	}*/
 
-	public boolean isOrientationValid(String s) {
+	boolean isOrientationValid(String s) {
 		// System.out.println( "User-given Orientation: " + s );
 		Iterator<String> iterator = validOrientations.iterator();
 		while (iterator.hasNext()) {
@@ -187,7 +166,7 @@ public class ValidTripletElements {
 		return false;
 	}
 
-	public boolean isPauseValid(String s) {
+	boolean isPauseValid(String s) {
 		// System.out.println( "User-given Pause " + s );
 		short in = Short.parseShort(s);
 		Iterator<Short> iterator = validPauses.iterator();
@@ -206,12 +185,8 @@ public class ValidTripletElements {
 		return instance;
 	}
 
-	public List<String> getValidPlaces() {
-		return validPlaces;
-	}
-
-	public List<Point> getValidPoints() {
-		return validPoints;
+	public LinkedHashMap<String, Point> getValidPositions() {
+		return validPositions;
 	}
 
 	public List<String> getValidOrientations() {
