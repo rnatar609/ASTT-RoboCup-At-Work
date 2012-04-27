@@ -1,5 +1,3 @@
 *.class
 .classpath
-bin/RefereePkg/
-bin/controller/
-bin/model/
+bin/
