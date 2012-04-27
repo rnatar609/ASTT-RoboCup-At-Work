@@ -16,8 +16,6 @@ public class Map {
 	private static URL url;
 
 	public static BufferedImage loadBackgroundMap() {
-		System.out.println(Class.class
-				.getResource("/recources/backgroundMap.png"));
 		url = Class.class.getResource("/recources/backgroundMap.png");
 		;
 		try {
@@ -30,7 +28,6 @@ public class Map {
 	}
 
 	public static boolean saveTaskSpecMap(File file, MapArea mapArea) {
-
 		file = Utils.correctFile(file);
 		try {
 			BufferedImage image = new BufferedImage(mapArea.getMapPane()
