@@ -14,9 +14,9 @@ public class Map {
 	private static final String imageFormat = new String("png");
 	private static BufferedImage map;
 	private static URL url;
-
+	
 	public static BufferedImage loadBackgroundMap() {
-		url = Class.class.getResource("/recources/backgroundMap.png");
+		url = Class.class.getResource("/model/resources/backgroundMap.png");
 		;
 		try {
 			map = ImageIO.read(url);

@@ -17,10 +17,11 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import controller.TripletListener;
+
 import model.Map;
 import model.TaskTriplet;
 import model.TripletEvent;
-import controller.TripletListener;
 
 public class MapArea extends JScrollPane implements TripletListener {
 
@@ -57,20 +58,20 @@ public class MapArea extends JScrollPane implements TripletListener {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.drawImage(backgroundMap, 0, 0, backgroundMap.getWidth(),
 					backgroundMap.getHeight(), this);
-			int i =  0;
-			Point pPrev = new Point(0,0);
+			int i = 0;
+			Point pPrev = new Point(0, 0);
 			for (TaskTriplet tT : taskTripletList) {
 				Point p = validPositions.get(tT.getPlace());
-				if (i==0) {
-				pPrev = p;
+				if (i == 0) {
+					pPrev = p;
 				} else {
 					g2.setStroke(new BasicStroke(6.0f));
 					g2.setColor(Color.black);
-				g2.drawLine(pPrev.x,pPrev.y, p.x, p.y);
-				g2.setStroke(new BasicStroke(4.0f));
-				g2.setColor(Color.gray);
-				g2.drawLine(pPrev.x,pPrev.y, p.x, p.y);
-				
+					g2.drawLine(pPrev.x, pPrev.y, p.x, p.y);
+					g2.setStroke(new BasicStroke(4.0f));
+					g2.setColor(Color.gray);
+					g2.drawLine(pPrev.x, pPrev.y, p.x, p.y);
+
 				}
 				i++;
 				pPrev = p;
@@ -78,31 +79,22 @@ public class MapArea extends JScrollPane implements TripletListener {
 			g2.setStroke(new BasicStroke(2.0f));
 			for (TaskTriplet tT : taskTripletList) {
 				int theta = 0;
-				switch (tT.getOrientation()) {
-				case "N":
+				if (tT.getOrientation().equals("N")) {
 					theta = 90;
-					break;
-				case "S":
+				} else if (tT.getOrientation().equals("S")) {
 					theta = -90;
-					break;
-				case "W":
+				} else if (tT.getOrientation().equals("W")) {
 					theta = 180;
-					break;
-				case "E":
+				} else if (tT.getOrientation().equals("E")) {
 					theta = 0;
-					break;
-				case "NE":
+				} else if (tT.getOrientation().equals("NE")) {
 					theta = 45;
-					break;
-				case "SE":
+				} else if (tT.getOrientation().equals("SE")) {
 					theta = -45;
-					break;
-				case "SW":
+				} else if (tT.getOrientation().equals("SW")) {
 					theta = -135;
-					break;
-				case "NW":
+				} else if (tT.getOrientation().equals("NW")) {
 					theta = 135;
-					break;
 				}
 				g.setColor(Color.cyan);
 				Point p = validPositions.get(tT.getPlace());
@@ -153,7 +145,7 @@ public class MapArea extends JScrollPane implements TripletListener {
 	public void setValidPositions(HashMap<String, Point> positions) {
 		this.validPositions = positions;
 	}
-	
+
 	public MapPane getMapPane() {
 		return mapPane;
 	}

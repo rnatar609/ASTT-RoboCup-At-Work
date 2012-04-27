@@ -1,11 +1,7 @@
 package controller;
 
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -145,11 +141,11 @@ public class MainController {
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
-						"/view/resources/icons/save16.gif")));
+						"/view/resources/icons/Save16.gif")));
 		open.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
-						"/view/resources/icons/open16.gif")));
+						"/view/resources/icons/Open16.gif")));
 		exit.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -157,13 +153,13 @@ public class MainController {
 		help.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
-						"/view/resources/icons/help16.gif")));
+						"/view/resources/icons/Help16.gif")));
 		addTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/back16.gif")));
+				.getResource("/view/resources/icons/Back16.gif")));
 		deleteTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/delete16.gif")));
+				.getResource("/view/resources/icons/Delete16.gif")));
 		sendTriplets.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/export16.gif")));
+				.getResource("/view/resources/icons/Export16.gif")));
 		mG.connectSaveAction(save);
 		mG.connectOpenAction(open);
 		mG.connectExitAction(exit);
