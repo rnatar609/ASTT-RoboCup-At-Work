@@ -11,12 +11,14 @@ import model.Map;
 import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
+import model.TaskServer;
 import view.MainGUI;
 
 public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
-
+    private TaskServer tServer;
+    
 	private Action save = new AbstractAction("Save") {
 		private static final long serialVersionUID = 1L;
 
@@ -115,11 +117,21 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO
-			mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> send task specification </html>");
+			tServer.sendTaskSpecToClient(tS);
+			mG.setStatusLine("Task specification sent to the team.");
 		}
 	};
 
+	private Action disconnect = new AbstractAction("Disconnect Client") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+			String teamName = mG.getConnectedLabel();
+			tServer.disconnectClient(teamName);
+			mG.setStatusLine("Team " + teamName + " disconnected.");
+		}
+	};
+	
 	private Action help = new AbstractAction("Help") {
 		private static final long serialVersionUID = 1L;
 
@@ -133,6 +145,7 @@ public class MainController {
 		// special config file.
 		tS = new TaskSpec();
 		mG = new MainGUI();
+		tServer = new TaskServer();
 		init();
 	}
 
@@ -167,8 +180,11 @@ public class MainController {
 		mG.connectSendTriplets(sendTriplets);
 		mG.connectAddTriplet(addTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
+		mG.connectDisconnet(disconnect);
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
+		tServer.addConnectionListener(mG);
+		tServer.listenForConnection();
 	}
 
 	private void initializeValidTriplets() {
