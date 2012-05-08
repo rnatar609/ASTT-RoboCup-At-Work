@@ -17,6 +17,7 @@ public class JavaClient {
 		System.out.println("Connecting to server... ");
 		requester.connect(connectStr);
 		requester.send(teamName.getBytes(), 0);
+		System.out.println("Sent team name to server... " + teamName);
 		byte[] reply = requester.recv(0);
 		taskSpecFromServer = new String(reply);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
@@ -35,6 +36,7 @@ public class JavaClient {
 		}
 		// Obtain task specification from server
 		JavaClient jClient = new JavaClient();
+		System.out.println("ServerIP: " + args[0] + " Server port: " + args[1]);
 		jClient.obtainTaskSpecFromServer(args[0], args[1]);
 	}
 }

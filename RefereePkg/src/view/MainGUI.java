@@ -34,7 +34,7 @@ import javax.swing.UIManager;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.TripletListener;
-
+import controller.ConnectionListener;
 /**
  * This code was edited or generated using CloudGarden's Jigloo
  * SWT/Swing GUI Builder, which is free for non-commercial
@@ -50,7 +50,7 @@ import controller.TripletListener;
 /**
  * 
  */
-public class MainGUI extends JFrame implements TripletListener {
+public class MainGUI extends JFrame implements TripletListener, ConnectionListener {
 	private static final long serialVersionUID = 1L;
 	private static final Dimension buttonDimension = new Dimension(120, 25);
 	private JList<String> tripletsList;
@@ -409,6 +409,10 @@ public class MainGUI extends JFrame implements TripletListener {
 		sendTripletsButton.setEnabled(false);
 	}
 
+	public void connectDisconnet(Action disconnect) {
+	    disconnectButton.setAction(disconnect);	
+	}
+	
 	public void connectHelpAction(Action help) {
 		helpMenuItem.setAction(help);
 	}
@@ -462,14 +466,15 @@ public class MainGUI extends JFrame implements TripletListener {
 		return tripletsList;
 	}
 
+	public String getConnectedLabel() {
+		return connectedLabel.getText();
+	}
 	@Override
 	public void tripletAdded(TripletEvent evt) {
 		tripletLm.removeAllElements();
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
-				"/view/resources/icons/status.png")));
 	}
 
 	@Override
@@ -478,5 +483,33 @@ public class MainGUI extends JFrame implements TripletListener {
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
+	}
+	
+	@Override
+	public void teamConnected(String teamName){
+		sendTripletsButton.setEnabled(true);
+		disconnectButton.setEnabled(true);
+		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
+				"/view/resources/icons/status.png")));
+		connectedLabel.setPreferredSize(new Dimension(150, 25));
+		connectedLabel.setText(teamName);
+	}
+	
+	@Override
+	public void teamDisconnected(){
+		sendTripletsButton.setEnabled(false);
+		disconnectButton.setEnabled(false);
+		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
+				"/view/resources/icons/status-busy.png")));
+		connectedLabel.setText("no client connected");
+	}
+	
+	@Override
+	public void taskSpecSent(){
+		sendTripletsButton.setEnabled(false);
+		disconnectButton.setEnabled(false);
+		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
+				"/view/resources/icons/status-busy.png")));
+		connectedLabel.setText("no client connected");
 	}
 }
