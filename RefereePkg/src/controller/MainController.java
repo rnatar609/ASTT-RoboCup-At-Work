@@ -122,7 +122,7 @@ public class MainController {
 		}
 	};
 
-	private Action disconnect = new AbstractAction("Disconnect Client") {
+	private Action disconnect = new AbstractAction("Disconnect") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
