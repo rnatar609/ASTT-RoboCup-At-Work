@@ -82,9 +82,10 @@ public class MainGUI extends JFrame implements TripletListener, ConnectionListen
 	private JMenuItem saveMenuItem;
 	private JLabel connectedIcon;
 	private JButton disconnectButton;
-	private JLabel serverHeader;
+//	private JLabel serverHeader;
 	private JLabel tripletsHeader;
 	private JPanel upperServerPanel;
+	private JPanel lowerServerPanel;
 	private JLabel connectedLabel;
 	private JPanel serverPanel;
 	private JMenuItem openFileMenuItem;
@@ -238,7 +239,7 @@ public class MainGUI extends JFrame implements TripletListener, ConnectionListen
 			{
 				serverPanel = new JPanel();
 				BoxLayout serverPanelLayout = new BoxLayout(serverPanel,
-						javax.swing.BoxLayout.Y_AXIS);
+						javax.swing.BoxLayout.PAGE_AXIS);
 				serverPanel.setLayout(serverPanelLayout);
 				westPanel.add(serverPanel, BorderLayout.SOUTH);
 				serverPanel.setPreferredSize(new java.awt.Dimension(300, 89));
@@ -247,15 +248,18 @@ public class MainGUI extends JFrame implements TripletListener, ConnectionListen
 					serverPanel.add(new JSeparator());
 					serverPanel.add(Box.createVerticalStrut(5));
 					{
-						serverHeader = new JLabel();
-						serverPanel.add(serverHeader);
-						serverHeader.setText("Server Stuff");
-						serverHeader.setAlignmentX(0.5f);
+						//serverHeader = new JLabel();
+						//serverPanel.add(serverHeader);
+						//serverHeader.setText("Server Stuff");
+						//serverHeader.setAlignmentX(0.5f);
 					}
 					upperServerPanel = new JPanel();
-					serverPanel.add(upperServerPanel);
 					upperServerPanel.setPreferredSize(new java.awt.Dimension(
 							300, 57));
+					BoxLayout serverUpperPanelLayout = new BoxLayout(upperServerPanel,
+							javax.swing.BoxLayout.LINE_AXIS);
+					upperServerPanel.setLayout(serverUpperPanelLayout);
+					serverPanel.add(upperServerPanel);
 					{
 
 						connectedIcon = new JLabel(
@@ -271,37 +275,47 @@ public class MainGUI extends JFrame implements TripletListener, ConnectionListen
 					{
 						connectedLabel = new JLabel();
 						upperServerPanel.add(connectedLabel);
-						connectedLabel.setText("no client connected");
+						connectedLabel.setText("no team connected");
 						// should be overwritten by connected client
 						connectedLabel.setPreferredSize(new Dimension(150, 25));
 					}
+					lowerServerPanel = new JPanel();
+					lowerServerPanel.setPreferredSize(new java.awt.Dimension(
+							300, 57));
+					BoxLayout serverLowerPanelLayout = new BoxLayout(lowerServerPanel,
+							javax.swing.BoxLayout.LINE_AXIS);
+					lowerServerPanel.setLayout(serverLowerPanelLayout);
+					serverPanel.add(lowerServerPanel); 
 					{
 						disconnectButton = new JButton();
-						upperServerPanel.add(disconnectButton);
-						disconnectButton.setText("disconnect");
+						lowerServerPanel.add(disconnectButton);
 						disconnectButton.setEnabled(false);
+						disconnectButton.setHorizontalAlignment(SwingConstants.LEFT);
+						//disconnectButton.setPreferredSize(buttonDimension);
+						//disconnectButton.setMaximumSize(buttonDimension);
 					}
 					{
 						sendTripletsButton = new JButton();
-						serverPanel.add(sendTripletsButton);
-						sendTripletsButton.setAlignmentX(0.5f);
+						lowerServerPanel.add(sendTripletsButton);
+						//sendTripletsButton.setAlignmentX(0.5f);
 						sendTripletsButton.setEnabled(false);
-						sendTripletsButton.setPreferredSize(buttonDimension);
-						sendTripletsButton.setMaximumSize(buttonDimension);
+						sendTripletsButton.setHorizontalAlignment(SwingConstants.RIGHT);
+						//sendTripletsButton.setPreferredSize(buttonDimension);
+						//sendTripletsButton.setMaximumSize(buttonDimension);
 					}
 				}
 			}
 			{
-				tripletsHeader = new JLabel();
+		//		tripletsHeader = new JLabel();
 				westPanel.setAlignmentY(CENTER_ALIGNMENT);
 				westPanel.setAlignmentX(CENTER_ALIGNMENT);
-				westPanel.add(tripletsHeader, BorderLayout.NORTH);
-				tripletsHeader.setText("Triplets Stuff");
-				tripletsHeader.setAlignmentX(0.5f);
-				tripletsHeader.setPreferredSize(new java.awt.Dimension(0, 25));
-				tripletsHeader.setSize(0, 0);
-				tripletsHeader.setHorizontalTextPosition(SwingConstants.CENTER);
-				tripletsHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		//		westPanel.add(tripletsHeader, BorderLayout.NORTH);
+		//		tripletsHeader.setText("Triplets Stuff");
+		//		tripletsHeader.setAlignmentX(0.5f);
+		//		tripletsHeader.setPreferredSize(new java.awt.Dimension(0, 25));
+		//		tripletsHeader.setSize(0, 0);
+		//		tripletsHeader.setHorizontalTextPosition(SwingConstants.CENTER);
+		//		tripletsHeader.setHorizontalAlignment(SwingConstants.CENTER);
 			}
 			menuBar = new JMenuBar();
 			setJMenuBar(menuBar);
@@ -411,6 +425,7 @@ public class MainGUI extends JFrame implements TripletListener, ConnectionListen
 
 	public void connectDisconnet(Action disconnect) {
 	    disconnectButton.setAction(disconnect);	
+	    disconnectButton.setEnabled(false);
 	}
 	
 	public void connectHelpAction(Action help) {
