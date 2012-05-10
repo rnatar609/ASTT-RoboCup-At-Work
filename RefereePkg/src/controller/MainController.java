@@ -6,6 +6,11 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import controller.MainController.TripletSelectionListener;
 
 import model.Map;
 import model.TaskSpec;
@@ -17,8 +22,8 @@ import view.MainGUI;
 public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
-    private TaskServer tServer;
-    
+	private TaskServer tServer;
+
 	private Action save = new AbstractAction("Save") {
 		private static final long serialVersionUID = 1L;
 
@@ -68,6 +73,75 @@ public class MainController {
 		}
 	};
 
+	private Action upTriplet = new AbstractAction("Triplet up") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+
+			if (!mG.getTripletsList().isSelectionEmpty()) {
+				int pos = mG.getTripletsList().getSelectedIndex();
+				TaskTriplet t = tS.moveUpTriplet(pos);
+				if (t != null) {
+					mG.getTripletsList().setSelectedIndex(pos - 1);
+					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause()
+							+ ") moved up.");
+				} else
+					mG.setStatusLine("Triplet already at the beginning of the list.");
+			} else {
+				mG.setStatusLine("No triplet selected for moving up.");
+			}
+		}
+	};
+
+	private Action downTriplet = new AbstractAction("Triplet down") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+
+			if (!mG.getTripletsList().isSelectionEmpty()) {
+				int pos = mG.getTripletsList().getSelectedIndex();
+				TaskTriplet t = tS.moveDownTriplet(pos);
+				if (t != null) {
+					mG.getTripletsList().setSelectedIndex(pos + 1);
+					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause()
+							+ ") moved down.");
+				} else
+					mG.setStatusLine("Triplet already at the end of the list.");
+			} else {
+				mG.setStatusLine("No triplet selected for moving down.");
+			}
+		}
+	};
+
+	private Action updateTriplet = new AbstractAction("Update Triplet") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+
+			if (!mG.getTripletsList().isSelectionEmpty()) {
+				int pos = mG.getTripletsList().getSelectedIndex();
+				TaskTriplet tt = new TaskTriplet();
+				if (tt.setPlace((String) mG.getPlacesBox().getSelectedItem())
+						&& tt.setOrientation((String) mG.getOrientationsBox()
+								.getSelectedItem())
+						&& tt.setPause((String) mG.getPausesBox()
+								.getSelectedItem().toString())) {
+					TaskTriplet t = tS.editTriplet(pos, tt);
+					if (t != null)
+						mG.setStatusLine("Updated Triplet (" + t.getPlace()
+								+ ", " + t.getOrientation() + ", "
+								+ t.getPause() + ").");
+					else
+						mG.setStatusLine("Triplet could not be updated.");
+				}
+			} else {
+				mG.setStatusLine("No triplet selected for updating.");
+			}
+		}
+	};
+
 	private Action addTriplet = new AbstractAction("Add Triplet") {
 		private static final long serialVersionUID = 1L;
 
@@ -82,7 +156,6 @@ public class MainController {
 				tS.addTriplet(t);
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
-				// mG.updateTripletListBox();
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -109,7 +182,6 @@ public class MainController {
 			} else {
 				mG.setStatusLine("No triplet selected for deletion.");
 			}
-			// mG.updateTripletListBox();
 		}
 	};
 
@@ -131,7 +203,7 @@ public class MainController {
 			mG.setStatusLine("Team " + teamName + " disconnected.");
 		}
 	};
-	
+
 	private Action help = new AbstractAction("Help") {
 		private static final long serialVersionUID = 1L;
 
@@ -139,6 +211,25 @@ public class MainController {
 			mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> Sorry, no help available </html>");
 		}
 	};
+	private TripletSelectionListener tripletSelectionListener;
+
+	public class TripletSelectionListener implements ListSelectionListener {
+		// This method is called each time the user changes the set of selected
+		// items
+		public void valueChanged(ListSelectionEvent evt) {
+			if (!evt.getValueIsAdjusting()) {
+				JList<String> list = (JList) evt.getSource();
+
+				int selected = list.getSelectedIndex();
+				if (selected >= 0) {
+					TaskTriplet tt = tS.getTaskTripletList().get(selected);
+					mG.setPlacesBoxSelected(tt.getPlace());
+					mG.setOrientationsBoxSelected(tt.getOrientation());
+					mG.setPausesBoxSelected(tt.getPause());
+				}
+			}
+		}
+	}
 
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
@@ -167,6 +258,12 @@ public class MainController {
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
 						"/view/resources/icons/Help16.gif")));
+		upTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/Up16.gif")));
+		downTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/Down16.gif")));
+		updateTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/Edit16.gif")));
 		addTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
 				.getResource("/view/resources/icons/Back16.gif")));
 		deleteTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
@@ -179,8 +276,13 @@ public class MainController {
 		mG.connectHelpAction(help);
 		mG.connectSendTriplets(sendTriplets);
 		mG.connectAddTriplet(addTriplet);
+		mG.connectDownTriplet(downTriplet);
+		mG.connectUpTriplet(upTriplet);
+		mG.connectEditTriplet(updateTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		mG.connectDisconnet(disconnect);
+		tripletSelectionListener = new TripletSelectionListener();
+		mG.addtripletSelectionListener(tripletSelectionListener);
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);

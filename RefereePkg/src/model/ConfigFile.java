@@ -18,7 +18,6 @@ class ConfigFile
 	{
 		try
 		{			
-			System.out.println(ConfigFile.configFileFullName);
 			FileInputStream in = new FileInputStream( ConfigFile.configFileFullName );
 			tripletProperties.load( in );
 			in.close();			

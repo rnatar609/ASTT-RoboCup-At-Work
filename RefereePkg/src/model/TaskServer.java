@@ -1,12 +1,15 @@
 package model;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.swing.event.EventListenerList;
 
 import org.zeromq.*;
 
 import controller.ConnectionListener;
 
-public class TaskServer implements Runnable{
+public class TaskServer implements Runnable {
 	private String ipAddress;
 	private int port;
 	private ZMQ.Socket socket;
@@ -14,43 +17,49 @@ public class TaskServer implements Runnable{
 	private Thread serverThread;
 
 	public TaskServer() {
-		ipAddress = new String("10.20.118.89");
 		port = 11111;
-		// Prepare context and socket
-	    ZMQ.Context context = ZMQ.context(1);
-		socket = context.socket(ZMQ.REP);
-		socket.bind("tcp://" + ipAddress + ":" + port);
-		System.out.println("Server socket created: " + socket + " ipAddress: " + ipAddress + " port: " + port);
+		String localHost;
+		try {
+			localHost = InetAddress.getLocalHost().getHostAddress();
+			// Prepare context and socket
+			ZMQ.Context context = ZMQ.context(1);
+			socket = context.socket(ZMQ.REP);
+			socket.bind("tcp://" + localHost + ":" + port);
+			System.out.println("Server socket created: " + socket
+					+ " ipAddress: " + localHost + " port: " + port);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void listenForConnection() {
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
-        System.out.println("Server thread started... ");
+		System.out.println("Server thread started... ");
 	}
-	
-	public void run()
-	{
-		System.out.println("Waiting for Client Requests on socket... " + socket);
+
+	public void run() {
+		System.out
+				.println("Waiting for Client Requests on socket... " + socket);
 		byte bytes[] = socket.recv(0);
 		String teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
 		notifyTeamConnected(teamName);
 	}
-	
-	public void sendTaskSpecToClient(TaskSpec tSpec)
-	{
-		//Send task specification
+
+	public void sendTaskSpecToClient(TaskSpec tSpec) {
+		// Send task specification
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		socket.send(reply, 0);
-		System.out.println("String sent to client: " + tSpec.getTaskSpecString());		
+		System.out.println("String sent to client: "
+				+ tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
 		listenForConnection();
 	}
-	
-	public void disconnectClient(String teamName)
-	{
-		//Send disconnect message
+
+	public void disconnectClient(String teamName) {
+		// Send disconnect message
 		String msg = new String("Disconnecting " + teamName);
 		byte reply[] = msg.getBytes();
 		socket.send(reply, 0);
@@ -58,7 +67,7 @@ public class TaskServer implements Runnable{
 		notifyTeamDisconnected();
 		listenForConnection();
 	}
-	
+
 	public void addConnectionListener(ConnectionListener cL) {
 		listOfConnectionListeners.add(ConnectionListener.class, cL);
 	}
@@ -77,7 +86,7 @@ public class TaskServer implements Runnable{
 			}
 		}
 	}
-	
+
 	private void notifyTeamDisconnected() {
 		Object[] listeners = listOfConnectionListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
@@ -88,8 +97,8 @@ public class TaskServer implements Runnable{
 			}
 		}
 	}
-	
-	private void notifyTaskSpecSent(){
+
+	private void notifyTaskSpecSent() {
 		Object[] listeners = listOfConnectionListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance

@@ -51,6 +51,42 @@ public class TaskSpec {
 		return triplet;
 	}
 
+	public TaskTriplet moveUpTriplet(int tripletIndex) {
+		if (tripletIndex == 0) {
+			return null;
+		} else {
+			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
+			taskTripletList.add(tripletIndex - 1, triplet);
+			notifyTripletMoved(new TripletEvent(triplet, tripletIndex,
+					taskTripletList));
+			return triplet;
+		}
+	}
+
+	public TaskTriplet moveDownTriplet(int tripletIndex) {
+		if (taskTripletList.size() == tripletIndex + 1) {
+			return null;
+		} else {
+			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
+			taskTripletList.add(tripletIndex + 1, triplet);
+			notifyTripletMoved(new TripletEvent(triplet, tripletIndex,
+					taskTripletList));
+			return triplet;
+		}
+	}
+	
+	public TaskTriplet editTriplet(int tripletIndex, TaskTriplet updateTriplet) {
+		
+		try {
+			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
+			notifyTripletMoved(new TripletEvent(updateTriplet, tripletIndex,
+					taskTripletList));
+			return tt;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/**
 	 * This method reads a task specification from the user and stores in the
 	 * invoking object.
@@ -101,6 +137,17 @@ public class TaskSpec {
 	}
 
 	private void notifyTripletDeleted(TripletEvent evt) {
+		Object[] listeners = listOfTripletListeners.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TripletListener.class) {
+				((TripletListener) listeners[i + 1]).tripletDeleted(evt);
+			}
+		}
+	}
+
+	private void notifyTripletMoved(TripletEvent evt) {
 		Object[] listeners = listOfTripletListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance
