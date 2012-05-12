@@ -47,16 +47,13 @@ public class TaskServer implements Runnable{
 	}
 
 	public void run() {
-		System.out
-				.println("Waiting for Client Requests on socket... " + socket);
+		System.out.println("Waiting for Client Requests on socket... " + socket);
 		byte bytes[] = socket.recv(0);
 		String teamName = new String(bytes);
-		//timer = new Timer(420000, null);
-		//System.out.println("Received message: " + teamName + " from client.");
-		//String message = "There are commands in the output buffer - really quit?";
-	    //String title = "Really Quit?";
+		timer = new Timer(420000, null);
+		System.out.println("Received message: " + teamName + " from client.");
 	    // display the JOptionPane showConfirmDialog
-	    //int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+	    int reply = JOptionPane.showConfirmDialog(null, "Connect to "+ teamName +"?" , "Triplet Request" , JOptionPane.YES_NO_OPTION);
 	    //if (reply == JOptionPane.YES_OPTION)
 		notifyTeamConnected(teamName);
 	}
