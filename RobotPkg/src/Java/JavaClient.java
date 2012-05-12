@@ -5,24 +5,28 @@ import org.zeromq.*;
 public class JavaClient {
 	String taskSpecFromServer;
 	String teamName;
+	String Ready;
 
 	public JavaClient() {
 		teamName = new String("Team-Name");
+		Ready = new String("Ready to Roll");
 	}
 
 	public void obtainTaskSpecFromServer(String serverIP, String port) {
-		ZMQ.Context context = ZMQ.context(1);
-		ZMQ.Socket requester = context.socket(ZMQ.REQ);
+		ZMQ.Context RobotModule = ZMQ.context(1);
+		ZMQ.Socket RobotClient_Socket = RobotModule.socket(ZMQ.REQ);
 		String connectStr = new String("tcp://" + serverIP + ":" + port);
 		System.out.println("Connecting to server... ");
-		requester.connect(connectStr);
-		requester.send(teamName.getBytes(), 0);
+		RobotClient_Socket.connect(connectStr);
+		RobotClient_Socket.send(teamName.getBytes(), 0);
 		System.out.println("Sent team name to server... " + teamName);
-		byte[] reply = requester.recv(0);
+		byte[] reply = RobotClient_Socket.recv(0);
 		taskSpecFromServer = new String(reply);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
-		requester.close();
-		context.term();
+		RobotClient_Socket.send(Ready.getBytes(), 0);
+		System.out.println("Ready to Roll");
+		RobotClient_Socket.close();
+		RobotModule.term();
 	}
 
 	public static void main(String[] args) throws Exception {

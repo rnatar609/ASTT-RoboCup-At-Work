@@ -13,13 +13,14 @@ import java.net.InetAddress;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+
 public class TaskServer implements Runnable{
 	private String localHost;
 	private int port;
-	private ZMQ.Socket socket;
+	private ZMQ.Socket Referee_Socket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private Thread serverThread;
-	private Timer timer = new Timer(420000, null);
+	//private Timer timer = new Timer(420000, null);
 	public TaskServer() {
 		port = 11111;
 		String localHost;
@@ -29,10 +30,9 @@ public class TaskServer implements Runnable{
 			localHost = InetAddress.getLocalHost().getHostAddress();
 			// Prepare context and socket
 			ZMQ.Context context = ZMQ.context(1);
-			socket = context.socket(ZMQ.REP);
-			socket.bind("tcp://" + localHost + ":" + port);
-			System.out.println("Server socket created: " + socket
-					+ " ipAddress: " + localHost + " port: " + port);
+			Referee_Socket = context.socket(ZMQ.REP);
+			Referee_Socket.bind("tcp://" + localHost + ":" + port);
+			System.out.println("Server socket created: " + Referee_Socket + " ipAddress: " + localHost + " port: " + port);
 		} 
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -47,23 +47,18 @@ public class TaskServer implements Runnable{
 	}
 
 	public void run() {
-		System.out.println("Waiting for Client Requests on socket... " + socket);
-		byte bytes[] = socket.recv(0);
+		System.out.println("Waiting for Client Requests on socket... " + Referee_Socket);
+		byte bytes[] = Referee_Socket.recv(0);
 		String teamName = new String(bytes);
-		timer = new Timer(420000, null);
 		System.out.println("Received message: " + teamName + " from client.");
-	    // display the JOptionPane showConfirmDialog
-	    int reply = JOptionPane.showConfirmDialog(null, "Connect to "+ teamName +"?" , "Triplet Request" , JOptionPane.YES_NO_OPTION);
-	    //if (reply == JOptionPane.YES_OPTION)
 		notifyTeamConnected(teamName);
 	}
 
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
-		socket.send(reply, 0);
-		System.out.println("String sent to client: "
-				+ tSpec.getTaskSpecString());
+		Referee_Socket.send(reply, 0);
+		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
 		listenForConnection();
 	}
@@ -72,7 +67,7 @@ public class TaskServer implements Runnable{
 		// Send disconnect message
 		String msg = new String("Disconnecting " + teamName);
 		byte reply[] = msg.getBytes();
-		socket.send(reply, 0);
+		Referee_Socket.send(reply, 0);
 		System.out.println("String sent to client: " + msg);
 		notifyTeamDisconnected();
 		listenForConnection();

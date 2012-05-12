@@ -12,5 +12,6 @@ public class RefereeSystem {
 	public static void main(String[] args) {
 		mC = new MainController(args);
 		mC.showView();
+		
 	}
 }

@@ -31,6 +31,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import javax.swing.Timer;
+
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.MainController;
@@ -103,6 +105,9 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
+	
+	//Timer Variable
+	public Timer timer = new Timer(420000, null);
 
 	public MainGUI() {
 		try {
@@ -451,6 +456,7 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void connectSendTriplets(Action sendTriplets) {
 		sendTripletsButton.setAction(sendTriplets);
+		timer.start();
 		sendTripletsButton.setEnabled(false);
 	}
 
