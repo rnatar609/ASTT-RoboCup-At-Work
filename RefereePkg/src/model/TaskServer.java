@@ -59,6 +59,9 @@ public class TaskServer implements Runnable{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		Referee_Socket.send(reply, 0);
 		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
+		byte bytes[] = Referee_Socket.recv(1);
+		String Ready = new String(bytes);
+		System.out.println(Ready);
 		notifyTaskSpecSent();
 		listenForConnection();
 	}
