@@ -116,7 +116,7 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	private void initGUI() {
 
-		this.setTitle("RoboCup@work");
+		this.setTitle("RoboCup@Work");
 		BorderLayout panelLayout = new BorderLayout();
 		this.setLayout(panelLayout);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

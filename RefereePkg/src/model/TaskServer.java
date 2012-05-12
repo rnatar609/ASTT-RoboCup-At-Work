@@ -8,29 +8,51 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
+import java.net.InetAddress;
 
+<<<<<<< Updated upstream
 public class TaskServer implements Runnable {
 	private String ipAddress;
+=======
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
+public class TaskServer implements Runnable{
+	private String localHost;
+>>>>>>> Stashed changes
 	private int port;
 	private ZMQ.Socket socket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private Thread serverThread;
-
+	private Timer timer = new Timer(420000, null);
 	public TaskServer() {
+<<<<<<< Updated upstream
 		port = 11111;
 		String localHost;
 		try {
+=======
+		try {
+			localHost = new String();
+			port = 11111;
+>>>>>>> Stashed changes
 			localHost = InetAddress.getLocalHost().getHostAddress();
 			// Prepare context and socket
 			ZMQ.Context context = ZMQ.context(1);
 			socket = context.socket(ZMQ.REP);
 			socket.bind("tcp://" + localHost + ":" + port);
+<<<<<<< Updated upstream
 			System.out.println("Server socket created: " + socket
 					+ " ipAddress: " + localHost + " port: " + port);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+=======
+			System.out.println("Server socket created: " + socket + " ipAddress: " + localHost + " port: " + port);
+			} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+>>>>>>> Stashed changes
 	}
 
 	public void listenForConnection() {
@@ -44,7 +66,13 @@ public class TaskServer implements Runnable {
 				.println("Waiting for Client Requests on socket... " + socket);
 		byte bytes[] = socket.recv(0);
 		String teamName = new String(bytes);
-		System.out.println("Received message: " + teamName + " from client.");
+		//timer = new Timer(420000, null);
+		//System.out.println("Received message: " + teamName + " from client.");
+		//String message = "There are commands in the output buffer - really quit?";
+	    //String title = "Really Quit?";
+	    // display the JOptionPane showConfirmDialog
+	    //int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+	    //if (reply == JOptionPane.YES_OPTION)
 		notifyTeamConnected(teamName);
 	}
 
@@ -64,8 +92,8 @@ public class TaskServer implements Runnable {
 		byte reply[] = msg.getBytes();
 		socket.send(reply, 0);
 		System.out.println("String sent to client: " + msg);
-		notifyTeamDisconnected();
-		listenForConnection();
+		//notifyTeamDisconnected();
+		//listenForConnection();
 	}
 
 	public void addConnectionListener(ConnectionListener cL) {
