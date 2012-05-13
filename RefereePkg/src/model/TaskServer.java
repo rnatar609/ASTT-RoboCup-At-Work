@@ -23,7 +23,6 @@ public class TaskServer implements Runnable{
 	//private Timer timer = new Timer(420000, null);
 	public TaskServer() {
 		port = 11111;
-		String localHost;
 		try {
 			localHost = new String();
 			port = 11111;
@@ -59,11 +58,14 @@ public class TaskServer implements Runnable{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		Referee_Socket.send(reply, 0);
 		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
-		byte bytes[] = Referee_Socket.recv(1);
-		String Ready = new String(bytes);
-		System.out.println(Ready);
-		notifyTaskSpecSent();
-		listenForConnection();
+		byte readyclient[] = Referee_Socket.recv(0);
+		String ready = new String(readyclient);
+		System.out.println(ready);
+		byte start[] = "Start the Robot".getBytes();
+		Referee_Socket.send(start, 1);
+		System.out.println("Intimated the Client to start the navigation");
+		//notifyTaskSpecSent();
+		//listenForConnection();
 	}
 
 	public void disconnectClient(String teamName) {
