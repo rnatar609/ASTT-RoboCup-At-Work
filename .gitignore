@@ -4,3 +4,4 @@ bin/
 /RobotPkg/nbproject/private/
 /RefereePkg/nbproject/private/
 /RefereePkg/build/
+.DS_Store
