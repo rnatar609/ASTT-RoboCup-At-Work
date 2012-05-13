@@ -40,9 +40,12 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 	String teamName;
 	String ready;
 	String start;
-	String taskcomplete;
+	String complete;
 	String serverIP;
 	String port;
+	
+	ZMQ.Context RobotModule = ZMQ.context(1);
+	ZMQ.Socket RobotClient_Socket = RobotModule.socket(ZMQ.REQ);
 
 	{
 		//Set Look & Feel
@@ -60,9 +63,9 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 	public static void main(String[] args){
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				JavaClientGUI inst = new JavaClientGUI();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
+				JavaClientGUI jClient = new JavaClientGUI();
+				jClient.setLocationRelativeTo(null);
+				jClient.setVisible(true);
 				//System.out.println("ServerIP: " + args[0] + " Server port: " + args[1]);
 				//inst.obtainTaskSpecFromServer(args[0], args[1]);
 			}
@@ -74,6 +77,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 		initGUI();
 		teamName = new String("Team-Name");
 		ready = new String("Ready to Roll");
+		complete = new String("Task Completed");
 	}
 	
 	private void initGUI() {
@@ -138,30 +142,72 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 		    //add your error handling code here
 			e.printStackTrace();
 		}
+		jButton_Connect.addActionListener(new ActionListener() {
+			 
+            public void actionPerformed(ActionEvent e)
+            {
+            	serverIP = jTextField_ipaddress.getText();
+            	port = jTextField_port.getText();
+            	JavaClientGUI jClient = new JavaClientGUI();
+            	jClient.obtainTaskSpecFromServer(serverIP, port);
+            }
+        });
+		jButton_Ready.addActionListener(new ActionListener() {
+			 
+            public void actionPerformed(ActionEvent e)
+            {
+            	JavaClientGUI jClient = new JavaClientGUI();
+            	jClient.readymodule(RobotClient_Socket);
+            }
+        });
+		jButton_Complete.addActionListener(new ActionListener() {
+			 
+            public void actionPerformed(ActionEvent e)
+            {
+            	RobotClient_Socket.send(complete.getBytes(), 0);
+        		System.out.println("Task Completed");
+        		jStatusBar.setText("Task Completed");
+        		RobotClient_Socket.close();
+        		RobotModule.term();
+            }
+        });
 	}
 
+	
+	
+	public void readymodule(ZMQ.Socket RobotClient_Socket){
+		RobotClient_Socket.send(ready.getBytes(), 1);
+		System.out.println("Ready");
+		jStatusBar.setText("Ready");
+	}
+	
+	/*public void startmodule() {
+	}{
+		byte[] reply_start = RobotClient_Socket.recv(0);
+		start = new String(reply_start);
+		System.out.println("Starting the navigation");
+	    jStatusBar.setText("Starting the navigation");
+	}*/
+	
 	public void obtainTaskSpecFromServer(String serverIP, String port) {
-		ZMQ.Context RobotModule = ZMQ.context(1);
-		ZMQ.Socket RobotClient_Socket = RobotModule.socket(ZMQ.REQ);
 		String connectStr = new String("tcp://" + serverIP + ":" + port);
 		System.out.println("Connecting to server... ");
 		RobotClient_Socket.connect(connectStr);
 		RobotClient_Socket.send(teamName.getBytes(), 0);
 		System.out.println("Sent team name to server... " + teamName);
-		jStatusBar.setText("Sent team name to server... " + teamName);
 		byte[] reply_taskspec = RobotClient_Socket.recv(0);
 		taskSpecFromServer = new String(reply_taskspec);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
 		jStatusBar.setText("Received taskSpecification from Referee");
-		RobotClient_Socket.send(ready.getBytes(), 1);
-		System.out.println("Ready");
-		jStatusBar.setText("Ready");
-		byte[] reply_start = RobotClient_Socket.recv(0);
+		//RobotClient_Socket.send(ready.getBytes(), 1);
+		//System.out.println("Ready");
+		//jStatusBar.setText("Ready");
+		/*byte[] reply_start = RobotClient_Socket.recv(0);
 		start = new String(reply_start);
 		System.out.println("Starting the navigation");
-		jStatusBar.setText("Starting the navigation");
-		RobotClient_Socket.close();
-		RobotModule.term();
+		jStatusBar.setText("Starting the navigation");*/
+		//RobotClient_Socket.close();
+		//RobotModule.term();
 	}
 
 	@Override
