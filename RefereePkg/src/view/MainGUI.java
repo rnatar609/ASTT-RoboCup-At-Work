@@ -7,6 +7,8 @@ import java.awt.Point;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -31,8 +33,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import javax.swing.Timer;
-
+import model.TaskServer;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.MainController;
@@ -105,9 +106,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
-	
-	//Timer Variable
-	public Timer timer = new Timer(420000, null);
 
 	public MainGUI() {
 		try {
@@ -119,6 +117,14 @@ public class MainGUI extends JFrame implements TripletListener,
 		initGUI();
 	}
 
+	public class TripletTimeKeeper extends TimerTask {
+		 
+		 public void run(){
+			 TaskServer Tsk= new TaskServer();
+			 Tsk.listenForConnection();
+			 
+		 }
+		}
 	private void initGUI() {
 
 		this.setTitle("RoboCup@Work");
@@ -456,7 +462,9 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void connectSendTriplets(Action sendTriplets) {
 		sendTripletsButton.setAction(sendTriplets);
-		timer.start();
+		Timer timer = new Timer();
+        TripletTimeKeeper ttk = new TripletTimeKeeper();
+		timer.schedule(ttk, 120000);
 		sendTripletsButton.setEnabled(false);
 	}
 

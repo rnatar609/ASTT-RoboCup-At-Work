@@ -37,10 +37,7 @@ public class JavaClient {
 	public static void main(String[] args) throws Exception {
 		// Note: The server IP address & port should be entered as command-line argument.
 		if (args.length < 2) {
-			System.out
-					.println("Insufficient arguments:"
-							+ args.length
-							+ "\nEnter server IP addr and port as Command-line arguments.");
+			System.out.println("Insufficient arguments:"+ args.length + "\nEnter server IP addr and port as Command-line arguments.");
 			return;
 		}
 		// Obtain task specification from server

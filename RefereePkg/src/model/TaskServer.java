@@ -12,7 +12,7 @@ import java.net.InetAddress;
 
 
 import javax.swing.JOptionPane;
-import javax.swing.Timer;
+import java.util.Timer;
 
 public class TaskServer implements Runnable{
 	private String localHost;
@@ -20,7 +20,6 @@ public class TaskServer implements Runnable{
 	private ZMQ.Socket Referee_Socket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private Thread serverThread;
-	//private Timer timer = new Timer(420000, null);
 	public TaskServer() {
 		port = 11111;
 		try {
@@ -55,11 +54,12 @@ public class TaskServer implements Runnable{
 
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
+		String ready = null;
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		Referee_Socket.send(reply, 0);
 		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
 		byte readyclient[] = Referee_Socket.recv(0);
-		String ready = new String(readyclient);
+		ready = new String(readyclient);
 		System.out.println(ready);
 		byte start[] = "Start the Robot".getBytes();
 		Referee_Socket.send(start, 1);
