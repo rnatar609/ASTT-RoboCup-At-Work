@@ -19,6 +19,9 @@ public class TaskServer implements Runnable{
 	private int port;
 	private ZMQ.Socket Referee_Socket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
+	private Timer timer = new Timer();
+	private ClientReady ttkReady = new ClientReady(this);
+	private TaskComplete ttkComplete = new TaskComplete(this);
 	private Thread serverThread;
 	public TaskServer() {
 		port = 11111;
@@ -54,20 +57,31 @@ public class TaskServer implements Runnable{
 
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
-		String ready = null;
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		Referee_Socket.send(reply, 0);
+		timer.schedule(ttkReady, 120000);
 		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
 		byte readyclient[] = Referee_Socket.recv(0);
-		ready = new String(readyclient);
+		String ready = new String(readyclient);
 		System.out.println(ready);
-		byte start[] = "Start the Robot".getBytes();
-		Referee_Socket.send(start, 1);
-		System.out.println("Intimated the Client to start the navigation");
-		//notifyTaskSpecSent();
-		//listenForConnection();
+		notifyTaskSpecSent();
 	}
 
+	public void WaitforComplete(){
+		timer.cancel();
+	}
+	
+	public void WaitforReady(){
+		timer.cancel();
+	}
+	
+	public void sendStart(){
+		byte start[] = "Start the Robot".getBytes();
+		Referee_Socket.send(start, 1);
+		timer.schedule(ttkComplete, 300000);
+		System.out.println("Intimated the Client to start the navigation");
+	}
+	
 	public void disconnectClient(String teamName) {
 		// Send disconnect message
 		String msg = new String("Disconnecting " + teamName);

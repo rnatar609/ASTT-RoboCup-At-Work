@@ -35,6 +35,7 @@ import javax.swing.UIManager;
 
 import model.TaskServer;
 import model.TaskTriplet;
+//import model.TimeKeeper;
 import model.TripletEvent;
 import controller.MainController;
 import controller.TripletListener;
@@ -117,14 +118,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		initGUI();
 	}
 
-	public class TripletTimeKeeper extends TimerTask {
-		 
-		 public void run(){
-			 TaskServer Tsk= new TaskServer();
-			 Tsk.listenForConnection();
-			 
-		 }
-		}
 	private void initGUI() {
 
 		this.setTitle("RoboCup@Work");
@@ -462,9 +455,6 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void connectSendTriplets(Action sendTriplets) {
 		sendTripletsButton.setAction(sendTriplets);
-		Timer timer = new Timer();
-        TripletTimeKeeper ttk = new TripletTimeKeeper();
-		timer.schedule(ttk, 120000);
 		sendTripletsButton.setEnabled(false);
 	}
 

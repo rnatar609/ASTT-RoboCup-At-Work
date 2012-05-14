@@ -29,7 +29,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 	private JTextField jTextField_ipaddress;
 	private JLabel jLabel_ipaddress;
 	private JButton jButton_Complete;
-	private JButton jButton_Start;
+	//private JButton jButton_Start;
 	private JButton jButton_Ready;
 	private JButton jButton_Connect;
 	private JLabel jStatusBar;
@@ -125,10 +125,10 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 			jButton_Ready.setBounds(127, 149, 138, 29);
 			//END <<  jButton_Ready
 			//START >>  jButton_Start
-			jButton_Start = new JButton();
-			getContentPane().add(jButton_Start);
-			jButton_Start.setText("Start");
-			jButton_Start.setBounds(127, 174, 138, 29);
+			//jButton_Start = new JButton();
+			//getContentPane().add(jButton_Start);
+			//jButton_Start.setText("Start");
+			//jButton_Start.setBounds(127, 174, 138, 29);
 			//END <<  jButton_Start
 			//START >>  jButton_Complete
 			jButton_Complete = new JButton();
