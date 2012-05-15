@@ -1,41 +1,44 @@
 package model;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Timer;
 
 import javax.swing.event.EventListenerList;
 
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import java.net.InetAddress;
 
+public class TaskServer implements Runnable {
 
-import javax.swing.JOptionPane;
-import java.util.Timer;
-
-public class TaskServer implements Runnable{
 	private String localHost;
 	private int port;
-	private ZMQ.Socket Referee_Socket;
+	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
-	private Timer timer = new Timer();
-	private ClientReady ttkReady = new ClientReady(this);
-	private TaskComplete ttkComplete = new TaskComplete(this);
+	private Timer timer;
+	private SetupPhaseTimeOut setupTimeOut;
+	private RunPhaseTimeOut runTimeOut;
 	private Thread serverThread;
+	private String teamName;
+	private static final long setupTime = 120000; // time in milliseconds
+	private static final long runTime = 300000; // time in milliseconds
+
 	public TaskServer() {
-		port = 11111;
 		try {
 			localHost = new String();
 			port = 11111;
 			localHost = InetAddress.getLocalHost().getHostAddress();
 			// Prepare context and socket
 			ZMQ.Context context = ZMQ.context(1);
-			Referee_Socket = context.socket(ZMQ.REP);
-			Referee_Socket.bind("tcp://" + localHost + ":" + port);
-			System.out.println("Server socket created: " + Referee_Socket + " ipAddress: " + localHost + " port: " + port);
-		} 
-		catch (Exception e) {
+			refereeSocket = context.socket(ZMQ.REP);
+			refereeSocket.bind("tcp://" + localHost + ":" + port);
+			System.out.println("Server socket created: " + refereeSocket
+					+ " ipAddress: " + localHost + " port: " + port);
+			// Create timer related objects
+			timer = new Timer();
+			setupTimeOut = new SetupPhaseTimeOut(this);
+			runTimeOut = new RunPhaseTimeOut(this);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -48,47 +51,63 @@ public class TaskServer implements Runnable{
 	}
 
 	public void run() {
-		System.out.println("Waiting for Client Requests on socket... " + Referee_Socket);
-		byte bytes[] = Referee_Socket.recv(0);
-		String teamName = new String(bytes);
+		System.out.println("Waiting for Client Requests on socket... "
+				+ refereeSocket);
+		byte bytes[] = refereeSocket.recv(0);
+		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
-		notifyTeamConnected(teamName);
+		notifyTeamConnected();
 	}
 
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
-		Referee_Socket.send(reply, 0);
-		timer.schedule(ttkReady, 120000);
-		System.out.println("String sent to client: " + tSpec.getTaskSpecString());
-		byte readyclient[] = Referee_Socket.recv(0);
-		String ready = new String(readyclient);
-		System.out.println(ready);
+		refereeSocket.send(reply, 0);
+		System.out.println("String sent to client: "
+				+ tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
+		// Start setup phase timer
+		timer.schedule(setupTimeOut, TaskServer.setupTime);
+		// Wait for Ready message from client
+		waitForClientReady();
 	}
 
-	public void WaitforComplete(){
+	public void waitForTaskComplete() {
+		byte recvdMsg[] = refereeSocket.recv(0);
+		System.out.println("In WAIT_FOR_COMPLETE state, received msg: "
+				+ recvdMsg.toString());
 		timer.cancel();
+		//Send disconnect message
+		disconnectClient(teamName);
 	}
-	
-	public void WaitforReady(){
+
+	public void waitForClientReady() {
+		byte readyMsg[] = refereeSocket.recv(0);
+		System.out
+				.println("In WAIT_FOR_READY state, received msg: " + readyMsg.toString());
 		timer.cancel();
+		// Send start message
+		sendStartMsgToClient();
 	}
-	
-	public void sendStart(){
-		byte start[] = "Start the Robot".getBytes();
-		Referee_Socket.send(start, 1);
-		timer.schedule(ttkComplete, 300000);
-		System.out.println("Intimated the Client to start the navigation");
+
+	public void sendStartMsgToClient() {
+		byte startMsg[] = "Start the Robot".getBytes();
+		refereeSocket.send(startMsg, 0);
+		System.out.println("In SEND_START state, sent start msg: " + startMsg.toString());
+		// Start run phase timer
+		timer.schedule(runTimeOut, TaskServer.runTime);
+		// Wait for Completed message from client
+		waitForTaskComplete();
 	}
-	
+
 	public void disconnectClient(String teamName) {
 		// Send disconnect message
 		String msg = new String("Disconnecting " + teamName);
 		byte reply[] = msg.getBytes();
-		Referee_Socket.send(reply, 0);
-		System.out.println("String sent to client: " + msg);
+		refereeSocket.send(reply, 0);
+		System.out.println("Disconnect msg sent to client: " + msg);
 		notifyTeamDisconnected();
+		// Listen for new connection requests
 		listenForConnection();
 	}
 
@@ -100,7 +119,7 @@ public class TaskServer implements Runnable{
 		listOfConnectionListeners.remove(ConnectionListener.class, cL);
 	}
 
-	private void notifyTeamConnected(String teamName) {
+	private void notifyTeamConnected() {
 		Object[] listeners = listOfConnectionListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance

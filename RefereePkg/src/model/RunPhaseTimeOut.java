@@ -2,19 +2,16 @@ package model;
 
 import java.util.TimerTask;
 
-public class TaskComplete extends TimerTask {
+public class RunPhaseTimeOut extends TimerTask {
 	TaskServer tServer;
-	
-	public TaskComplete(TaskServer ts)
-	{
+
+	public RunPhaseTimeOut(TaskServer ts) {
 		tServer = ts;
 	}
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		tServer.listenForConnection();
-
 	}
 
 }
