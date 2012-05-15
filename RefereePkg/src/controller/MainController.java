@@ -6,11 +6,6 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import controller.MainController.TripletSelectionListener;
 
 import model.Map;
 import model.TaskSpec;
@@ -211,25 +206,6 @@ public class MainController {
 			mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> Sorry, no help available </html>");
 		}
 	};
-	private TripletSelectionListener tripletSelectionListener;
-
-	public class TripletSelectionListener implements ListSelectionListener {
-		// This method is called each time the user changes the set of selected
-		// items
-		public void valueChanged(ListSelectionEvent evt) {
-			if (!evt.getValueIsAdjusting()) {
-				JList<String> list = (JList) evt.getSource();
-
-				int selected = list.getSelectedIndex();
-				if (selected >= 0) {
-					TaskTriplet tt = tS.getTaskTripletList().get(selected);
-					mG.setPlacesBoxSelected(tt.getPlace());
-					mG.setOrientationsBoxSelected(tt.getOrientation());
-					mG.setPausesBoxSelected(tt.getPause());
-				}
-			}
-		}
-	}
 
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
@@ -281,8 +257,6 @@ public class MainController {
 		mG.connectEditTriplet(updateTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		mG.connectDisconnet(disconnect);
-		tripletSelectionListener = new TripletSelectionListener();
-		mG.addtripletSelectionListener(tripletSelectionListener);
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);

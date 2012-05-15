@@ -7,8 +7,6 @@ import java.awt.Point;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -33,11 +31,8 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import model.TaskServer;
 import model.TaskTriplet;
-//import model.TimeKeeper;
 import model.TripletEvent;
-import controller.MainController;
 import controller.TripletListener;
 import controller.ConnectionListener;
 
@@ -207,6 +202,13 @@ public class MainGUI extends JFrame implements TripletListener,
 						addTripletButton.setMaximumSize(buttonDimension);
 						addTripletButton.setMinimumSize(buttonDimension);
 						editTripletPane.add(Box.createVerticalStrut(10));
+						updateTripletButton = new JButton();
+						updateTripletButton.setPreferredSize(buttonDimension);
+						updateTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+						updateTripletButton.setMaximumSize(buttonDimension);
+						updateTripletButton.setMinimumSize(buttonDimension);
+						editTripletPane.add(updateTripletButton);
+						editTripletPane.add(Box.createVerticalStrut(10));
 						deleteTripletButton = new JButton();
 						deleteTripletButton.setPreferredSize(buttonDimension);
 						editTripletPane.add(deleteTripletButton);
@@ -228,12 +230,6 @@ public class MainGUI extends JFrame implements TripletListener,
 						downTripletButton.setMinimumSize(buttonDimension);
 						editTripletPane.add(downTripletButton);
 						editTripletPane.add(Box.createVerticalStrut(10));
-						updateTripletButton = new JButton();
-						updateTripletButton.setPreferredSize(buttonDimension);
-						updateTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						updateTripletButton.setMaximumSize(buttonDimension);
-						updateTripletButton.setMinimumSize(buttonDimension);
-						editTripletPane.add(updateTripletButton);
 					}
 					{
 						mapArea = new MapArea();
@@ -577,11 +573,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status-busy.png")));
 		connectedLabel.setText("no client connected");
-	}
-
-	public void addtripletSelectionListener(
-			MainController.TripletSelectionListener tripletSelectionListener) {
-		tripletsList.addListSelectionListener(tripletSelectionListener);
 	}
 
 	public void setPlacesBoxSelected(String place) {
