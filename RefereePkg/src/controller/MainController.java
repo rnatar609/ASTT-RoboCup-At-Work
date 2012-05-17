@@ -31,6 +31,7 @@ public class MainController {
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
+					mG.taskSpecFileSaved();
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 				} else {
@@ -49,19 +50,20 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			File file = mG.showOpenDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
-				String msg = "Warning: Unsaved data will be lost. Proceed? ";
-				if (mG.getUserConfirmation(msg, "Confirm Open") == 0) {
-				    if (tS.openTaskSpec(file)) {
-					    mG.setStatusLine("Opened task specification >"
-							+ file.getName() + "<");
-				    } else {
-					    mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No task spec file opened </html>");
+				if (mG.isChangesUnsaved()) {
+				    String msg = "Warning: Unsaved data will be lost. Proceed? ";
+				    if (mG.getUserConfirmation(msg, "Confirm Open") != 0) 
+				    {
+				    	mG.setStatusLine("Open command cancelled.");
+				    	return;
 				    }
 				}
-				else
-				{
-					mG.setStatusLine("Open command cancelled by user.");
+				if (tS.openTaskSpec(file)) {
+				    mG.setStatusLine("Opened task specification >"
+							+ file.getName() + "<");
+				} else {
+				    mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+							+ "</FONT> No task spec file opened </html>");
 				}
 			} else {
 				mG.setStatusLine("Open command cancelled by user.");
