@@ -8,15 +8,18 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import model.Map;
+import model.ConfigFile;
 import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
 import model.TaskServer;
 import view.MainGUI;
+import view.FileType;
 
 public class MainController {
 	private MainGUI mG;
 	private TaskSpec tS;
+	private ConfigFile cfgFile;
 	private TaskServer tServer;
 
 	private Action save = new AbstractAction("Save") {
@@ -24,7 +27,7 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			File file = mG.showSaveDialog();
+			File file = mG.showSaveDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
@@ -44,7 +47,7 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			File file = mG.showOpenDialog();
+			File file = mG.showOpenDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
 				if (tS.openTaskSpec(file)) {
 					mG.setStatusLine("Opened actual task specification >"
@@ -53,13 +56,32 @@ public class MainController {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map opened </html>");
 				}
-				mG.setStatusLine("<html><FONT COLOR=RED>not implemented yet! </FONT> opened task specification </html>");
 			} else {
 				mG.setStatusLine("Open command cancelled by user");
 			}
 		}
 	};
 
+	private Action loadConfig = new AbstractAction("Load Config") {
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent arg0) {
+			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
+			if (file != null) {
+				if (cfgFile.openConfigFile(file)) {
+					initializeValidTriplets();
+					mG.setStatusLine("Loaded configuration file >"
+							+ file.getName() + "<");
+				} else {
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+							+ "</FONT> No config file opened </html>");
+				}
+			} else {
+				mG.setStatusLine("Load Config command cancelled by user");
+			}
+		}
+	};
+	
 	private Action exit = new AbstractAction("Exit") {
 		private static final long serialVersionUID = 1L;
 
@@ -212,12 +234,13 @@ public class MainController {
 		// special config file.
 		tS = new TaskSpec();
 		mG = new MainGUI();
+		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		init();
 	}
 
 	private void init() {
-		initializeValidTriplets();
+		//initializeValidTriplets();
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -248,6 +271,7 @@ public class MainController {
 				.getResource("/view/resources/icons/Export16.gif")));
 		mG.connectSaveAction(save);
 		mG.connectOpenAction(open);
+		mG.connectLoadConfigAction(loadConfig);
 		mG.connectExitAction(exit);
 		mG.connectHelpAction(help);
 		mG.connectSendTriplets(sendTriplets);

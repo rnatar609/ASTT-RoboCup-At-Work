@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JSeparator jSeparator;
 	private JButton saveButton;
 	private JButton openButton;
+	private JButton loadConfigButton;
 	private JLabel statusLine;
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
@@ -91,7 +93,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem openFileMenuItem;
 	private JMenu fileMenu;
 	private JMenuBar menuBar;
-	private JFileChooser fc;
+	//private JFileChooser fc;
 	private DefaultComboBoxModel<String> placesCbm;
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
@@ -109,7 +111,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		fc = new JFileChooser();
 		initGUI();
 	}
 
@@ -256,6 +257,13 @@ public class MainGUI extends JFrame implements TripletListener,
 							saveButton = new JButton();
 							toolBar.add(saveButton);
 							saveButton.setFocusable(false);
+						}
+						{
+							loadConfigButton = new JButton();
+							toolBar.add(loadConfigButton);
+							loadConfigButton.setName("loadConfigButton");
+							loadConfigButton.setText("Load Config");
+							loadConfigButton.setFocusable(false);
 						}
 					}
 					{
@@ -404,7 +412,6 @@ public class MainGUI extends JFrame implements TripletListener,
 			}
 		}
 		pack();
-		fc.setFileFilter(new TspFilter());
 	}
 
 	public MapArea getMapArea() {
@@ -433,6 +440,10 @@ public class MainGUI extends JFrame implements TripletListener,
 		pausesCbm = new DefaultComboBoxModel<Short>(
 				pauses.toArray(new Short[pauses.size()]));
 		pausesBox.setModel(pausesCbm);
+	}
+	
+	public void connectLoadConfigAction(Action loadConfig) {
+		loadConfigButton.setAction(loadConfig);
 	}
 
 	public void connectSaveAction(Action save) {
@@ -488,14 +499,20 @@ public class MainGUI extends JFrame implements TripletListener,
 		deleteMenuItem.setAction(deleteTriplet);
 	}
 
-	public File showSaveDialog() {
+	public File showSaveDialog(FileType ftype) {
+		JFileChooser fc = new JFileChooser();
+		if (ftype == FileType.FILETYPE_TSP)
+		    fc.setFileFilter(new TspFilter());
 		if (fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}
 		return null;
 	}
 
-	public File showOpenDialog() {
+	public File showOpenDialog(FileType ftype) {
+		JFileChooser fc = new JFileChooser();
+		if (ftype == FileType.FILETYPE_TSP)
+		    fc.setFileFilter(new TspFilter());
 		if (fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}

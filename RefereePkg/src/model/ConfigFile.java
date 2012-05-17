@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-class ConfigFile
+public class ConfigFile
 {
-	private static final String configFileFullName = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
+	private static String configFileFullName; // = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
 	private Properties tripletProperties;
 
 	public ConfigFile()
@@ -14,7 +14,14 @@ class ConfigFile
 		tripletProperties = new Properties();
 	}
 	
-	void loadProperties() throws Exception
+	public boolean openConfigFile(File fileObj)
+	{
+		configFileFullName = new String(fileObj.getAbsolutePath());
+		System.out.println("opened a config file " + fileObj.getAbsolutePath());
+		return true;
+	}
+	
+	public void loadProperties() throws Exception
 	{
 		try
 		{			
