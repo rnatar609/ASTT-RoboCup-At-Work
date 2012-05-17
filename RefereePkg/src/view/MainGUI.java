@@ -450,11 +450,15 @@ public class MainGUI extends JFrame implements TripletListener,
 	public void connectSaveAction(Action save) {
 		saveButton.setAction(save);
 		saveMenuItem.setAction(save);
+		saveButton.setEnabled(false);
+		saveMenuItem.setEnabled(false);
 	}
 
 	public void connectOpenAction(Action open) {
 		openButton.setAction(open);
 		openFileMenuItem.setAction(open);
+		openButton.setEnabled(false);
+		openFileMenuItem.setEnabled(false);
 	}
 
 	public void connectExitAction(Action exit) {
@@ -525,7 +529,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	public int getUserConfirmation(String msg, String title) {
-		return JOptionPane.showConfirmDialog(deleteTripletButton, msg, title,
+		return JOptionPane.showConfirmDialog(this, msg, title,
 				JOptionPane.YES_NO_OPTION);
 	}
 
@@ -601,6 +605,14 @@ public class MainGUI extends JFrame implements TripletListener,
 		connectedLabel.setText("no client connected");
 	}
 
+	public void configFileLoaded() {
+		openButton.setEnabled(true);
+		openFileMenuItem.setEnabled(true);
+		saveButton.setEnabled(true);
+		saveMenuItem.setEnabled(true);
+		loadConfigButton.setEnabled(false);
+	}
+	
 	public void setPlacesBoxSelected(String place) {
 		placesBox.setSelectedItem(place);
 	}

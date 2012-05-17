@@ -61,10 +61,10 @@ public class MainController {
 				}
 				else
 				{
-					mG.setStatusLine("Open command cancelled.");
+					mG.setStatusLine("Open command cancelled by user.");
 				}
 			} else {
-				mG.setStatusLine("Open command cancelled.");
+				mG.setStatusLine("Open command cancelled by user.");
 			}
 		}
 	};
@@ -75,16 +75,16 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
 			if (file != null) {
-				if (cfgFile.openConfigFile(file)) {
+				if (cfgFile.setConfigFile(file)) {
 					initializeValidTriplets();
 					mG.setStatusLine("Loaded configuration file >"
 							+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No config file opened </html>");
+							+ "</FONT> No config file loaded. </html>");
 				}
 			} else {
-				mG.setStatusLine("Load Config command cancelled by user");
+				mG.setStatusLine("Load Config command cancelled by user.");
 			}
 		}
 	};
@@ -301,13 +301,14 @@ public class MainController {
 				mG.setValidPositions(vte.getValidPositions());
 				mG.setValidOrientations(vte.getValidOrientations());
 				mG.setValidPauses(vte.getValidPauses());
+				mG.configFileLoaded();
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void showView() {
 		mG.setVisible(true);
 	}

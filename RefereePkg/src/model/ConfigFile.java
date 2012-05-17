@@ -14,10 +14,12 @@ public class ConfigFile
 		tripletProperties = new Properties();
 	}
 	
-	public boolean openConfigFile(File fileObj)
+	public boolean setConfigFile(File fileObj)
 	{
 		configFileFullName = new String(fileObj.getAbsolutePath());
-		System.out.println("opened a config file " + fileObj.getAbsolutePath());
+		if (!fileObj.exists()) 
+			return false;
+		System.out.println("config file " + fileObj.getAbsolutePath() + " exists.");
 		return true;
 	}
 	
