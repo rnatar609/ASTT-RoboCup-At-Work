@@ -49,15 +49,22 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			File file = mG.showOpenDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
-				if (tS.openTaskSpec(file)) {
-					mG.setStatusLine("Opened actual task specification >"
+				String msg = "Warning: Unsaved data will be lost. Proceed? ";
+				if (mG.getUserConfirmation(msg, "Confirm Open") == 0) {
+				    if (tS.openTaskSpec(file)) {
+					    mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
-				} else {
-					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No map opened </html>");
+				    } else {
+					    mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+							+ "</FONT> No task spec file opened </html>");
+				    }
+				}
+				else
+				{
+					mG.setStatusLine("Open command cancelled.");
 				}
 			} else {
-				mG.setStatusLine("Open command cancelled by user");
+				mG.setStatusLine("Open command cancelled.");
 			}
 		}
 	};

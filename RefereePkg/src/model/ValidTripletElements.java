@@ -16,7 +16,7 @@ public class ValidTripletElements {
 	private LinkedHashMap<String, Point> validPositions;
 	private List<String> validOrientations;
 	private List<Short> validPauses;
-	
+
 	private ValidTripletElements() {
 		validPositions = new LinkedHashMap<String, Point>();
 		validOrientations = new ArrayList<String>();
@@ -69,7 +69,7 @@ public class ValidTripletElements {
 									+ " in Config File. Place label format should be ([A-Z][0-9]).");
 					allValid = false;
 				}
-				validPositions.put(s, new Point(x,y));
+				validPositions.put(s, new Point(x, y));
 			} else {
 				System.out
 						.println("Ivalid place label "
@@ -77,7 +77,7 @@ public class ValidTripletElements {
 								+ " in Config File. Place label format should be ([A-Z][0-9]).");
 				allValid = false;
 			}
-			
+
 		}
 		return allValid;
 	}
@@ -135,6 +135,49 @@ public class ValidTripletElements {
 		return dir;
 	}
 
+	private String constructPlacePattern() {
+		String str = new String("(");
+		int placescount = validPositions.size();
+		for (int i = 0; i < placescount; i++) {
+			str = str.concat(validPositions.entrySet().iterator().next()
+					.getKey());
+			if (i < placescount - 1) {
+				str = str.concat("|");
+			}
+		}
+		str = str.concat(")");
+		System.out.println("Valid place pattern: " + str);
+		return str;
+	}
+
+	private String constructOrientationPattern() {
+		String str = new String("(");
+		Iterator<String> iterator = validOrientations.iterator();
+		while (iterator.hasNext()) {
+			str = str.concat(iterator.next());
+			if (iterator.hasNext()) {
+				str = str.concat("|");
+			}
+		}
+		str = str.concat(")");
+		System.out.println("Valid orientation pattern: " + str);
+		return str;
+	}
+
+	private String constructPausePattern() {
+		String str = new String("(");
+		Iterator<Short> iterator = validPauses.iterator();
+		while (iterator.hasNext()) {
+			str = str.concat(iterator.next().toString());
+			if (iterator.hasNext()) {
+				str = str.concat("|");
+			}
+		}
+		str = str.concat(")");
+		System.out.println("Valid pause pattern: " + str);
+		return str;
+	}
+
 	public boolean readFromConfigFile() throws Exception {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		boolean allValid = vte.populateLists();
@@ -144,16 +187,12 @@ public class ValidTripletElements {
 		return allValid;
 	}
 
-	/*boolean isPlaceValid(String s) {
-		// System.out.println( "User-given place " + s );
-		Iterator<Position> iterator = validPositions.iterator();
-		while (iterator.hasNext()) {
-			if (s.equals(iterator.next())) {
-				return true;
-			}
-		}
-		return false;
-	}*/
+	/*
+	 * boolean isPlaceValid(String s) { // System.out.println(
+	 * "User-given place " + s ); Iterator<Position> iterator =
+	 * validPositions.iterator(); while (iterator.hasNext()) { if
+	 * (s.equals(iterator.next())) { return true; } } return false; }
+	 */
 
 	boolean isOrientationValid(String s) {
 		// System.out.println( "User-given Orientation: " + s );
@@ -176,6 +215,15 @@ public class ValidTripletElements {
 			}
 		}
 		return false;
+	}
+
+	public String getValidTripletPattern() {
+		String patStr = new String("\\(");
+		patStr = patStr.concat(constructPlacePattern());
+		patStr = patStr.concat("\\," + constructOrientationPattern());
+		patStr = patStr.concat("\\," + constructPausePattern() + "\\)");
+		System.out.println("Valid triplet pattern " + patStr);
+		return patStr;
 	}
 
 	public static ValidTripletElements getInstance() {

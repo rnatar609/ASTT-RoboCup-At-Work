@@ -126,6 +126,12 @@ public class TaskTriplet {
 				+ ")"));
 	}
 
+	public static String getValidTripletPattern()
+	{
+		ValidTripletElements vte = ValidTripletElements.getInstance();
+		return vte.getValidTripletPattern();		
+	}
+	
 	/**
 	 * This method reads a task triplet from the user and stores in the invoking
 	 * object.

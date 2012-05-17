@@ -141,6 +141,12 @@ public class MapArea extends JScrollPane implements TripletListener {
 		this.taskTripletList = evt.getTaskTripletList();
 		mapPane.repaint();
 	}
+	
+	@Override
+	public void taskSpecFileOpened(TripletEvent evt) {
+		this.taskTripletList = evt.getTaskTripletList();
+		mapPane.repaint();
+	}
 
 	public void setValidPositions(HashMap<String, Point> positions) {
 		this.validPositions = positions;

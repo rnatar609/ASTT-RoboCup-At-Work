@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.File;
-import java.io.FileFilter;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -222,6 +221,7 @@ public class MainGUI extends JFrame implements TripletListener,
 						upTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 						upTripletButton.setMaximumSize(buttonDimension);
 						upTripletButton.setMinimumSize(buttonDimension);
+						upTripletButton.setFocusable(false);
 						editTripletPane.add(upTripletButton);
 						editTripletPane.add(Box.createVerticalStrut(10));
 						downTripletButton = new JButton();
@@ -229,6 +229,7 @@ public class MainGUI extends JFrame implements TripletListener,
 						downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 						downTripletButton.setMaximumSize(buttonDimension);
 						downTripletButton.setMinimumSize(buttonDimension);
+						downTripletButton.setFocusable(false);
 						editTripletPane.add(downTripletButton);
 						editTripletPane.add(Box.createVerticalStrut(10));
 					}
@@ -564,6 +565,14 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
+	@Override
+	public void taskSpecFileOpened(TripletEvent evt) {
+		tripletLm.removeAllElements();
+		for (TaskTriplet tT : evt.getTaskTripletList()) {
+			tripletLm.addElement(tT.getTaskTripletString());
+		}
+	}
+	
 	@Override
 	public void teamConnected(String teamName) {
 		sendTripletsButton.setEnabled(true);

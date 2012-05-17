@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.*;
+import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
 
@@ -19,6 +21,17 @@ import controller.TripletListener;
 public class TaskSpec {
 	private List<TaskTriplet> taskTripletList;
 	private EventListenerList listOfTripletListeners = new EventListenerList();
+
+	private String removeSpaces( String str )
+	{
+		StringTokenizer tokens = new StringTokenizer(str," ",false);
+		String newStr = "";
+		while ( tokens.hasMoreElements() ) 
+		{
+			newStr += tokens.nextElement();
+		}
+		return newStr;
+	}
 
 	public TaskSpec() {
 		taskTripletList = new ArrayList<TaskTriplet>();
@@ -36,6 +49,29 @@ public class TaskSpec {
 		}
 		s = s.concat(">");
 		return s;
+	}
+
+	public boolean parseTaskSpecString(String tSpecStr) {
+		tSpecStr = removeSpaces(tSpecStr);
+		System.out.println("After removing spaces " + tSpecStr);
+		try {
+			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
+			Matcher m = pat.matcher(tSpecStr);
+			do {
+				TaskTriplet nextTaskTriplet = new TaskTriplet();
+				if (m.find()) {
+					nextTaskTriplet.setPlace(m.group(1));
+					nextTaskTriplet.setOrientation(m.group(2));
+					nextTaskTriplet.setPause(m.group(3));
+					addTriplet(nextTaskTriplet);
+				}
+			} while (!m.hitEnd());
+		} catch (Exception e) {
+			System.out.println("Caught exception in parseTaskSpec. Error: "
+					+ e.getMessage());
+			return false;
+		}
+		return true;
 	}
 
 	public void addTriplet(TaskTriplet triplet) {
@@ -74,9 +110,9 @@ public class TaskSpec {
 			return triplet;
 		}
 	}
-	
+
 	public TaskTriplet editTriplet(int tripletIndex, TaskTriplet updateTriplet) {
-		
+
 		try {
 			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
 			notifyTripletMoved(new TripletEvent(updateTriplet, tripletIndex,
@@ -158,6 +194,18 @@ public class TaskSpec {
 		}
 	}
 
+	private void notifyTaskSpecFileOpened(TripletEvent evt)
+	{
+		Object[] listeners = listOfTripletListeners.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TripletListener.class) {
+				((TripletListener) listeners[i + 1]).taskSpecFileOpened(evt);
+			}
+		}
+	}
+	
 	public boolean saveTaskSpec(File file) {
 
 		file = Utils.correctFile(file);
@@ -180,7 +228,14 @@ public class TaskSpec {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				// TODO
+				// Right now works only for one task spec. If there are more
+				// task specs in a file, then the functionality needs to be extended.
+				taskTripletList = new ArrayList<TaskTriplet>(); //a new triplet list 
+				if (!parseTaskSpecString(strLine)) 
+					return false;
+				System.out.println("Found and parsed task spec string: " + getTaskSpecString());
+				notifyTaskSpecFileOpened(new TripletEvent(taskTripletList.get(0), taskTripletList.size(),
+						taskTripletList));
 			}
 			in.close();
 		} catch (Exception e) {// Catch exception if any
