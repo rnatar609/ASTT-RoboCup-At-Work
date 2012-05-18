@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
@@ -138,9 +140,11 @@ public class ValidTripletElements {
 	private String constructPlacePattern() {
 		String str = new String("(");
 		int placescount = validPositions.size();
+		Set<Entry<String, Point>> positions = validPositions.entrySet();
+		Iterator<Entry<String, Point>> itr = positions.iterator();
 		for (int i = 0; i < placescount; i++) {
-			str = str.concat(validPositions.entrySet().iterator().next()
-					.getKey());
+			str = str.concat(itr.next().getKey());
+			//System.out.println(validPositions.entrySet());
 			if (i < placescount - 1) {
 				str = str.concat("|");
 			}
