@@ -57,7 +57,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		ConnectionListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
-	private static boolean unsavedChanges = false;
 	private JList<String> tripletsList;
 	private JScrollPane tripletListScrollPane;
 	private JPanel editTripletPane;
@@ -121,7 +120,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		this.setTitle("RoboCup@Work");
 		BorderLayout panelLayout = new BorderLayout();
 		this.setLayout(panelLayout);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		{
 			contentPanel = new JPanel();
 			BorderLayout contentPanelLayout = new BorderLayout();
@@ -517,7 +516,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = true;
 	}
 
 	@Override
@@ -526,7 +524,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = true;
 	}
 
 	@Override
@@ -535,7 +532,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = false;
 	}
 
 	@Override
@@ -574,10 +570,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		loadConfigButton.setEnabled(false);
 	}
 
-	public void taskSpecFileSaved() {
-		unsavedChanges = false;
-	}
-
 	public void setPlacesBoxSelected(String place) {
 		placesBox.setSelectedItem(place);
 	}
@@ -588,9 +580,5 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setPausesBoxSelected(Short pause) {
 		placesBox.setSelectedItem(pause);
-	}
-
-	public boolean isChangesUnsaved() {
-		return unsavedChanges;
 	}
 }
