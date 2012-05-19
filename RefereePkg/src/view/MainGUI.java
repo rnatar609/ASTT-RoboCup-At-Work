@@ -402,6 +402,7 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void connectLoadConfigAction(Action loadConfig) {
 		loadConfigButton.setAction(loadConfig);
+		loadConfigMenuItem.setAction(loadConfig);
 	}
 
 	public void connectSaveAction(Action save) {

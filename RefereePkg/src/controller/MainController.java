@@ -269,7 +269,6 @@ public class MainController {
 	}
 
 	private void init() {
-		// initializeValidTriplets();
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -278,6 +277,8 @@ public class MainController {
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
 						"/view/resources/icons/Open16.gif")));
+		loadConfig.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/Import16.gif")));
 		exit.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
