@@ -1,6 +1,9 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -22,6 +25,16 @@ public class MainController {
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
 
+	private boolean unsavedChanges = false;
+	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
+
+	private WindowAdapter windowAdapter = new WindowAdapter() {
+		public void windowClosing(WindowEvent evt) {
+			// redirect to the exit action from file menu
+			exit.actionPerformed(null);
+		}
+	};
+
 	private Action save = new AbstractAction("Save") {
 		private static final long serialVersionUID = 1L;
 
@@ -31,9 +44,9 @@ public class MainController {
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
-					mG.taskSpecFileSaved();
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
+					unsavedChanges = false;
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -48,21 +61,18 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
+			if (unsavedChanges && warningIgnored("Open")) {
+				return;
+			}
 			File file = mG.showOpenDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
-				if (mG.isChangesUnsaved()) {
-				    String msg = "Warning: Unsaved data will be lost. Proceed? ";
-				    if (mG.getUserConfirmation(msg, "Confirm Open") != 0) 
-				    {
-				    	mG.setStatusLine("Open command cancelled.");
-				    	return;
-				    }
-				}
+
 				if (tS.openTaskSpec(file)) {
-				    mG.setStatusLine("Opened task specification >"
+					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
+					unsavedChanges = false;
 				} else {
-				    mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
 				}
 			} else {
@@ -75,12 +85,21 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
+			if (unsavedChanges && warningIgnored("Load Config")) {
+				return;
+			}
 			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
 			if (file != null) {
 				if (cfgFile.setConfigFile(file)) {
 					initializeValidTriplets();
-					mG.setStatusLine("Loaded configuration file >"
-							+ file.getName() + "<");
+					if (initializeBackgroundMap(file.getParent())) {
+						mG.pack();
+						mG.setStatusLine("Loaded configuration file >"
+								+ file.getName() + "<");
+					} else {
+						mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+								+ "</FONT> No background file loaded. </html>");
+					}
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No config file loaded. </html>");
@@ -90,11 +109,14 @@ public class MainController {
 			}
 		}
 	};
-	
+
 	private Action exit = new AbstractAction("Exit") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
+			if (unsavedChanges && warningIgnored("Exit")) {
+				return;
+			}
 			System.exit(0);
 		}
 	};
@@ -112,6 +134,7 @@ public class MainController {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
 			} else {
@@ -133,6 +156,7 @@ public class MainController {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
 			} else {
@@ -155,11 +179,12 @@ public class MainController {
 						&& tt.setPause((String) mG.getPausesBox()
 								.getSelectedItem().toString())) {
 					TaskTriplet t = tS.editTriplet(pos, tt);
-					if (t != null)
+					if (t != null) {
 						mG.setStatusLine("Updated Triplet (" + t.getPlace()
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
-					else
+						unsavedChanges = true;
+					} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
 			} else {
@@ -182,6 +207,7 @@ public class MainController {
 				tS.addTriplet(t);
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
+				unsavedChanges = true;
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -202,6 +228,7 @@ public class MainController {
 					TaskTriplet t = tS.deleteTriplet(pos);
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
+					unsavedChanges = true;
 				} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
@@ -249,7 +276,6 @@ public class MainController {
 	}
 
 	private void init() {
-		//initializeValidTriplets();
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -258,6 +284,8 @@ public class MainController {
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
 						"/view/resources/icons/Open16.gif")));
+		loadConfig.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+				.getResource("/view/resources/icons/Import16.gif")));
 		exit.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -294,6 +322,8 @@ public class MainController {
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
+		mG.addWindowListener(windowAdapter);
+		mG.pack();
 	}
 
 	private void initializeValidTriplets() {
@@ -310,8 +340,22 @@ public class MainController {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private boolean initializeBackgroundMap(String path) {
+		BufferedImage map = Map.loadBackgroundMap(path);
+		if (map != null) {
+			mG.getMapArea().setBackgroundMap(map);
+			return true;
+		}
+		return false;
+	}
+
 	public void showView() {
 		mG.setVisible(true);
+	}
+
+	private boolean warningIgnored(String actionName) {
+		return (mG.getUserConfirmation(unsavedWarningMsg, "Confirm "
+				+ actionName) != 0);
 	}
 }

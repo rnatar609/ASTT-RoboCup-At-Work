@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -14,6 +15,7 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,9 +38,12 @@ import javax.swing.UIManager;
 
 import model.TaskTriplet;
 import model.TripletEvent;
-import controller.TripletListener;
 import controller.ConnectionListener;
+<<<<<<< HEAD
 import controller.TimeKeeper;
+=======
+import controller.TripletListener;
+>>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -58,14 +63,12 @@ import controller.TimeKeeper;
 public class MainGUI extends JFrame implements TripletListener,
 		ConnectionListener {
 	private static final long serialVersionUID = 1L;
-	private static final Dimension buttonDimension = new Dimension(120, 25);
-	private static boolean unsavedChanges = false;
+	private static final int GAP = 10;
 	private JList<String> tripletsList;
 	private JScrollPane tripletListScrollPane;
 	private JPanel editTripletPane;
 	private JPanel statusPanel;
 	private JPanel westPanel;
-	private JSeparator jSeparator;
 	private JButton saveButton;
 	private JButton openButton;
 	private JButton loadConfigButton;
@@ -99,7 +102,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem openFileMenuItem;
 	private JMenu fileMenu;
 	private JMenuBar menuBar;
-	//private JFileChooser fc;
 	private DefaultComboBoxModel<String> placesCbm;
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
@@ -110,12 +112,18 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
+<<<<<<< HEAD
 	
 	//private boolean timerButtonStatus = false;
     
+=======
+	private JMenuItem loadConfigMenuItem;
+
+>>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 	public MainGUI() {
 		try {
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager
+					.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -127,204 +135,185 @@ public class MainGUI extends JFrame implements TripletListener,
 		this.setTitle("RoboCup@Work");
 		BorderLayout panelLayout = new BorderLayout();
 		this.setLayout(panelLayout);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		{
 			contentPanel = new JPanel();
 			BorderLayout contentPanelLayout = new BorderLayout();
 			contentPanel.setLayout(contentPanelLayout);
-
-			this.add(contentPanel, BorderLayout.CENTER);
 			{
 				westPanel = new JPanel();
 				BorderLayout westPanelLayout = new BorderLayout();
 				westPanel.setLayout(westPanelLayout);
-				contentPanel.add(westPanel, BorderLayout.WEST);
 				{
 					tripletListScrollPane = new JScrollPane(
 							JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-					westPanel.add(tripletListScrollPane, BorderLayout.WEST);
-					tripletListScrollPane
-							.setPreferredSize(new java.awt.Dimension(120, 0));
 					{
 						tripletsList = new JList<String>(tripletLm);
-						tripletListScrollPane.setViewportView(tripletsList);
+						// align triplets in the list
+						DefaultListCellRenderer renderer = (DefaultListCellRenderer) tripletsList
+								.getCellRenderer();
+						renderer.setHorizontalAlignment(JLabel.CENTER);
 					}
+					// get the width of one triplet string depending on font
+					FontMetrics metrics = tripletsList
+							.getFontMetrics(tripletsList.getFont());
+					int width = metrics.stringWidth(" (O5, W, 5) ");
+					tripletListScrollPane.setViewportView(tripletsList);
+					// add some space for the scrollbar
+					Dimension dim = new Dimension(width + 2 * GAP, 0);
+					tripletListScrollPane.setPreferredSize(dim);
 				}
-			}
-			{
-				statusPanel = new JPanel();
-				contentPanel.add(statusPanel, BorderLayout.SOUTH);
+				westPanel.add(tripletListScrollPane, BorderLayout.WEST);
 				{
-					statusLine = new JLabel();
-					statusPanel.add(statusLine);
-					statusLine.setName("statusLine");
-					statusLine.setHorizontalAlignment(JLabel.CENTER);
-					statusPanel.setPreferredSize(new java.awt.Dimension(0, 25));
+					editTripletPane = new JPanel();
+					BoxLayout boxLayout = new BoxLayout(editTripletPane,
+							BoxLayout.Y_AXIS);
+					editTripletPane.setLayout(boxLayout);
+					editTripletPane.add(Box.createVerticalStrut(GAP));
+					{
+						JLabel header = new JLabel("Place  Orientation  Time");
+						header.setHorizontalAlignment(JLabel.CENTER);
+						header.setHorizontalTextPosition(SwingConstants.CENTER);
+						header.setIconTextGap(0);
+						header.setAlignmentX(CENTER_ALIGNMENT);
+						editTripletPane.add(header);
+
+					}
+					{
+						boxPanel = new JPanel();
+						boxPanel.setRequestFocusEnabled(false);
+						{
+							placesBox = new JComboBox<String>();
+							boxPanel.add(placesBox);
+						}
+						{
+							orientationsBox = new JComboBox<String>();
+							boxPanel.add(orientationsBox);
+						}
+						{
+							pausesBox = new JComboBox<Short>();
+							boxPanel.add(pausesBox);
+						}
+					}
+					editTripletPane.add(boxPanel);
+					editTripletPane.add(Box.createVerticalGlue());
+					{
+						addTripletButton = new JButton();
+						addTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+						updateTripletButton = new JButton();
+						updateTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+						deleteTripletButton = new JButton();
+						deleteTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+						upTripletButton = new JButton();
+						upTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+						downTripletButton = new JButton();
+						downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
+					}
+					editTripletPane.add(addTripletButton);
+					editTripletPane.add(Box.createVerticalStrut(GAP));
+					editTripletPane.add(updateTripletButton);
+					editTripletPane.add(Box.createVerticalStrut(GAP));
+					editTripletPane.add(deleteTripletButton);
+					editTripletPane.add(Box.createVerticalStrut(GAP));
+					editTripletPane.add(Box.createVerticalGlue());
+					editTripletPane.add(upTripletButton);
+					editTripletPane.add(Box.createVerticalStrut(GAP));
+					editTripletPane.add(downTripletButton);
+					editTripletPane.add(Box.createVerticalGlue());
 				}
-			}
-			{
-				editTripletPane = new JPanel();
-				BoxLayout jPanel4Layout = new BoxLayout(editTripletPane,
-						javax.swing.BoxLayout.Y_AXIS);
-				editTripletPane.setLayout(jPanel4Layout);
-				editTripletPane
-						.setPreferredSize(new java.awt.Dimension(150, 0));
 				westPanel.add(editTripletPane, BorderLayout.CENTER);
 				{
-					boxPanel = new JPanel();
-					JLabel header = new JLabel("Place  Orientation  Time");
-					header.setMinimumSize(new java.awt.Dimension(400, 40));
-					header.setHorizontalAlignment(JLabel.CENTER);
-					editTripletPane.add(Box.createVerticalStrut(20));
-					editTripletPane.add(header);
-					header.setHorizontalTextPosition(SwingConstants.CENTER);
-					header.setIconTextGap(0);
-					header.setAlignmentX(CENTER_ALIGNMENT);
-					editTripletPane.add(boxPanel);
-					boxPanel.setPreferredSize(new java.awt.Dimension(200, 39));
-					boxPanel.setMinimumSize(new java.awt.Dimension(120, 40));
-					boxPanel.setMaximumSize(new java.awt.Dimension(200, 40));
-					boxPanel.setRequestFocusEnabled(false);
-					boxPanel.setSize(200, 40);
+					serverPanel = new JPanel();
+					BoxLayout serverPanelLayout = new BoxLayout(serverPanel,
+							javax.swing.BoxLayout.PAGE_AXIS);
+					serverPanel.setLayout(serverPanelLayout);
+					serverPanel.add(Box.createVerticalStrut(GAP));
+					serverPanel.add(new JSeparator());
+					serverPanel.add(Box.createVerticalStrut(GAP));
 					{
-
-						placesBox = new JComboBox<String>();
-						boxPanel.add(placesBox);
+						upperServerPanel = new JPanel();
+						BoxLayout serverUpperPanelLayout = new BoxLayout(
+								upperServerPanel,
+								javax.swing.BoxLayout.LINE_AXIS);
+						upperServerPanel.setLayout(serverUpperPanelLayout);
+						{
+							connectedIcon = new JLabel(
+									new ImageIcon(
+											getClass()
+													.getResource(
+															"/view/resources/icons/status-busy.png")));
+						}
+						upperServerPanel.add(connectedIcon);
+						{
+							connectedLabel = new JLabel();
+							connectedLabel.setText("no team connected");
+						}
+						upperServerPanel.add(connectedLabel);
 					}
+					serverPanel.add(upperServerPanel);
+					serverPanel.add(Box.createVerticalStrut(GAP));
 					{
-						orientationsBox = new JComboBox<String>();
-						boxPanel.add(orientationsBox);
-
+						lowerServerPanel = new JPanel();
+						BoxLayout serverLowerPanelLayout = new BoxLayout(
+								lowerServerPanel,
+								javax.swing.BoxLayout.LINE_AXIS);
+						lowerServerPanel.setLayout(serverLowerPanelLayout);
+						{
+							disconnectButton = new JButton();
+							disconnectButton.setEnabled(false);
+							disconnectButton
+									.setHorizontalAlignment(SwingConstants.LEFT);
+						}
+						lowerServerPanel.add(disconnectButton);
+						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
+						{
+							sendTripletsButton = new JButton();
+							sendTripletsButton.setEnabled(false);
+							sendTripletsButton
+									.setHorizontalAlignment(SwingConstants.RIGHT);
+						}
+						lowerServerPanel.add(sendTripletsButton);
 					}
-					{
-						pausesBox = new JComboBox<Short>();
-						boxPanel.add(pausesBox);
-					}
-					{
-						//editTripletPane.add(Box.createVerticalGlue());
-						editTripletPane.add(Box.createVerticalStrut(10));
-						addTripletButton = new JButton();
-						addTripletButton.setPreferredSize(buttonDimension);
-						editTripletPane.add(addTripletButton);
-						addTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						addTripletButton.setMaximumSize(buttonDimension);
-						addTripletButton.setMinimumSize(buttonDimension);
-						editTripletPane.add(Box.createVerticalStrut(10));
-						updateTripletButton = new JButton();
-						updateTripletButton.setPreferredSize(buttonDimension);
-						updateTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						updateTripletButton.setMaximumSize(buttonDimension);
-						updateTripletButton.setMinimumSize(buttonDimension);
-						editTripletPane.add(updateTripletButton);
-						editTripletPane.add(Box.createVerticalStrut(10));
-						deleteTripletButton = new JButton();
-						deleteTripletButton.setPreferredSize(buttonDimension);
-						editTripletPane.add(deleteTripletButton);
-						deleteTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						deleteTripletButton.setMinimumSize(buttonDimension);
-						deleteTripletButton.setMaximumSize(buttonDimension);
-						editTripletPane.add(Box.createVerticalStrut(40));
-						upTripletButton = new JButton();
-						upTripletButton.setPreferredSize(buttonDimension);
-						upTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						upTripletButton.setMaximumSize(buttonDimension);
-						upTripletButton.setMinimumSize(buttonDimension);
-						upTripletButton.setFocusable(false);
-						editTripletPane.add(upTripletButton);
-						editTripletPane.add(Box.createVerticalStrut(10));
-						downTripletButton = new JButton();
-						downTripletButton.setPreferredSize(buttonDimension);
-						downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						downTripletButton.setMaximumSize(buttonDimension);
-						downTripletButton.setMinimumSize(buttonDimension);
-						downTripletButton.setFocusable(false);
-						editTripletPane.add(downTripletButton);
-						editTripletPane.add(Box.createVerticalStrut(10));
-					}
-					{
-						mapArea = new MapArea();
-						mapArea.setBackground(Color.black);
-						contentPanel.add(mapArea, BorderLayout.CENTER);
-					}
-
+					serverPanel.add(lowerServerPanel);
 				}
+				westPanel.add(serverPanel, BorderLayout.SOUTH);
+			}
+			contentPanel.add(westPanel, BorderLayout.WEST);
+			{
+				mapArea = new MapArea();
+			//	mapArea.setBackground(Color.white);
+			}
+			contentPanel.add(mapArea, BorderLayout.CENTER);
+			{
+				statusPanel = new JPanel();
 				{
-					toolBarPanel = new JPanel();
-					contentPanel.add(toolBarPanel, BorderLayout.NORTH);
-					BorderLayout jPanel1Layout = new BorderLayout();
-					toolBarPanel.setLayout(jPanel1Layout);
-					{
-						toolBar = new JToolBar();
-						toolBarPanel.add(toolBar, BorderLayout.CENTER);
-						{
-							openButton = new JButton("open...");
-							toolBar.add(openButton);
-							openButton.setName("openButton");
-							openButton.setFocusable(false);
-						}
-						{
-							saveButton = new JButton();
-							toolBar.add(saveButton);
-							saveButton.setFocusable(false);
-						}
-						{
-							loadConfigButton = new JButton();
-							toolBar.add(loadConfigButton);
-							loadConfigButton.setName("loadConfigButton");
-							loadConfigButton.setText("Load Config");
-							loadConfigButton.setFocusable(false);
-						}
-					}
-					{
-						jSeparator = new JSeparator();
-						toolBarPanel.add(jSeparator, BorderLayout.SOUTH);
-					}
+					statusLine = new JLabel();
+					statusLine.setName("statusLine");
+					statusLine.setHorizontalAlignment(JLabel.CENTER);
+					// to avoid having an invisible status panel if empty
+					FontMetrics metrics = statusLine.getFontMetrics(statusLine
+							.getFont());
+					int hight = metrics.getHeight();
+					// width is determined by the parent container
+					Dimension size = new Dimension(0, hight + GAP);
+					statusPanel.setPreferredSize(size);
+					statusPanel.add(statusLine);
 				}
 			}
+			contentPanel.add(statusPanel, BorderLayout.SOUTH);
 			{
-				serverPanel = new JPanel();
-				BoxLayout serverPanelLayout = new BoxLayout(serverPanel,
-						javax.swing.BoxLayout.PAGE_AXIS);
-				serverPanel.setLayout(serverPanelLayout);
-				westPanel.add(serverPanel, BorderLayout.SOUTH);
-				serverPanel.setPreferredSize(new java.awt.Dimension(300, 89));
+				toolBarPanel = new JPanel();
+				BorderLayout toolBarLayout = new BorderLayout();
+				toolBarPanel.setLayout(toolBarLayout);
 				{
-					serverPanel.add(Box.createVerticalStrut(10));
-					serverPanel.add(new JSeparator());
-					serverPanel.add(Box.createVerticalStrut(5));
+					toolBar = new JToolBar();
 					{
-						// serverHeader = new JLabel();
-						// serverPanel.add(serverHeader);
-						// serverHeader.setText("Server Stuff");
-						// serverHeader.setAlignmentX(CENTER_ALIGNMENT);
+						openButton = new JButton();
+						toolBar.add(openButton);
+						openButton.setName("openButton");
 					}
-					upperServerPanel = new JPanel();
-					upperServerPanel.setPreferredSize(new java.awt.Dimension(
-							300, 57));
-					BoxLayout serverUpperPanelLayout = new BoxLayout(
-							upperServerPanel, javax.swing.BoxLayout.LINE_AXIS);
-					upperServerPanel.setLayout(serverUpperPanelLayout);
-					serverPanel.add(upperServerPanel);
-					{
-
-						connectedIcon = new JLabel(
-								new ImageIcon(
-										getClass()
-												.getResource(
-														"/view/resources/icons/status-busy.png")));
-						// should be overwritten by
-						// "/view/resources/icons/status-busy.png", if client
-						// connected
-						upperServerPanel.add(connectedIcon);
-					}
-					{
-						connectedLabel = new JLabel();
-						upperServerPanel.add(connectedLabel);
-						connectedLabel.setText("no team connected");
-						// should be overwritten by connected client
-						connectedLabel.setPreferredSize(new Dimension(150, 25));
-					}
+<<<<<<< HEAD
 					/*{
 						timerLabel = new JLabel();
 						upperServerPanel.add(timerLabel);
@@ -355,6 +344,16 @@ public class MainGUI extends JFrame implements TripletListener,
 						sendTripletsButton.setHorizontalAlignment(SwingConstants.RIGHT);
 						sendTripletsButton.setPreferredSize(buttonDimension);
 						sendTripletsButton.setMaximumSize(buttonDimension);
+=======
+					{
+						saveButton = new JButton();
+						toolBar.add(saveButton);
+						saveButton.setFocusable(false);
+					}
+					{
+						loadConfigButton = new JButton();
+						toolBar.add(loadConfigButton);
+>>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 					}
 					{
 						timerStartStopButton = new JToggleButton();
@@ -378,63 +377,53 @@ public class MainGUI extends JFrame implements TripletListener,
 						timerStartStopButton.setMaximumSize(buttonDimension);
 					}
 				}
+				toolBarPanel.add(toolBar, BorderLayout.CENTER);
 			}
-			{
-				// tripletsHeader = new JLabel();
-				westPanel.setAlignmentY(CENTER_ALIGNMENT);
-				westPanel.setAlignmentX(CENTER_ALIGNMENT);
-				// westPanel.add(tripletsHeader, BorderLayout.NORTH);
-				// tripletsHeader.setText("Triplets Stuff");
-				// tripletsHeader.setAlignmentX(CENTER_ALIGNMENT);
-				// tripletsHeader.setPreferredSize(new java.awt.Dimension(0,
-				// 25));
-				// tripletsHeader.setSize(0, 0);
-				// tripletsHeader.setHorizontalTextPosition(SwingConstants.CENTER);
-				// tripletsHeader.setHorizontalAlignment(SwingConstants.CENTER);
-			}
+			contentPanel.add(toolBarPanel, BorderLayout.NORTH);
+		}
+		this.add(contentPanel, BorderLayout.CENTER);
+		{
 			menuBar = new JMenuBar();
-			setJMenuBar(menuBar);
 			{
 				fileMenu = new JMenu();
-				menuBar.add(fileMenu);
 				fileMenu.setText("File");
 				{
 					openFileMenuItem = new JMenuItem();
-					fileMenu.add(openFileMenuItem);
-					openFileMenuItem.setText("Open");
 				}
+				fileMenu.add(openFileMenuItem);
 				{
 					saveMenuItem = new JMenuItem();
-					fileMenu.add(saveMenuItem);
-					saveMenuItem.setText("Save");
 				}
+				fileMenu.add(saveMenuItem);
+				fileMenu.add(new JSeparator());
 				{
-					new JSeparator();
-					fileMenu.add(new JSeparator());
+					loadConfigMenuItem = new JMenuItem();
 				}
+				fileMenu.add(loadConfigMenuItem);
+				fileMenu.add(new JSeparator());
 				{
 					exitMenuItem = new JMenuItem();
-					fileMenu.add(exitMenuItem);
-					exitMenuItem.setText("Exit");
 				}
+				fileMenu.add(exitMenuItem);
 			}
+			menuBar.add(fileMenu);
 			{
 				editMenu = new JMenu();
 				menuBar.add(editMenu);
 				editMenu.setText("Edit");
 				{
 					addMenuItem = new JMenuItem();
-					editMenu.add(addMenuItem);
 					deleteMenuItem = new JMenuItem();
-					editMenu.add(deleteMenuItem);
-					editMenu.add(new JSeparator());
 					upMenuItem = new JMenuItem();
-					editMenu.add(upMenuItem);
 					downMenuItem = new JMenuItem();
-					editMenu.add(downMenuItem);
 					updateMenuItem = new JMenuItem();
-					editMenu.add(updateMenuItem);		
 				}
+				editMenu.add(addMenuItem);
+				editMenu.add(updateMenuItem);
+				editMenu.add(deleteMenuItem);
+				editMenu.add(new JSeparator());
+				editMenu.add(upMenuItem);
+				editMenu.add(downMenuItem);
 			}
 			{
 				helpMenu = new JMenu();
@@ -442,12 +431,13 @@ public class MainGUI extends JFrame implements TripletListener,
 				helpMenu.setText("Help");
 				{
 					helpMenuItem = new JMenuItem();
-					helpMenu.add(helpMenuItem);
 					helpMenuItem.setText("Help");
 				}
+				helpMenu.add(helpMenuItem);
 			}
+			this.setJMenuBar(menuBar);
 		}
-		pack();
+		this.pack();
 	}
 
 	public MapArea getMapArea() {
@@ -477,9 +467,10 @@ public class MainGUI extends JFrame implements TripletListener,
 				pauses.toArray(new Short[pauses.size()]));
 		pausesBox.setModel(pausesCbm);
 	}
-	
+
 	public void connectLoadConfigAction(Action loadConfig) {
 		loadConfigButton.setAction(loadConfig);
+		loadConfigMenuItem.setAction(loadConfig);
 	}
 
 	public void connectSaveAction(Action save) {
@@ -542,7 +533,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	public File showSaveDialog(FileType ftype) {
 		JFileChooser fc = new JFileChooser();
 		if (ftype == FileType.FILETYPE_TSP)
-		    fc.setFileFilter(new TspFilter());
+			fc.setFileFilter(new TspFilter());
 		if (fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}
@@ -552,7 +543,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	public File showOpenDialog(FileType ftype) {
 		JFileChooser fc = new JFileChooser();
 		if (ftype == FileType.FILETYPE_TSP)
-		    fc.setFileFilter(new TspFilter());
+			fc.setFileFilter(new TspFilter());
 		if (fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}
@@ -594,7 +585,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = true;
 	}
 
 	@Override
@@ -603,7 +593,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = true;
 	}
 
 	@Override
@@ -612,16 +601,19 @@ public class MainGUI extends JFrame implements TripletListener,
 		for (TaskTriplet tT : evt.getTaskTripletList()) {
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
-		unsavedChanges = false;
 	}
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 	@Override
 	public void teamConnected(String teamName) {
 		sendTripletsButton.setEnabled(true);
 		disconnectButton.setEnabled(true);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status.png")));
-		connectedLabel.setPreferredSize(new Dimension(150, 25));
+		// connectedLabel.setPreferredSize(new Dimension(150, 25));
 		connectedLabel.setText(teamName);
 	}
 
@@ -649,12 +641,9 @@ public class MainGUI extends JFrame implements TripletListener,
 		saveButton.setEnabled(true);
 		saveMenuItem.setEnabled(true);
 		loadConfigButton.setEnabled(false);
+		loadConfigMenuItem.setEnabled(false);
 	}
-	
-	public void taskSpecFileSaved() {
-	    unsavedChanges = false;	
-	}
-	
+
 	public void setPlacesBoxSelected(String place) {
 		placesBox.setSelectedItem(place);
 	}
@@ -665,9 +654,5 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setPausesBoxSelected(Short pause) {
 		placesBox.setSelectedItem(pause);
-	}
-	
-	public boolean isChangesUnsaved() {
-		return unsavedChanges;
 	}
 }

@@ -27,23 +27,18 @@ public class MapArea extends JScrollPane implements TripletListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private BufferedImage backgroundMap = Map.loadBackgroundMap();;
-	private MapPane mapPane = new MapPane();
+	private BufferedImage backgroundMap;
+	private MapPane mapPane;
 	private HashMap<String, Point> validPositions;
 	private List<TaskTriplet> taskTripletList;
 
 	public MapArea() {
 		super();
+		mapPane = new MapPane();
+		taskTripletList = new ArrayList<TaskTriplet>();
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		this.getViewport().add(mapPane, BorderLayout.CENTER);
-		this.setMaximumSize(new Dimension(backgroundMap.getWidth(),
-				backgroundMap.getHeight()));
-		mapPane.setMaximumSize(new Dimension(backgroundMap.getWidth(),
-				backgroundMap.getHeight()));
-		mapPane.setPreferredSize(new Dimension(backgroundMap.getWidth(),
-				backgroundMap.getHeight()));
-		taskTripletList = new ArrayList<TaskTriplet>();
+		//this.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
 	}
 
 	/** The component inside the scroll pane. */
@@ -141,7 +136,7 @@ public class MapArea extends JScrollPane implements TripletListener {
 		this.taskTripletList = evt.getTaskTripletList();
 		mapPane.repaint();
 	}
-	
+
 	@Override
 	public void taskSpecFileOpened(TripletEvent evt) {
 		this.taskTripletList = evt.getTaskTripletList();
@@ -154,5 +149,12 @@ public class MapArea extends JScrollPane implements TripletListener {
 
 	public MapPane getMapPane() {
 		return mapPane;
+	}
+
+	public void setBackgroundMap(BufferedImage backgroundMap) {
+		this.backgroundMap = backgroundMap;
+		mapPane.setPreferredSize(new Dimension(backgroundMap.getWidth(),
+				backgroundMap.getHeight()));
+		this.getViewport().add(mapPane, BorderLayout.CENTER);
 	}
 }
