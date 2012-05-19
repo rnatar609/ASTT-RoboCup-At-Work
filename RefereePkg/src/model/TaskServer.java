@@ -1,27 +1,25 @@
 package model;
 
 import java.net.InetAddress;
-import java.util.Timer;
 
 import javax.swing.event.EventListenerList;
 
 import org.zeromq.*;
 
 import controller.ConnectionListener;
+import controller.TimeKeeper;
 
-public class TaskServer implements Runnable {
+public class TaskServer implements Runnable{
 
 	private String localHost;
 	private int port;
 	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
-	private Timer timer;
-	private SetupPhaseTimeOut setupTimeOut;
-	private RunPhaseTimeOut runTimeOut;
+	private TimeKeeper timekeeper = TimeKeeper.getInstance();
+	private TaskScheduler taskscheduler = TaskScheduler.getInstance();;
 	private Thread serverThread;
 	private String teamName;
-	private static final long setupTime = 120000; // time in milliseconds
-	private static final long runTime = 300000; // time in milliseconds
+	private byte[] clientID;
 
 	public TaskServer() {
 		try {
@@ -34,11 +32,8 @@ public class TaskServer implements Runnable {
 			refereeSocket.bind("tcp://" + localHost + ":" + port);
 			System.out.println("Server socket created: " + refereeSocket
 					+ " ipAddress: " + localHost + " port: " + port);
-			// Create timer related objects
-			timer = new Timer();
-			setupTimeOut = new SetupPhaseTimeOut(this);
-			runTimeOut = new RunPhaseTimeOut(this);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -54,6 +49,8 @@ public class TaskServer implements Runnable {
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
 		byte bytes[] = refereeSocket.recv(0);
+		clientID = refereeSocket.getIdentity();
+		System.out.println(clientID);
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
 		notifyTeamConnected();
@@ -63,41 +60,31 @@ public class TaskServer implements Runnable {
 		// Send task specification
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		refereeSocket.send(reply, 0);
-		System.out.println("String sent to client: "
-				+ tSpec.getTaskSpecString());
+		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
 		// Start setup phase timer
-		timer.schedule(setupTimeOut, TaskServer.setupTime);
-		// Wait for Ready message from client
-		waitForClientReady();
-	}
-
-	public void waitForTaskComplete() {
-		byte recvdMsg[] = refereeSocket.recv(0);
-		System.out.println("In WAIT_FOR_COMPLETE state, received msg: "
-				+ recvdMsg.toString());
-		timer.cancel();
-		//Send disconnect message
-		disconnectClient(teamName);
-	}
-
-	public void waitForClientReady() {
-		byte readyMsg[] = refereeSocket.recv(0);
-		System.out
-				.println("In WAIT_FOR_READY state, received msg: " + readyMsg.toString());
-		timer.cancel();
-		// Send start message
+		taskscheduler.timeOut();
 		sendStartMsgToClient();
 	}
 
+	public void taskComplete() {
+		//byte recvdMsg[] = refereeSocket.recv(0);
+		//System.out.println("In WAIT_FOR_COMPLETE state, received msg: " + recvdMsg.toString());
+		taskscheduler.timer.cancel();
+		timekeeper.stopTimer();
+		listenForConnection();
+		//Send disconnect message
+		//disconnectClient(teamName);
+	}
+
 	public void sendStartMsgToClient() {
-		byte startMsg[] = "Start the Robot".getBytes();
+		byte startMsg[] = "Start the Robot...... Runtime Started.......".getBytes();
 		refereeSocket.send(startMsg, 0);
 		System.out.println("In SEND_START state, sent start msg: " + startMsg.toString());
 		// Start run phase timer
-		timer.schedule(runTimeOut, TaskServer.runTime);
+		//timer.schedule(runTimeOut, TaskServer.runTime);
 		// Wait for Completed message from client
-		waitForTaskComplete();
+		taskComplete();
 	}
 
 	public void disconnectClient(String teamName) {
@@ -151,4 +138,14 @@ public class TaskServer implements Runnable {
 			}
 		}
 	}
+	
+	/*public void waitForClientReady() {
+	byte readyMsg[] = refereeSocket.recv(0);
+	System.out
+			.println("In WAIT_FOR_READY state, received msg: " + readyMsg.toString());
+	timer.cancel();
+	// Send start message
+	sendStartMsgToClient();
+    }*/
+	
 }

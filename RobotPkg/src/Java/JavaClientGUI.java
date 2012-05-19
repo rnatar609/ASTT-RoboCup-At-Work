@@ -29,7 +29,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 	private JLabel jLabel_ipaddress;
 	private JButton jButton_Complete;
 	//private JButton jButton_Start;
-	private JButton jButton_Ready;
+	//private JButton jButton_Ready;
 	private JButton jButton_Connect;
 	private JLabel jStatusBar;
 	private JLabel jLabel_port;
@@ -118,10 +118,6 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 			jButton_Connect.setBounds(127, 125, 138, 29);
 			//END <<  jButton_Connect
 			//START >>  jButton_Ready
-			jButton_Ready = new JButton();
-			getContentPane().add(jButton_Ready);
-			jButton_Ready.setText("Ready");
-			jButton_Ready.setBounds(127, 149, 138, 29);
 			//END <<  jButton_Ready
 			//START >>  jButton_Start
 			//jButton_Start = new JButton();
@@ -149,14 +145,6 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
             	port = jTextField_port.getText();
             	JavaClientGUI jClient = new JavaClientGUI();
             	jClient.obtainTaskSpecFromServer(serverIP, port);
-            }
-        });
-		jButton_Ready.addActionListener(new ActionListener() {
-			 
-            public void actionPerformed(ActionEvent e)
-            {
-            	JavaClientGUI jClient = new JavaClientGUI();
-            	jClient.readymodule(RobotClient_Socket);
             }
         });
 		jButton_Complete.addActionListener(new ActionListener() {

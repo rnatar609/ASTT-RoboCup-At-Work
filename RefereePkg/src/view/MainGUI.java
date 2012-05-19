@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -35,6 +38,7 @@ import model.TaskTriplet;
 import model.TripletEvent;
 import controller.TripletListener;
 import controller.ConnectionListener;
+import controller.TimeKeeper;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -65,6 +69,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JButton saveButton;
 	private JButton openButton;
 	private JButton loadConfigButton;
+	private JToggleButton timerStartStopButton;
 	private JLabel statusLine;
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
@@ -85,6 +90,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem exitMenuItem;
 	private JMenuItem saveMenuItem;
 	private JLabel connectedIcon;
+	//private JLabel timerLabel;
 	private JButton disconnectButton;
 	private JPanel upperServerPanel;
 	private JPanel lowerServerPanel;
@@ -104,6 +110,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
+	
+	//private boolean timerButtonStatus = false;
     
 	public MainGUI() {
 		try {
@@ -317,6 +325,13 @@ public class MainGUI extends JFrame implements TripletListener,
 						// should be overwritten by connected client
 						connectedLabel.setPreferredSize(new Dimension(150, 25));
 					}
+					/*{
+						timerLabel = new JLabel();
+						upperServerPanel.add(timerLabel);
+						timerLabel.setText("0");
+						timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+						timerLabel.setPreferredSize(new Dimension(150, 25));
+					}*/
 					lowerServerPanel = new JPanel();
 					lowerServerPanel.setPreferredSize(new java.awt.Dimension(
 							300, 57));
@@ -328,8 +343,7 @@ public class MainGUI extends JFrame implements TripletListener,
 						disconnectButton = new JButton();
 						lowerServerPanel.add(disconnectButton);
 						disconnectButton.setEnabled(false);
-						disconnectButton
-								.setHorizontalAlignment(SwingConstants.LEFT);
+						disconnectButton.setHorizontalAlignment(SwingConstants.LEFT);
 						disconnectButton.setPreferredSize(buttonDimension);
 						disconnectButton.setMaximumSize(buttonDimension);
 					}
@@ -338,10 +352,30 @@ public class MainGUI extends JFrame implements TripletListener,
 						lowerServerPanel.add(sendTripletsButton);
 						// sendTripletsButton.setAlignmentX(CENTER_ALIGNMENT);
 						sendTripletsButton.setEnabled(false);
-						sendTripletsButton
-								.setHorizontalAlignment(SwingConstants.RIGHT);
+						sendTripletsButton.setHorizontalAlignment(SwingConstants.RIGHT);
 						sendTripletsButton.setPreferredSize(buttonDimension);
 						sendTripletsButton.setMaximumSize(buttonDimension);
+					}
+					{
+						timerStartStopButton = new JToggleButton();
+						timerStartStopButton.addItemListener(new ItemListener( ) {
+						     TimeKeeper tk = TimeKeeper.getInstance();
+							 public void itemStateChanged(ItemEvent ev) {
+						    	  if ( timerStartStopButton.isSelected ( ) ) {
+						    		    tk.startTimer() ;
+						    			System.out.println(tk.MasterTimer.isRunning());
+						    			} 
+						    			else {
+						    			tk.stopTimer();
+						    			System.out.println(tk.MasterTimer.isRunning());
+						    			}
+
+						      }
+						});
+						lowerServerPanel.add(timerStartStopButton);
+						timerStartStopButton.setHorizontalAlignment(SwingConstants.CENTER);
+						timerStartStopButton.setPreferredSize(buttonDimension);
+						timerStartStopButton.setMaximumSize(buttonDimension);
 					}
 				}
 			}
@@ -504,7 +538,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		deleteTripletButton.setAction(deleteTriplet);
 		deleteMenuItem.setAction(deleteTriplet);
 	}
-
+	
 	public File showSaveDialog(FileType ftype) {
 		JFileChooser fc = new JFileChooser();
 		if (ftype == FileType.FILETYPE_TSP)
@@ -580,7 +614,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 		unsavedChanges = false;
 	}
-	
+		
 	@Override
 	public void teamConnected(String teamName) {
 		sendTripletsButton.setEnabled(true);
