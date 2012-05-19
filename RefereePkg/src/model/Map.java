@@ -2,8 +2,7 @@ package model;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
@@ -13,18 +12,25 @@ import view.Utils;
 public class Map {
 	private static final String imageFormat = new String("png");
 	private static BufferedImage map;
-	private static URL url;
-	
-	public static BufferedImage loadBackgroundMap() {
-		url = Class.class.getResource("/model/resources/backgroundMap.png");
-		;
+
+	public static BufferedImage loadBackgroundMap(String path) {
+		ConfigFile cfg = new ConfigFile();
+		String filePath = null;
 		try {
-			map = ImageIO.read(url);
+			cfg.loadProperties();
+			Properties pr = cfg.getProperties();
+			String fileName = pr.getProperty("map");
+			filePath = path + System.getProperty("file.separator") + fileName;
+			File backgroundFile = new File(filePath);
+			map = ImageIO.read(backgroundFile);
+			System.out.println("background file "
+					+ backgroundFile.getAbsolutePath() + " exists.");
 			return map;
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
 			return null;
 		}
+
 	}
 
 	public static boolean saveTaskSpecMap(File file, MapArea mapArea) {

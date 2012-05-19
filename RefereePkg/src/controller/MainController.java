@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -91,8 +92,14 @@ public class MainController {
 			if (file != null) {
 				if (cfgFile.setConfigFile(file)) {
 					initializeValidTriplets();
-					mG.setStatusLine("Loaded configuration file >"
-							+ file.getName() + "<");
+					if (initializeBackgroundMap(file.getParent())) {
+						mG.pack();
+						mG.setStatusLine("Loaded configuration file >"
+								+ file.getName() + "<");
+					} else {
+						mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+								+ "</FONT> No background file loaded. </html>");
+					}
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No config file loaded. </html>");
@@ -316,6 +323,7 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
+		mG.pack();
 	}
 
 	private void initializeValidTriplets() {
@@ -331,6 +339,15 @@ public class MainController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private boolean initializeBackgroundMap(String path) {
+		BufferedImage map = Map.loadBackgroundMap(path);
+		if (map != null) {
+			mG.getMapArea().setBackgroundMap(map);
+			return true;
+		}
+		return false;
 	}
 
 	public void showView() {

@@ -192,7 +192,6 @@ public class MainGUI extends JFrame implements TripletListener,
 						deleteTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 						upTripletButton = new JButton();
 						upTripletButton.setAlignmentX(CENTER_ALIGNMENT);
-						upTripletButton.setFocusable(false);
 						downTripletButton = new JButton();
 						downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 					}
@@ -268,7 +267,7 @@ public class MainGUI extends JFrame implements TripletListener,
 			contentPanel.add(westPanel, BorderLayout.WEST);
 			{
 				mapArea = new MapArea();
-				mapArea.setBackground(Color.white);
+			//	mapArea.setBackground(Color.white);
 			}
 			contentPanel.add(mapArea, BorderLayout.CENTER);
 			{
@@ -569,6 +568,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		saveButton.setEnabled(true);
 		saveMenuItem.setEnabled(true);
 		loadConfigButton.setEnabled(false);
+		loadConfigMenuItem.setEnabled(false);
 	}
 
 	public void setPlacesBoxSelected(String place) {
