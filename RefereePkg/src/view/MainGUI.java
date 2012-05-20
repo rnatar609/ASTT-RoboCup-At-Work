@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Point;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +17,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -39,11 +36,7 @@ import javax.swing.UIManager;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.ConnectionListener;
-<<<<<<< HEAD
-import controller.TimeKeeper;
-=======
 import controller.TripletListener;
->>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -72,7 +65,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JButton saveButton;
 	private JButton openButton;
 	private JButton loadConfigButton;
-	private JToggleButton timerStartStopButton;
 	private JLabel statusLine;
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
@@ -93,7 +85,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem exitMenuItem;
 	private JMenuItem saveMenuItem;
 	private JLabel connectedIcon;
-	//private JLabel timerLabel;
 	private JButton disconnectButton;
 	private JPanel upperServerPanel;
 	private JPanel lowerServerPanel;
@@ -112,14 +103,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
-<<<<<<< HEAD
-	
-	//private boolean timerButtonStatus = false;
-    
-=======
 	private JMenuItem loadConfigMenuItem;
 
->>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 	public MainGUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager
@@ -313,38 +298,6 @@ public class MainGUI extends JFrame implements TripletListener,
 						toolBar.add(openButton);
 						openButton.setName("openButton");
 					}
-<<<<<<< HEAD
-					/*{
-						timerLabel = new JLabel();
-						upperServerPanel.add(timerLabel);
-						timerLabel.setText("0");
-						timerLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-						timerLabel.setPreferredSize(new Dimension(150, 25));
-					}*/
-					lowerServerPanel = new JPanel();
-					lowerServerPanel.setPreferredSize(new java.awt.Dimension(
-							300, 57));
-					BoxLayout serverLowerPanelLayout = new BoxLayout(
-							lowerServerPanel, javax.swing.BoxLayout.LINE_AXIS);
-					lowerServerPanel.setLayout(serverLowerPanelLayout);
-					serverPanel.add(lowerServerPanel);
-					{
-						disconnectButton = new JButton();
-						lowerServerPanel.add(disconnectButton);
-						disconnectButton.setEnabled(false);
-						disconnectButton.setHorizontalAlignment(SwingConstants.LEFT);
-						disconnectButton.setPreferredSize(buttonDimension);
-						disconnectButton.setMaximumSize(buttonDimension);
-					}
-					{
-						sendTripletsButton = new JButton();
-						lowerServerPanel.add(sendTripletsButton);
-						// sendTripletsButton.setAlignmentX(CENTER_ALIGNMENT);
-						sendTripletsButton.setEnabled(false);
-						sendTripletsButton.setHorizontalAlignment(SwingConstants.RIGHT);
-						sendTripletsButton.setPreferredSize(buttonDimension);
-						sendTripletsButton.setMaximumSize(buttonDimension);
-=======
 					{
 						saveButton = new JButton();
 						toolBar.add(saveButton);
@@ -353,28 +306,6 @@ public class MainGUI extends JFrame implements TripletListener,
 					{
 						loadConfigButton = new JButton();
 						toolBar.add(loadConfigButton);
->>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
-					}
-					{
-						timerStartStopButton = new JToggleButton();
-						timerStartStopButton.addItemListener(new ItemListener( ) {
-						     TimeKeeper tk = TimeKeeper.getInstance();
-							 public void itemStateChanged(ItemEvent ev) {
-						    	  if ( timerStartStopButton.isSelected ( ) ) {
-						    		    tk.startTimer() ;
-						    			System.out.println(tk.MasterTimer.isRunning());
-						    			} 
-						    			else {
-						    			tk.stopTimer();
-						    			System.out.println(tk.MasterTimer.isRunning());
-						    			}
-
-						      }
-						});
-						lowerServerPanel.add(timerStartStopButton);
-						timerStartStopButton.setHorizontalAlignment(SwingConstants.CENTER);
-						timerStartStopButton.setPreferredSize(buttonDimension);
-						timerStartStopButton.setMaximumSize(buttonDimension);
 					}
 				}
 				toolBarPanel.add(toolBar, BorderLayout.CENTER);
@@ -529,7 +460,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		deleteTripletButton.setAction(deleteTriplet);
 		deleteMenuItem.setAction(deleteTriplet);
 	}
-	
+
 	public File showSaveDialog(FileType ftype) {
 		JFileChooser fc = new JFileChooser();
 		if (ftype == FileType.FILETYPE_TSP)
@@ -602,11 +533,7 @@ public class MainGUI extends JFrame implements TripletListener,
 			tripletLm.addElement(tT.getTaskTripletString());
 		}
 	}
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> adee8fc058ee3316d10ccf14f2f51e26c50eb344
 	@Override
 	public void teamConnected(String teamName) {
 		sendTripletsButton.setEnabled(true);
