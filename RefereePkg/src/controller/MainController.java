@@ -1,6 +1,8 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -9,6 +11,7 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 import model.Map;
 import model.ConfigFile;
@@ -24,6 +27,7 @@ public class MainController {
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
+	TimeKeeper timekeeper;
 
 	private boolean unsavedChanges = false;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
@@ -265,6 +269,20 @@ public class MainController {
 		}
 	};
 
+	public ItemListener timerListener = new ItemListener() {
+		public void itemStateChanged(ItemEvent ev) {
+			if (mG.getTimerStartStopButton().isSelected()) {
+				timekeeper.startTimer();
+				mG.setTimerStartStopButtonText("Timer Stop");
+				System.out.println(timekeeper.MasterTimer.isRunning());
+			} else {
+				timekeeper.stopTimer();
+				mG.setTimerStartStopButtonText("Timer Start");
+				System.out.println(timekeeper.MasterTimer.isRunning());
+			}
+		}
+	};
+
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
 		// special config file.
@@ -323,6 +341,8 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
+		timekeeper = TimeKeeper.getInstance();
+		mG.addTimerListener(timerListener);
 		mG.pack();
 	}
 

@@ -1,11 +1,9 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Point;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -39,7 +37,6 @@ import javax.swing.UIManager;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.ConnectionListener;
-import controller.TimeKeeper;
 import controller.TripletListener;
 
 /**
@@ -95,7 +92,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JPanel lowerServerPanel;
 	private JLabel connectedLabel;
 	private JPanel serverPanel;
-	private JPanel timerPanel;
 	private JMenuItem openFileMenuItem;
 	private JMenu fileMenu;
 	private JMenuBar menuBar;
@@ -265,36 +261,22 @@ public class MainGUI extends JFrame implements TripletListener,
 									.setHorizontalAlignment(SwingConstants.RIGHT);
 						}
 						lowerServerPanel.add(sendTripletsButton);
-						{
-							timerStartStopButton = new JToggleButton();
-							timerStartStopButton.addItemListener(new ItemListener( ) {
-							     TimeKeeper timekeeper = TimeKeeper.getInstance();
-								 public void itemStateChanged(ItemEvent ev) {
-							    	  if ( timerStartStopButton.isSelected ( ) ) {
-							    		    timekeeper.startTimer() ;
-							    			System.out.println(timekeeper.MasterTimer.isRunning());
-							    			} 
-							    			else {
-							    			timekeeper.stopTimer();
-							    			System.out.println(timekeeper.MasterTimer.isRunning());
-							    			}
-
-							      }
-							});
-							//timerStartStopButton.setEnabled(false);
-							timerStartStopButton
-									.setHorizontalAlignment(SwingConstants.RIGHT);
-						}
-						lowerServerPanel.add(timerStartStopButton);
+					}
+					{
+						timerStartStopButton = new JToggleButton("Timer Start");
+						// timerStartStopButton.setEnabled(false);
+						timerStartStopButton.setAlignmentX(CENTER_ALIGNMENT);
 					}
 					serverPanel.add(lowerServerPanel);
+					serverPanel.add(Box.createVerticalStrut(GAP));
+					serverPanel.add(timerStartStopButton);
 				}
 				westPanel.add(serverPanel, BorderLayout.SOUTH);
 			}
 			contentPanel.add(westPanel, BorderLayout.WEST);
 			{
 				mapArea = new MapArea();
-			//	mapArea.setBackground(Color.white);
+				// mapArea.setBackground(Color.white);
 			}
 			contentPanel.add(mapArea, BorderLayout.CENTER);
 			{
@@ -608,5 +590,17 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setPausesBoxSelected(Short pause) {
 		placesBox.setSelectedItem(pause);
+	}
+
+	public JToggleButton getTimerStartStopButton() {
+		return timerStartStopButton;
+	}
+
+	public void addTimerListener(ItemListener timerListener) {
+		timerStartStopButton.addItemListener(timerListener);
+	}
+
+	public void setTimerStartStopButtonText(String text) {
+		timerStartStopButton.setText(text);
 	}
 }
