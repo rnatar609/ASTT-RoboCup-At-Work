@@ -7,6 +7,7 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
+import controller.TaskScheduler;
 import controller.TimeKeeper;
 
 public class TaskServer implements Runnable{
@@ -70,8 +71,11 @@ public class TaskServer implements Runnable{
 	public void taskComplete() {
 		//byte recvdMsg[] = refereeSocket.recv(0);
 		//System.out.println("In WAIT_FOR_COMPLETE state, received msg: " + recvdMsg.toString());
+		//taskExecutionTimeInSeconds =
+		timekeeper.totalTeamTimeInMinutes = ((timekeeper.getTimer()) / 60);
 		taskscheduler.timer.cancel();
 		timekeeper.stopTimer();
+		System.out.println("Execution Time for " + teamName + "is" + timekeeper.totalTeamTimeInMinutes);
 		listenForConnection();
 		//Send disconnect message
 		//disconnectClient(teamName);

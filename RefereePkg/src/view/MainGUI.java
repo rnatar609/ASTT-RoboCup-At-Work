@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Point;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -36,6 +39,7 @@ import javax.swing.UIManager;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.ConnectionListener;
+import controller.TimeKeeper;
 import controller.TripletListener;
 
 /**
@@ -69,6 +73,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
 	private JButton sendTripletsButton;
+	private JToggleButton timerStartStopButton;
 	private JPanel boxPanel;
 	private JComboBox<String> orientationsBox;
 	private JComboBox<Short> pausesBox;
@@ -90,6 +95,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JPanel lowerServerPanel;
 	private JLabel connectedLabel;
 	private JPanel serverPanel;
+	private JPanel timerPanel;
 	private JMenuItem openFileMenuItem;
 	private JMenu fileMenu;
 	private JMenuBar menuBar;
@@ -259,6 +265,27 @@ public class MainGUI extends JFrame implements TripletListener,
 									.setHorizontalAlignment(SwingConstants.RIGHT);
 						}
 						lowerServerPanel.add(sendTripletsButton);
+						{
+							timerStartStopButton = new JToggleButton();
+							timerStartStopButton.addItemListener(new ItemListener( ) {
+							     TimeKeeper timekeeper = TimeKeeper.getInstance();
+								 public void itemStateChanged(ItemEvent ev) {
+							    	  if ( timerStartStopButton.isSelected ( ) ) {
+							    		    timekeeper.startTimer() ;
+							    			System.out.println(timekeeper.MasterTimer.isRunning());
+							    			} 
+							    			else {
+							    			timekeeper.stopTimer();
+							    			System.out.println(timekeeper.MasterTimer.isRunning());
+							    			}
+
+							      }
+							});
+							//timerStartStopButton.setEnabled(false);
+							timerStartStopButton
+									.setHorizontalAlignment(SwingConstants.RIGHT);
+						}
+						lowerServerPanel.add(timerStartStopButton);
 					}
 					serverPanel.add(lowerServerPanel);
 				}

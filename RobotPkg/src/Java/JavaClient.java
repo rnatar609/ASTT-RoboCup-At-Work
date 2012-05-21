@@ -25,8 +25,8 @@ public class JavaClient {
 		byte[] reply_taskspec = RobotClient_Socket.recv(0);
 		taskSpecFromServer = new String(reply_taskspec);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
-		RobotClient_Socket.send(ready.getBytes(), 0);
-		System.out.println("Ready to Roll");
+		//RobotClient_Socket.send(ready.getBytes(), 0);
+		//System.out.println("Ready to Roll");
 		byte[] reply_start = RobotClient_Socket.recv(0);
 		start = new String(reply_start);
 		System.out.println("Starting the navigation");

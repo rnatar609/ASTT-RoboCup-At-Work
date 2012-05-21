@@ -9,6 +9,8 @@ import model.TaskServer;
 
 public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
+	public int taskExecutionTimeInSeconds;
+	public int totalTeamTimeInMinutes;
 	public double configurationTimeInMinutes = 2.0;
 	public double runTimeInMinutes = 5.0;
 	public double maximumTimeInMinutes = configurationTimeInMinutes + runTimeInMinutes;

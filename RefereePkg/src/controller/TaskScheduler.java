@@ -1,15 +1,16 @@
-package model;
+package controller;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import controller.TimeKeeper;
+import model.TaskServer;
+
 
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
 	private TimeKeeper timekeeper = TimeKeeper.getInstance();
 	private TaskScheduler taskscheduler;
-	private TaskServer tServer;
+	private TaskServer taskServer;
 	
 	private static TaskScheduler instance = null;
 	   protected TaskScheduler() {
@@ -35,7 +36,7 @@ public class TaskScheduler extends TimerTask {
 
 	@Override
 	public void run() {
-		tServer.listenForConnection();
+		taskServer.taskComplete();
 	}
 
 }
