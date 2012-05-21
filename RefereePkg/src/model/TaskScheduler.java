@@ -1,9 +1,10 @@
-package controller;
+package model;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import model.TaskServer;
+import controller.TimeKeeper;
+
 
 
 public class TaskScheduler extends TimerTask {
