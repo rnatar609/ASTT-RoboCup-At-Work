@@ -7,8 +7,9 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import controller.TaskScheduler;
 import controller.TimeKeeper;
+import model.TaskScheduler;
+import model.Logging;
 
 public class TaskServer implements Runnable{
 
@@ -18,9 +19,11 @@ public class TaskServer implements Runnable{
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private TimeKeeper timekeeper = TimeKeeper.getInstance();
 	private TaskScheduler taskscheduler = TaskScheduler.getInstance();;
+	private Logging logg = Logging.getInstance("TaskLog.log");
 	private Thread serverThread;
 	private String teamName;
 	private byte[] clientID;
+	private String comm= "Communication";
 
 	public TaskServer() {
 		try {
@@ -33,6 +36,8 @@ public class TaskServer implements Runnable{
 			refereeSocket.bind("tcp://" + localHost + ":" + port);
 			System.out.println("Server socket created: " + refereeSocket
 					+ " ipAddress: " + localHost + " port: " + port);
+			logg.LoggingFile(comm, "Server socket created: "
+					+ " ipAddress: " + localHost + " port: " + port);
 		} 
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -44,16 +49,19 @@ public class TaskServer implements Runnable{
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
 		System.out.println("Server thread started... ");
+		logg.LoggingFile(comm, "Server thread started... ");
 	}
 
 	public void run() {
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
+		logg.LoggingFile(comm, "Waiting for Client Requests on socket... ");
 		byte bytes[] = refereeSocket.recv(0);
 		clientID = refereeSocket.getIdentity();
 		System.out.println(clientID);
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
+		logg.LoggingFile(comm, "Received message: " + teamName + " from client.");
 		notifyTeamConnected();
 	}
 
@@ -62,6 +70,7 @@ public class TaskServer implements Runnable{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		refereeSocket.send(reply, 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
+		logg.LoggingFile(comm, "String sent to client: "+ tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
 		// Start setup phase timer
 		taskscheduler.timeOut();
@@ -76,6 +85,7 @@ public class TaskServer implements Runnable{
 		taskscheduler.timer.cancel();
 		timekeeper.stopTimer();
 		System.out.println("Execution Time for " + teamName + "is" + timekeeper.totalTeamTimeInMinutes);
+		logg.LoggingFile(comm, "Execution Time for " + teamName + "is" + timekeeper.totalTeamTimeInMinutes);
 		listenForConnection();
 		//Send disconnect message
 		//disconnectClient(teamName);
@@ -97,6 +107,7 @@ public class TaskServer implements Runnable{
 		byte reply[] = msg.getBytes();
 		refereeSocket.send(reply, 0);
 		System.out.println("Disconnect msg sent to client: " + msg);
+		logg.LoggingFile(comm, "Disconnect msg sent to client: " + msg);
 		notifyTeamDisconnected();
 		// Listen for new connection requests
 		listenForConnection();

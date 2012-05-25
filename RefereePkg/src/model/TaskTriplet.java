@@ -8,7 +8,7 @@ public class TaskTriplet {
 	private String place;
 	private String orientation;
 	private Short pause;
-
+	
 	/* Default constructor */
 	public TaskTriplet() {
 		place = "D0";

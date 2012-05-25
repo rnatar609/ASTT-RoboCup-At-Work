@@ -19,6 +19,7 @@ import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
 import model.TaskServer;
+import model.Logging;
 import view.MainGUI;
 import view.FileType;
 
@@ -27,8 +28,9 @@ public class MainController {
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
+	private Logging logg = Logging.getInstance("TaskLog.log");
+	private String triplets= "Triplets";
 	TimeKeeper timekeeper;
-
 	private boolean unsavedChanges = false;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 
@@ -51,6 +53,8 @@ public class MainController {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					unsavedChanges = false;
+					logg.LoggingFile(triplets, "saved actual task specification in >"
+							+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -75,6 +79,8 @@ public class MainController {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
 					unsavedChanges = false;
+					logg.LoggingFile(triplets,"Opened task specification >"
+							+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
@@ -99,6 +105,8 @@ public class MainController {
 					if (initializeBackgroundMap(file.getParent())) {
 						mG.pack();
 						mG.setStatusLine("Loaded configuration file >"
+								+ file.getName() + "<");
+						logg.LoggingFile(triplets,"Loaded configuration file >"
 								+ file.getName() + "<");
 					} else {
 						mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
@@ -139,6 +147,9 @@ public class MainController {
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
 					unsavedChanges = true;
+					logg.LoggingFile(triplets,"Triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause()
+							+ ") moved up.");
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
 			} else {
@@ -161,6 +172,9 @@ public class MainController {
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
 					unsavedChanges = true;
+					logg.LoggingFile(triplets, "Triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause()
+							+ ") moved down.");
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
 			} else {
@@ -188,6 +202,9 @@ public class MainController {
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
 						unsavedChanges = true;
+						logg.LoggingFile(triplets, "Updated Triplet (" + t.getPlace()
+								+ ", " + t.getOrientation() + ", "
+								+ t.getPause() + ").");
 					} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
@@ -212,6 +229,8 @@ public class MainController {
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
 				unsavedChanges = true;
+				logg.LoggingFile(triplets, "added triplet (" + t.getPlace() + ", "
+						+ t.getOrientation() + ", " + t.getPause() + ")");
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -233,6 +252,8 @@ public class MainController {
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
 					unsavedChanges = true;
+					logg.LoggingFile(triplets, "Deleted triplet (" + t.getPlace() + ", "
+							+ t.getOrientation() + ", " + t.getPause() + ")");
 				} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
@@ -248,6 +269,7 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			tServer.sendTaskSpecToClient(tS);
 			mG.setStatusLine("Task specification sent to the team.");
+			logg.LoggingFile(triplets, "Task specification sent to the team.");
 		}
 	};
 
@@ -258,6 +280,7 @@ public class MainController {
 			String teamName = mG.getConnectedLabel();
 			tServer.disconnectClient(teamName);
 			mG.setStatusLine("Team " + teamName + " disconnected.");
+			logg.LoggingFile(triplets, "Team " + teamName + " disconnected.");
 		}
 	};
 
