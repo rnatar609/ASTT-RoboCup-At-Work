@@ -13,33 +13,39 @@ import java.text.*;
  *
  */
 public class Logging {
-	
-	boolean exists = false;
-	static String filename;
+
 	private static Logging instance = null;
+	static String filename = new String("RefereeSystemDefaultLog.log"); //default file name
 	File file;	
-	BufferedWriter output;
 	DateFormat dateformat;
-	Date date;
 	
 	protected Logging() {
+		dateformat = new SimpleDateFormat("HH:mm:ss");
 		file=new File(filename);
-		exists = file.exists();
+		BufferedWriter output;
+		boolean exists = file.exists();
 		try {
 			if(!exists) {			
 				file.createNewFile();
 		    }
-			else {
+			else 
+			{
 		    	output = new BufferedWriter(new FileWriter(file));
 				output.write("");
 				output.close();
 		    }	
 		}
-		catch(IOException e) {}
+		catch(IOException e){
+			System.out.println("Exception caught in Logging constructor: " + e);
+		}
 	}
 	
-	public static Logging getInstance(String fileName) {
-		filename = fileName;
+	public static void setFileName( String fileName)
+	{
+		filename = fileName;	
+	}
+	
+	public static Logging getInstance() {
 	    if(instance == null) {
 		         instance = new Logging();
 		}
@@ -48,8 +54,9 @@ public class Logging {
 	
     public void LoggingFile(String logIdentifier, String args) {
     	dateformat = new SimpleDateFormat("HH:mm:ss");
-		date = new Date();
 		try {
+			Date date = new Date();
+			BufferedWriter output;
 			output = new BufferedWriter(new FileWriter(file,true));
 			output.write("[" + dateformat.format(date.getTime()) + "] " + logIdentifier + ": " + args + "\n");
 			output.close();

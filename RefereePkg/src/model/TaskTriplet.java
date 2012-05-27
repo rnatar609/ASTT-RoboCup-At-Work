@@ -86,10 +86,10 @@ public class TaskTriplet {
 		return vte.isPauseValid(s);
 	}
 
-	static boolean getValidTripletElements() throws Exception {
+/*	static boolean getValidTripletElements() throws Exception {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		return vte.readFromConfigFile();
-	}
+	}*/
 
 	public void setState(State newState) {
 		this.state = newState;

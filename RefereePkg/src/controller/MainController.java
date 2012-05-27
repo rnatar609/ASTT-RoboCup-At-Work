@@ -29,7 +29,7 @@ public class MainController {
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
-	private Logging logg = Logging.getInstance("TaskLog.log");
+	private Logging logg;
 	private String triplets = "Triplets";
 	private TimeKeeper timekeeper;
 	private boolean unsavedChanges = false;
@@ -104,9 +104,15 @@ public class MainController {
 			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
 			if (file != null) {
 				if (cfgFile.setConfigFile(file)) {
+					try{
+					cfgFile.loadProperties();
+					}catch(Exception e){
+						System.out.println("Exception while loading config properties: " + e);
+					}
 					initializeValidTriplets();
 					if (initializeBackgroundMap(file.getParent())) {
 						mG.pack();
+						mG.configFileLoaded();
 						mG.setStatusLine("Loaded configuration file >"
 								+ file.getName() + "<");
 						logg.LoggingFile(triplets,
@@ -363,6 +369,8 @@ public class MainController {
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
 		// special config file.
+		Logging.setFileName("TaskLog.log");
+		logg = Logging.getInstance();
 		tS = new TaskSpec();
 		mG = new MainGUI();
 		cfgFile = new ConfigFile();
@@ -428,11 +436,10 @@ public class MainController {
 	private void initializeValidTriplets() {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		try {
-			if (vte.readFromConfigFile()) {
+			if (vte.readFromConfigFile(cfgFile)) {
 				mG.setValidPositions(vte.getValidPositions());
 				mG.setValidOrientations(vte.getValidOrientations());
 				mG.setValidPauses(vte.getValidPauses());
-				mG.configFileLoaded();
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -440,8 +447,8 @@ public class MainController {
 		}
 	}
 
-	private boolean initializeBackgroundMap(String path) {
-		BufferedImage map = Map.loadBackgroundMap(path);
+	private boolean initializeBackgroundMap(String pathPrefix) {
+		BufferedImage map = Map.loadBackgroundMap(cfgFile, pathPrefix);
 		if (map != null) {
 			mG.getMapArea().setBackgroundMap(map);
 			return true;
