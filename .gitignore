@@ -1,6 +1,7 @@
 *.class
 .classpath
 .metadata
+TaskLog.log
 bin/
 /RobotPkg/nbproject/private/
 /RefereePkg/nbproject/private/

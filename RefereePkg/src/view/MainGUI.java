@@ -136,6 +136,10 @@ public class MainGUI extends JFrame implements TripletListener,
 				this.setValueAt(null, i, c);
 			}
 		}
+		
+		public boolean isCellEditable(int row, int col) {  
+			   return false;  
+			 } 
 	}
 
 	public MainGUI() {

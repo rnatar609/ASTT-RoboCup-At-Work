@@ -39,7 +39,7 @@ public class MainController {
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
 	private Logging logg = Logging.getInstance("TaskLog.log");
-	private String triplets= "Triplets";
+	private String triplets = "Triplets";
 	TimeKeeper timekeeper;
 	private boolean unsavedChanges = false;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
@@ -63,8 +63,10 @@ public class MainController {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					unsavedChanges = false;
-					logg.LoggingFile(triplets, "saved actual task specification in >"
-							+ file.getName() + "<");
+					logg.LoggingFile(
+							triplets,
+							"saved actual task specification in >"
+									+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -89,7 +91,7 @@ public class MainController {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
 					unsavedChanges = false;
-					logg.LoggingFile(triplets,"Opened task specification >"
+					logg.LoggingFile(triplets, "Opened task specification >"
 							+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
@@ -116,8 +118,9 @@ public class MainController {
 						mG.pack();
 						mG.setStatusLine("Loaded configuration file >"
 								+ file.getName() + "<");
-						logg.LoggingFile(triplets,"Loaded configuration file >"
-								+ file.getName() + "<");
+						logg.LoggingFile(triplets,
+								"Loaded configuration file >" + file.getName()
+										+ "<");
 					} else {
 						mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 								+ "</FONT> No background file loaded. </html>");
@@ -152,13 +155,14 @@ public class MainController {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet t = tS.moveUpTriplet(pos);
 				if (t != null) {
-					mG.getTripletsTable().changeSelection(pos-1, -1, false, false);
+					mG.getTripletsTable().changeSelection(pos - 1, -1, false,
+							false);
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
 					unsavedChanges = true;
-					logg.LoggingFile(triplets,"Triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause()
+					logg.LoggingFile(triplets, "Triplet (" + t.getPlace()
+							+ ", " + t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
@@ -177,13 +181,14 @@ public class MainController {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet t = tS.moveDownTriplet(pos);
 				if (t != null) {
-					mG.getTripletsTable().changeSelection(pos+1, -1, false, false);
+					mG.getTripletsTable().changeSelection(pos + 1, -1, false,
+							false);
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
 					unsavedChanges = true;
-					logg.LoggingFile(triplets, "Triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause()
+					logg.LoggingFile(triplets, "Triplet (" + t.getPlace()
+							+ ", " + t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
@@ -212,9 +217,11 @@ public class MainController {
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
 						unsavedChanges = true;
-						logg.LoggingFile(triplets, "Updated Triplet (" + t.getPlace()
-								+ ", " + t.getOrientation() + ", "
-								+ t.getPause() + ").");
+						logg.LoggingFile(
+								triplets,
+								"Updated Triplet (" + t.getPlace() + ", "
+										+ t.getOrientation() + ", "
+										+ t.getPause() + ").");
 					} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
@@ -239,8 +246,8 @@ public class MainController {
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
 				unsavedChanges = true;
-				logg.LoggingFile(triplets, "added triplet (" + t.getPlace() + ", "
-						+ t.getOrientation() + ", " + t.getPause() + ")");
+				logg.LoggingFile(triplets, "added triplet (" + t.getPlace()
+						+ ", " + t.getOrientation() + ", " + t.getPause() + ")");
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -252,7 +259,7 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (mG.getTripletsTable().getSelectedRowCount() > 0) {			
+			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				String msg = "Do you want to delete the triplet "
 						+ tS.getTaskTripletList().get(pos)
@@ -262,8 +269,11 @@ public class MainController {
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
 					unsavedChanges = true;
-					logg.LoggingFile(triplets, "Deleted triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause() + ")");
+					logg.LoggingFile(
+							triplets,
+							"Deleted triplet (" + t.getPlace() + ", "
+									+ t.getOrientation() + ", " + t.getPause()
+									+ ")");
 				} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
@@ -316,59 +326,58 @@ public class MainController {
 			}
 		}
 	};
-	
-	public MouseListener tripletTableListener = new MouseListener () {
+
+	public MouseListener tripletTableListener = new MouseListener() {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			int selectedRow = mG.getTripletsTable().getSelectedRow();
-            System.out.println("Mouse clicked at index " + selectedRow);
-            if (selectedRow >= 0)
-            {
-            	TaskTriplet tT = tS.getTaskTripletAtIndex(selectedRow);
+			System.out.println("Mouse clicked at index " + selectedRow);
+			if (selectedRow >= 0) {
+				TaskTriplet tT = tS.getTaskTripletAtIndex(selectedRow);
 				mG.setPlacesBoxSelected(tT.getPlace());
 				mG.setOrientationsBoxSelected(tT.getOrientation());
 				mG.setPausesBoxSelected(tT.getPause());
-				mG.setStatusLine("Selected triplet (" + tT.getPlace()
-						+ ", " + tT.getOrientation() + ", "
-						+ tT.getPause() + ").");
-            }
-			
+				mG.setStatusLine("Selected triplet (" + tT.getPlace() + ", "
+						+ tT.getOrientation() + ", " + tT.getPause() + ").");
+			}
+
 		}
 
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			int selectedRow = mG.getTripletsTable().getSelectedRow();
-			  int selectedColumn = mG.getTripletsTable().getSelectedColumn();
-	        if (selectedColumn > 0) {
-				TaskTriplet tT = tS.setTripletState(selectedRow, selectedColumn);
-						mG.setStatusLine("Updated triplet state (" + tT.getPlace()
-								+ ", " + tT.getOrientation() + ", "
-								+ tT.getPause() + ").");
-						mG.setTableCellCorrected(selectedRow, selectedColumn);
-						mG.getTripletsTable().clearSelection();
-						}
+			int selectedColumn = mG.getTripletsTable().getSelectedColumn();
+			if (selectedColumn > 0) {
+				TaskTriplet tT = tS
+						.setTripletState(selectedRow, selectedColumn);
+				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
+						+ ", " + tT.getOrientation() + ", " + tT.getPause()
+						+ ").");
+				mG.setTableCellCorrected(selectedRow, selectedColumn);
+				mG.getTripletsTable().clearSelection();
+			}
 		}
-		
+
 	};
 
 	public MainController(String[] args) {
