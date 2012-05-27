@@ -17,14 +17,9 @@ public class TimeKeeper{
 	public double elapsedTimeInMinutes;
 	public double remainingTimeInMinutes;
 	private TaskServer tServer;
-<<<<<<< HEAD
-	private Logging logg = Logging.getInstance("TaskLog.log");
-	private String timerOp= "Timer";
 	private static MainGUI mainGui = null;
-=======
 	private Logging logg;
 	private String timerLogID= "Timer";
->>>>>>> 22992518be7d133e8c2681c8a51adc10d5ca5ce2
 	
 	private static TimeKeeper instance = null;
 	   protected TimeKeeper() {
@@ -69,12 +64,8 @@ public class TimeKeeper{
 	public void startTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.start();
-<<<<<<< HEAD
 		mainGui.setTimerLabelText("00:00");
-		logg.LoggingFile(timerOp,"Started");
-=======
 		logg.LoggingFile(timerLogID,"Started");
->>>>>>> 22992518be7d133e8c2681c8a51adc10d5ca5ce2
 	}
 	
 	public void stopTimer(){
