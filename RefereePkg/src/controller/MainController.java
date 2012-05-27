@@ -1,9 +1,6 @@
 package controller;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -16,22 +13,16 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 
-import model.Map;
 import model.ConfigFile;
+import model.Logging;
+import model.Map;
+import model.TaskServer;
 import model.TaskSpec;
 import model.TaskTriplet;
 import model.ValidTripletElements;
-import model.TaskServer;
-import model.Logging;
-import view.MainGUI;
 import view.FileType;
+import view.MainGUI;
 
 public class MainController {
 	private MainGUI mG;
