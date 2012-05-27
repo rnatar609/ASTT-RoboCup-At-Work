@@ -72,6 +72,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JButton openButton;
 	private JButton loadConfigButton;
 	private JLabel statusLine;
+	private JLabel timerLabel;
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
 	private JButton sendTripletsButton;
@@ -94,6 +95,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JLabel connectedIcon;
 	private JButton disconnectButton;
 	private JPanel upperServerPanel;
+	private JPanel middleServerPanel;
 	private JPanel lowerServerPanel;
 	private JLabel connectedLabel;
 	private JPanel serverPanel;
@@ -280,37 +282,54 @@ public class MainGUI extends JFrame implements TripletListener,
 						upperServerPanel.add(connectedLabel);
 					}
 					serverPanel.add(upperServerPanel);
+					
 					serverPanel.add(Box.createVerticalStrut(GAP));
 					{
-						lowerServerPanel = new JPanel();
-						BoxLayout serverLowerPanelLayout = new BoxLayout(
-								lowerServerPanel,
+						middleServerPanel = new JPanel();
+						BoxLayout serverMiddlePanelLayout = new BoxLayout(
+								middleServerPanel,
 								javax.swing.BoxLayout.LINE_AXIS);
-						lowerServerPanel.setLayout(serverLowerPanelLayout);
+						middleServerPanel.setLayout(serverMiddlePanelLayout);
 						{
 							disconnectButton = new JButton();
 							disconnectButton.setEnabled(false);
 							disconnectButton
 									.setHorizontalAlignment(SwingConstants.LEFT);
 						}
-						lowerServerPanel.add(disconnectButton);
-						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
+						middleServerPanel.add(disconnectButton);
+						middleServerPanel.add(Box.createHorizontalStrut(GAP));
 						{
 							sendTripletsButton = new JButton();
 							sendTripletsButton.setEnabled(false);
 							sendTripletsButton
 									.setHorizontalAlignment(SwingConstants.RIGHT);
 						}
-						lowerServerPanel.add(sendTripletsButton);
+						middleServerPanel.add(sendTripletsButton);
 					}
-					{
-						timerStartStopButton = new JToggleButton("Timer Start");
-						// timerStartStopButton.setEnabled(false);
-						timerStartStopButton.setAlignmentX(CENTER_ALIGNMENT);
-					}
-					serverPanel.add(lowerServerPanel);
+					serverPanel.add(middleServerPanel);
+					
 					serverPanel.add(Box.createVerticalStrut(GAP));
-					serverPanel.add(timerStartStopButton);
+					{
+						lowerServerPanel = new JPanel();
+						BoxLayout serverLowerPanelLayout = new BoxLayout(
+						        lowerServerPanel,
+						        javax.swing.BoxLayout.LINE_AXIS);
+						lowerServerPanel.setLayout(serverLowerPanelLayout);
+						{
+							timerStartStopButton = new JToggleButton("Timer Start");
+							// timerStartStopButton.setEnabled(false);
+							timerStartStopButton.setAlignmentX(SwingConstants.LEFT);
+						}
+						lowerServerPanel.add(timerStartStopButton);
+						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
+						{
+							timerLabel = new JLabel();
+							timerLabel.setAlignmentX(SwingConstants.RIGHT);
+							timerLabel.setText("00:00"); 
+						}
+						lowerServerPanel.add(timerLabel);
+					}	
+					serverPanel.add(lowerServerPanel);
 				}
 				westPanel.add(serverPanel, BorderLayout.SOUTH);
 			}
@@ -674,5 +693,10 @@ public class MainGUI extends JFrame implements TripletListener,
 		if (column == 2)
 			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
 		tripletTable.repaint();
+	}
+	
+	public void setTimerLabelText(String s)
+	{
+		timerLabel.setText(s);
 	}
 }

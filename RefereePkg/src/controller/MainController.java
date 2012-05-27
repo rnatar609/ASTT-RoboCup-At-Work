@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -13,6 +14,7 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 import model.ConfigFile;
 import model.Logging;
@@ -370,6 +372,8 @@ public class MainController {
 		}
 
 	};
+	
+	
 
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
@@ -430,7 +434,7 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
-		timekeeper = TimeKeeper.getInstance();
+		timekeeper = TimeKeeper.getInstance(mG);
 		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
 		mG.pack();
@@ -467,5 +471,5 @@ public class MainController {
 	private boolean warningIgnored(String actionName) {
 		return (mG.getUserConfirmation(unsavedWarningMsg, "Confirm "
 				+ actionName) != 0);
-	}
+	}	
 }

@@ -6,6 +6,7 @@ import java.io.*;
 import javax.swing.Timer;
 import model.TaskServer;
 import model.Logging;
+import view.MainGUI;
 
 public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
@@ -19,16 +20,25 @@ public class TimeKeeper{
 	private TaskServer tServer;
 	private Logging logg = Logging.getInstance("TaskLog.log");
 	private String timerOp= "Timer";
+	private static MainGUI mainGui = null;
 	
 	private static TimeKeeper instance = null;
 	   protected TimeKeeper() {
 	      // Exists only to defeat instantiation.
 	   }
-	   public static TimeKeeper getInstance() {
+	   public static TimeKeeper getInstance(MainGUI mG) {
 	      if(instance == null) {
 	         instance = new TimeKeeper();
 	      }
+	      mainGui = mG;
 	      return instance;
+	   }
+	   
+	   public static TimeKeeper getInstance() {
+		   if(instance == null) {
+			   instance = new TimeKeeper();
+		   }
+		   return instance;
 	   }
 
 	public Timer MasterTimer = new Timer(1000, new ActionListener() {
@@ -39,7 +49,9 @@ public class TimeKeeper{
         	//System.out.println(timeCounterInSeconds);
         	int minutes = (int) timeCounterInSeconds / 60;
         	int seconds = (int) (timeCounterInSeconds) % 60;
-        	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds));
+        	
+        	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
+        	mainGui.setTimerLabelText( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
         	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
         		MasterTimer.stop();
         		timeCounterInSeconds = 0;
@@ -47,10 +59,12 @@ public class TimeKeeper{
         	}
         }
     });
-	
+
+	   
 	public void startTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.start();
+		mainGui.setTimerLabelText("00:00");
 		logg.LoggingFile(timerOp,"Started");
 	}
 	
