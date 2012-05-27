@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import javax.swing.Timer;
 import model.TaskServer;
 import model.Logging;
@@ -35,13 +36,17 @@ public class TimeKeeper{
         public void actionPerformed(ActionEvent e)
         {
         	timeCounterInSeconds++;
-        	System.out.println(timeCounterInSeconds);
-        	if(timeCounterInSeconds > (maximumTimeInMinutes * 60)){
+        	//System.out.println(timeCounterInSeconds);
+        	int minutes = (int) timeCounterInSeconds / 60;
+        	int seconds = (int) (timeCounterInSeconds) % 60;
+        	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds));
+        	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
+        		MasterTimer.stop();
         		timeCounterInSeconds = 0;
         		tServer.listenForConnection();
         	}
         }
-        });
+    });
 	
 	public void startTimer(){
 		System.out.println(timeCounterInSeconds);
@@ -52,6 +57,7 @@ public class TimeKeeper{
 	public void stopTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.stop();
+		timeCounterInSeconds = 0;
 		logg.LoggingFile(timerOp,"Stopped in " + timeCounterInSeconds + "sec");
 	}
 	
