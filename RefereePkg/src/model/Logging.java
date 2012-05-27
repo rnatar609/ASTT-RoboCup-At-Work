@@ -23,8 +23,6 @@ public class Logging {
 	Date date;
 	
 	protected Logging() {
-		dateformat = new SimpleDateFormat("HH:mm:ss");
-		date = new Date();
 		file=new File(filename);
 		exists = file.exists();
 		try {
@@ -49,6 +47,8 @@ public class Logging {
 	}
 	
     public void LoggingFile(String logIdentifier, String args) {
+    	dateformat = new SimpleDateFormat("HH:mm:ss");
+		date = new Date();
 		try {
 			output = new BufferedWriter(new FileWriter(file,true));
 			output.write("[" + dateformat.format(date.getTime()) + "] " + logIdentifier + ": " + args + "\n");
