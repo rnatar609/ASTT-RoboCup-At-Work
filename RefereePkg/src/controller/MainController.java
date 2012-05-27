@@ -435,7 +435,7 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
-		timekeeper = TimeKeeper.getInstance();
+		timekeeper = TimeKeeper.getInstance(mG);
 		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
 		mG.addActionListener(actionListener);

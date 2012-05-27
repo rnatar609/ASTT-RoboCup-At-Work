@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import model.TaskServer;
 import model.Logging;
+import view.MainGUI;
 
 public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
@@ -16,21 +17,30 @@ public class TimeKeeper{
 	public double elapsedTimeInMinutes;
 	public double remainingTimeInMinutes;
 	private TaskServer tServer;
+	private MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
 	
 	private static TimeKeeper instance = null;
-	   protected TimeKeeper() {
+	   protected TimeKeeper(MainGUI mG) {
 		  logg = Logging.getInstance();
+		  mainGui = mG;
 	      // Exists only to defeat instantiation.
 	   }
-	   public static TimeKeeper getInstance() {
+	   public static TimeKeeper getInstance(MainGUI mG) {
 	      if(instance == null) {
-	         instance = new TimeKeeper();
+	         instance = new TimeKeeper(mG);
 	      }
 	      return instance;
 	   }
-
+	   
+	   public static TimeKeeper getInstance() {
+		      if(instance == null) {
+		         System.out.println("error");
+		      }
+		      return instance;
+		   }
+	 
 	public Timer MasterTimer = new Timer(1000, new ActionListener() {
 		 
         public void actionPerformed(ActionEvent e)
@@ -39,7 +49,9 @@ public class TimeKeeper{
         	//System.out.println(timeCounterInSeconds);
         	int minutes = (int) timeCounterInSeconds / 60;
         	int seconds = (int) (timeCounterInSeconds) % 60;
-        	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds));
+        	
+        	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
+        	mainGui.setTimerLabelText( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
         	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
         		MasterTimer.stop();
         		timeCounterInSeconds = 0;
@@ -47,10 +59,12 @@ public class TimeKeeper{
         	}
         }
     });
-	
+
+	   
 	public void startTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.start();
+		mainGui.setTimerLabelText("00:00");
 		logg.LoggingFile(timerLogID,"Started");
 	}
 	
