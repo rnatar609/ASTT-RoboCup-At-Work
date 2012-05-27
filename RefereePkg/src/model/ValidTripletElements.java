@@ -25,10 +25,8 @@ public class ValidTripletElements {
 		validPauses = new ArrayList<Short>();
 	}
 
-	private boolean populateLists() throws Exception {
+	private boolean populateLists(ConfigFile cfg) throws Exception {
 		boolean allValid = true;
-		ConfigFile cfg = new ConfigFile();
-		cfg.loadProperties();
 		Properties pr = cfg.getProperties();
 		allValid &= populateValidPlaces(pr);
 		allValid &= populateValidOrientations(pr);
@@ -182,9 +180,9 @@ public class ValidTripletElements {
 		return str;
 	}
 
-	public boolean readFromConfigFile() throws Exception {
+	public boolean readFromConfigFile(ConfigFile cfg) throws Exception {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
-		boolean allValid = vte.populateLists();
+		boolean allValid = vte.populateLists(cfg);
 		if (!allValid) {
 			System.out.println("There are invalid values in the Config File.");
 		}
