@@ -53,6 +53,7 @@ public class Logging {
 	}
 	
     public void LoggingFile(String logIdentifier, String args) {
+    	dateformat = new SimpleDateFormat("HH:mm:ss");
 		try {
 			Date date = new Date();
 			BufferedWriter output;
