@@ -7,7 +7,6 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import controller.TaskScheduler;
 import controller.TimeKeeper;
 
 public class TaskServer implements Runnable{

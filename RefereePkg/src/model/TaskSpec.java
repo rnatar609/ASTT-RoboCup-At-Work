@@ -15,6 +15,8 @@ import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
 
+import model.TaskTriplet.State;
+
 import view.Utils;
 import controller.TripletListener;
 
@@ -22,12 +24,10 @@ public class TaskSpec {
 	private List<TaskTriplet> taskTripletList;
 	private EventListenerList listOfTripletListeners = new EventListenerList();
 
-	private String removeSpaces( String str )
-	{
-		StringTokenizer tokens = new StringTokenizer(str," ",false);
+	private String removeSpaces(String str) {
+		StringTokenizer tokens = new StringTokenizer(str, " ", false);
 		String newStr = "";
-		while ( tokens.hasMoreElements() ) 
-		{
+		while (tokens.hasMoreElements()) {
 			newStr += tokens.nextElement();
 		}
 		return newStr;
@@ -76,13 +76,13 @@ public class TaskSpec {
 
 	public void addTriplet(TaskTriplet triplet) {
 		taskTripletList.add(triplet);
-		notifyTripletAdded(new TripletEvent(triplet, taskTripletList.size(),
+		notifyTaskSpecChanged(new TripletEvent(triplet, taskTripletList.size(),
 				taskTripletList));
 	}
 
 	public TaskTriplet deleteTriplet(int tripletIndex) {
 		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-		notifyTripletDeleted(new TripletEvent(triplet, tripletIndex,
+		notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 				taskTripletList));
 		return triplet;
 	}
@@ -93,7 +93,7 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex - 1, triplet);
-			notifyTripletMoved(new TripletEvent(triplet, tripletIndex,
+			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
 		}
@@ -105,7 +105,7 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex + 1, triplet);
-			notifyTripletMoved(new TripletEvent(triplet, tripletIndex,
+			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
 		}
@@ -115,39 +115,13 @@ public class TaskSpec {
 
 		try {
 			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
-			notifyTripletMoved(new TripletEvent(updateTriplet, tripletIndex,
+			notifyTaskSpecChanged(new TripletEvent(updateTriplet, tripletIndex,
 					taskTripletList));
 			return tt;
 		} catch (Exception e) {
 			return null;
 		}
 	}
-
-	/**
-	 * This method reads a task specification from the user and stores in the
-	 * invoking object.
-	 */
-	/*
-	 * void getTaskSpecFromUser() throws Exception { char choice = 'n'; boolean
-	 * atLeastOneTriplet = false; try { BufferedReader br = new
-	 * BufferedReader(new InputStreamReader( System.in)); do { TaskTriplet
-	 * nextTriplet = new TaskTriplet(); nextTriplet.getTaskTripletFromUser();
-	 * System.out.println("Add triplet " + nextTriplet.getTaskTripletString() +
-	 * " to task (y/n)?"); char confirm = (char) br.read(); br.read(); //
-	 * reading newline character if (confirm == 'y' | confirm == 'Y') {
-	 * this.addTriplet(nextTriplet); System.out.println("Added " +
-	 * nextTriplet.getTaskTripletString() + " to task successfully.");
-	 * System.out .println("The task specification string now looks like: " +
-	 * getTaskSpecString()); atLeastOneTriplet = true; } if (atLeastOneTriplet)
-	 * { System.out .println("Would you like to enter more triplets (y/n)?");
-	 * choice = (char) br.read(); br.read(); // reading newline character } else
-	 * { System.out
-	 * .println("At least one triplet expected in task specification."); } }
-	 * while ((choice == 'y' || choice == 'Y') || !atLeastOneTriplet); } catch
-	 * (Exception e) {
-	 * System.out.println("Caught exception in TaskServer.getTaskSpec(): " +
-	 * e.getMessage()); throw e; } }
-	 */
 
 	public List<TaskTriplet> getTaskTripletList() {
 		return taskTripletList;
@@ -161,51 +135,17 @@ public class TaskSpec {
 		listOfTripletListeners.remove(TripletListener.class, tL);
 	}
 
-	private void notifyTripletAdded(TripletEvent evt) {
+	private void notifyTaskSpecChanged(TripletEvent evt) {
 		Object[] listeners = listOfTripletListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance
 		for (int i = 0; i < listeners.length; i += 2) {
 			if (listeners[i] == TripletListener.class) {
-				((TripletListener) listeners[i + 1]).tripletAdded(evt);
+				((TripletListener) listeners[i + 1]).taskSpecChanged(evt);
 			}
 		}
 	}
 
-	private void notifyTripletDeleted(TripletEvent evt) {
-		Object[] listeners = listOfTripletListeners.getListenerList();
-		// Each listener occupies two elements - the first is the listener class
-		// and the second is the listener instance
-		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == TripletListener.class) {
-				((TripletListener) listeners[i + 1]).tripletDeleted(evt);
-			}
-		}
-	}
-
-	private void notifyTripletMoved(TripletEvent evt) {
-		Object[] listeners = listOfTripletListeners.getListenerList();
-		// Each listener occupies two elements - the first is the listener class
-		// and the second is the listener instance
-		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == TripletListener.class) {
-				((TripletListener) listeners[i + 1]).tripletDeleted(evt);
-			}
-		}
-	}
-
-	private void notifyTaskSpecFileOpened(TripletEvent evt)
-	{
-		Object[] listeners = listOfTripletListeners.getListenerList();
-		// Each listener occupies two elements - the first is the listener class
-		// and the second is the listener instance
-		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == TripletListener.class) {
-				((TripletListener) listeners[i + 1]).taskSpecFileOpened(evt);
-			}
-		}
-	}
-	
 	public boolean saveTaskSpec(File file) {
 
 		file = Utils.correctFile(file);
@@ -229,13 +169,16 @@ public class TaskSpec {
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
 				// Right now works only for one task spec. If there are more
-				// task specs in a file, then the functionality needs to be extended.
-				taskTripletList = new ArrayList<TaskTriplet>(); //a new triplet list 
-				if (!parseTaskSpecString(strLine)) 
+				// task specs in a file, then the functionality needs to be
+				// extended.
+				taskTripletList = new ArrayList<TaskTriplet>(); // a new triplet
+																// list
+				if (!parseTaskSpecString(strLine))
 					return false;
-				System.out.println("Found and parsed task spec string: " + getTaskSpecString());
-				notifyTaskSpecFileOpened(new TripletEvent(taskTripletList.get(0), taskTripletList.size(),
-						taskTripletList));
+				System.out.println("Found and parsed task spec string: "
+						+ getTaskSpecString());
+				notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
+						taskTripletList.size(), taskTripletList));
 			}
 			in.close();
 		} catch (Exception e) {// Catch exception if any
@@ -243,5 +186,21 @@ public class TaskSpec {
 			return false;
 		}
 		return true;
+	}
+
+	public synchronized TaskTriplet setTripletState(int tripletIndex, int column) {
+		TaskTriplet tT = taskTripletList.get(tripletIndex);
+		State newState;
+		if (column == 1)
+			newState = State.PASSED;
+		else
+			newState = State.FAILED;
+		if (tT.getState() == newState)
+			tT.setState(State.INIT);
+		else
+			tT.setState(newState);
+		notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
+				taskTripletList.size(), taskTripletList));
+		return tT;
 	}
 }

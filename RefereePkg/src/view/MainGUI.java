@@ -1,10 +1,13 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,15 +16,12 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -29,10 +29,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import model.TaskTriplet;
 import model.TripletEvent;
@@ -58,8 +64,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		ConnectionListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
-	private JList<String> tripletsList;
-	private JScrollPane tripletListScrollPane;
+	private JScrollPane tripletTableScrollPane;
 	private JPanel editTripletPane;
 	private JPanel statusPanel;
 	private JPanel westPanel;
@@ -98,7 +103,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	private DefaultComboBoxModel<String> placesCbm;
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
-	private DefaultListModel<String> tripletLm = new DefaultListModel<String>();
 	private JButton updateTripletButton;
 	private JButton downTripletButton;
 	private JButton upTripletButton;
@@ -106,14 +110,43 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
 	private JMenuItem loadConfigMenuItem;
+	private JTable tripletTable;
+	private TripletTableM tripletTableM;
+	private DefaultTableCellRenderer rendTriplets;
+	private DefaultTableCellRenderer rendPassed;
+	private DefaultTableCellRenderer rendFailed;
+
+	class TripletTableM extends DefaultTableModel {
+		private static final long serialVersionUID = 1L;
+
+		public Class getColumnClass(int c) {
+			switch (c) {
+			case 0:
+				return String.class;
+			case 1:
+				return Boolean.class;
+			case 2:
+				return Boolean.class;
+			}
+			return null;
+		}
+
+		public void clearColumn(int c) {
+			for (int i = 0; i < this.getRowCount(); i++) {
+				this.setValueAt(null, i, c);
+			}
+		}
+	}
 
 	public MainGUI() {
+
 		try {
 			UIManager.setLookAndFeel(UIManager
 					.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		initGUI();
 	}
 
@@ -132,26 +165,27 @@ public class MainGUI extends JFrame implements TripletListener,
 				BorderLayout westPanelLayout = new BorderLayout();
 				westPanel.setLayout(westPanelLayout);
 				{
-					tripletListScrollPane = new JScrollPane(
+					tripletTableScrollPane = new JScrollPane(
 							JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 							JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 					{
-						tripletsList = new JList<String>(tripletLm);
-						// align triplets in the list
-						DefaultListCellRenderer renderer = (DefaultListCellRenderer) tripletsList
-								.getCellRenderer();
-						renderer.setHorizontalAlignment(JLabel.CENTER);
+						tripletTableM = new TripletTableM();
+						tripletTableM.addColumn("Triplets");
+						// tripletTableM.addColumn("Passed");
+						// tripletTableM.addColumn("Failed");
+						tripletTable = new JTable(tripletTableM);
+						rendTriplets = new DefaultTableCellRenderer();
+						rendPassed = new DefaultTableCellRenderer();
+						rendFailed = new DefaultTableCellRenderer();
+						tripletTable.getColumn("Triplets").setCellRenderer(
+								rendTriplets);
+						rendTriplets.setHorizontalAlignment(JLabel.CENTER);
 					}
-					// get the width of one triplet string depending on font
-					FontMetrics metrics = tripletsList
-							.getFontMetrics(tripletsList.getFont());
-					int width = metrics.stringWidth(" (O5, W, 5) ");
-					tripletListScrollPane.setViewportView(tripletsList);
-					// add some space for the scrollbar
-					Dimension dim = new Dimension(width + 2 * GAP, 0);
-					tripletListScrollPane.setPreferredSize(dim);
+					tripletTableScrollPane.setViewportView(tripletTable);
+					tripletTableScrollPane.setPreferredSize(tripletTable
+							.getPreferredSize());
 				}
-				westPanel.add(tripletListScrollPane, BorderLayout.WEST);
+				westPanel.add(tripletTableScrollPane, BorderLayout.WEST);
 				{
 					editTripletPane = new JPanel();
 					BoxLayout boxLayout = new BoxLayout(editTripletPane,
@@ -511,35 +545,20 @@ public class MainGUI extends JFrame implements TripletListener,
 		return placesBox;
 	}
 
-	public JList<String> getTripletsList() {
-		return tripletsList;
+	public JTable getTripletsTable() {
+		return tripletTable;
 	}
 
 	public String getConnectedLabel() {
 		return connectedLabel.getText();
 	}
 
-	@Override
-	public void tripletAdded(TripletEvent evt) {
-		tripletLm.removeAllElements();
-		for (TaskTriplet tT : evt.getTaskTripletList()) {
-			tripletLm.addElement(tT.getTaskTripletString());
-		}
-	}
-
-	@Override
-	public void tripletDeleted(TripletEvent evt) {
-		tripletLm.removeAllElements();
-		for (TaskTriplet tT : evt.getTaskTripletList()) {
-			tripletLm.addElement(tT.getTaskTripletString());
-		}
-	}
-
-	@Override
-	public void taskSpecFileOpened(TripletEvent evt) {
-		tripletLm.removeAllElements();
-		for (TaskTriplet tT : evt.getTaskTripletList()) {
-			tripletLm.addElement(tT.getTaskTripletString());
+	public void taskSpecChanged(TripletEvent evt) {
+		tripletTableM.clearColumn(0);
+		tripletTableM.setRowCount(evt.getTaskTripletList().size());
+		List<TaskTriplet> tTL = evt.getTaskTripletList();
+		for (int i = 0; i < tTL.size(); i++) {
+			tripletTableM.setValueAt(tTL.get(i).getTaskTripletString(), i, 0);
 		}
 	}
 
@@ -549,7 +568,6 @@ public class MainGUI extends JFrame implements TripletListener,
 		disconnectButton.setEnabled(true);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status.png")));
-		// connectedLabel.setPreferredSize(new Dimension(150, 25));
 		connectedLabel.setText(teamName);
 	}
 
@@ -602,5 +620,52 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setTimerStartStopButtonText(String text) {
 		timerStartStopButton.setText(text);
+	}
+
+	public void setButtonDimension() {
+		int width = 0;
+		Component[] comp = editTripletPane.getComponents();
+		// remember the widest Button
+		for (int i = 0; i < comp.length; i++) {
+			if (comp[i].getPreferredSize().width > width) {
+				width = comp[i].getPreferredSize().width;
+			}
+		}
+		// set all Button widths to the widest one
+		for (int i = 0; i < comp.length; i++) {
+			// don't change the glues!
+			if (comp[i].getPreferredSize().width != 0) {
+				Dimension dim = comp[i].getPreferredSize();
+				dim.width = width;
+				comp[i].setMaximumSize(dim);
+			}
+		}
+	}
+
+	public void setCompetitionMode() {
+		tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		tripletTableM.addColumn("Passed");
+		tripletTableM.addColumn("Failed");
+		/*
+		 * tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
+		 * tripletTable.getColumn("Passed").setCellRenderer(rendPassed);
+		 * tripletTable.getColumn("Failed").setCellRenderer(rendFailed);
+		 */
+		rendTriplets.setHorizontalAlignment(JLabel.CENTER);
+		tripletTableScrollPane
+				.setPreferredSize(tripletTable.getPreferredSize());
+		this.validate();
+	}
+
+	public void addtripletTableListener(MouseListener tL) {
+		tripletTable.addMouseListener(tL);
+	}
+
+	public void setTableCellCorrected(int row, int column) {
+		if (column == 1)
+			tripletTableM.setValueAt(Boolean.FALSE, row, 2);
+		if (column == 2)
+			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
+		tripletTable.repaint();
 	}
 }

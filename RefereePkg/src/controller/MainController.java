@@ -1,8 +1,13 @@
 package controller;
 
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -11,7 +16,12 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import model.Map;
 import model.ConfigFile;
@@ -130,11 +140,11 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (!mG.getTripletsList().isSelectionEmpty()) {
-				int pos = mG.getTripletsList().getSelectedIndex();
+			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
+				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet t = tS.moveUpTriplet(pos);
 				if (t != null) {
-					mG.getTripletsList().setSelectedIndex(pos - 1);
+					mG.getTripletsTable().changeSelection(pos-1, -1, false, false);
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
@@ -152,11 +162,11 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (!mG.getTripletsList().isSelectionEmpty()) {
-				int pos = mG.getTripletsList().getSelectedIndex();
+			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
+				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet t = tS.moveDownTriplet(pos);
 				if (t != null) {
-					mG.getTripletsList().setSelectedIndex(pos + 1);
+					mG.getTripletsTable().changeSelection(pos+1, -1, false, false);
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
@@ -174,8 +184,8 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (!mG.getTripletsList().isSelectionEmpty()) {
-				int pos = mG.getTripletsList().getSelectedIndex();
+			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
+				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet tt = new TaskTriplet();
 				if (tt.setPlace((String) mG.getPlacesBox().getSelectedItem())
 						&& tt.setOrientation((String) mG.getOrientationsBox()
@@ -223,8 +233,8 @@ public class MainController {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (!mG.getTripletsList().isSelectionEmpty()) {
-				int pos = mG.getTripletsList().getSelectedIndex();
+			if (mG.getTripletsTable().getSelectedRowCount() > 0) {			
+				int pos = mG.getTripletsTable().getSelectedRow();
 				String msg = "Do you want to delete the triplet "
 						+ tS.getTaskTripletList().get(pos)
 								.getTaskTripletString() + "?";
@@ -274,6 +284,7 @@ public class MainController {
 			if (mG.getTimerStartStopButton().isSelected()) {
 				timekeeper.startTimer();
 				mG.setTimerStartStopButtonText("Timer Stop");
+				mG.setCompetitionMode();
 				System.out.println(timekeeper.MasterTimer.isRunning());
 			} else {
 				timekeeper.stopTimer();
@@ -281,6 +292,48 @@ public class MainController {
 				System.out.println(timekeeper.MasterTimer.isRunning());
 			}
 		}
+	};
+	
+	public MouseListener tripletTableListener = new MouseListener () {
+
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			int selectedRow = mG.getTripletsTable().getSelectedRow();
+			  int selectedColumn = mG.getTripletsTable().getSelectedColumn();
+	        if (selectedColumn > 0) {
+				TaskTriplet tT = tS.setTripletState(selectedRow, selectedColumn);
+						mG.setStatusLine("Updated triplet state (" + tT.getPlace()
+								+ ", " + tT.getOrientation() + ", "
+								+ tT.getPause() + ").");
+						mG.setTableCellCorrected(selectedRow, selectedColumn);
+						mG.getTripletsTable().clearSelection();
+						}
+		}
+		
 	};
 
 	public MainController(String[] args) {
@@ -336,6 +389,7 @@ public class MainController {
 		mG.connectEditTriplet(updateTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		mG.connectDisconnet(disconnect);
+		mG.setButtonDimension();
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);
@@ -343,6 +397,7 @@ public class MainController {
 		mG.addWindowListener(windowAdapter);
 		timekeeper = TimeKeeper.getInstance();
 		mG.addTimerListener(timerListener);
+		mG.addtripletTableListener(tripletTableListener);
 		mG.pack();
 	}
 

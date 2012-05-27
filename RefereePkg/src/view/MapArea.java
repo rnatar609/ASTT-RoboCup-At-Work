@@ -17,11 +17,10 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import controller.TripletListener;
-
-import model.Map;
 import model.TaskTriplet;
+import model.TaskTriplet.State;
 import model.TripletEvent;
+import controller.TripletListener;
 
 public class MapArea extends JScrollPane implements TripletListener {
 
@@ -38,7 +37,7 @@ public class MapArea extends JScrollPane implements TripletListener {
 		taskTripletList = new ArrayList<TaskTriplet>();
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		//this.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
+		// this.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
 	}
 
 	/** The component inside the scroll pane. */
@@ -91,7 +90,12 @@ public class MapArea extends JScrollPane implements TripletListener {
 				} else if (tT.getOrientation().equals("NW")) {
 					theta = 135;
 				}
-				g.setColor(Color.cyan);
+				if (tT.getState() == State.INIT)
+					g.setColor(Color.cyan);
+				if (tT.getState() == State.PASSED)
+					g.setColor(Color.green);
+				if (tT.getState() == State.FAILED)
+					g.setColor(Color.red);
 				Point p = validPositions.get(tT.getPlace());
 				drawArrow(g, p, theta * Math.PI / 180.0);
 				g2.setColor(Color.black);
@@ -126,19 +130,7 @@ public class MapArea extends JScrollPane implements TripletListener {
 	}
 
 	@Override
-	public void tripletAdded(TripletEvent evt) {
-		this.taskTripletList = evt.getTaskTripletList();
-		mapPane.repaint();
-	}
-
-	@Override
-	public void tripletDeleted(TripletEvent evt) {
-		this.taskTripletList = evt.getTaskTripletList();
-		mapPane.repaint();
-	}
-
-	@Override
-	public void taskSpecFileOpened(TripletEvent evt) {
+	public void taskSpecChanged(TripletEvent evt) {
 		this.taskTripletList = evt.getTaskTripletList();
 		mapPane.repaint();
 	}
