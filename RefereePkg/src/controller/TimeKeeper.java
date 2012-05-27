@@ -2,10 +2,9 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.Timer;
-
 import model.TaskServer;
+import model.Logging;
 
 public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
@@ -17,6 +16,8 @@ public class TimeKeeper{
 	public double elapsedTimeInMinutes;
 	public double remainingTimeInMinutes;
 	private TaskServer tServer;
+	private Logging logg = Logging.getInstance("TaskLog.log");
+	private String timerOp= "Timer";
 	
 	private static TimeKeeper instance = null;
 	   protected TimeKeeper() {
@@ -45,11 +46,13 @@ public class TimeKeeper{
 	public void startTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.start();
+		logg.LoggingFile(timerOp,"Started");
 	}
 	
 	public void stopTimer(){
 		System.out.println(timeCounterInSeconds);
 		MasterTimer.stop();
+		logg.LoggingFile(timerOp,"Stopped in " + timeCounterInSeconds + "sec");
 	}
 	
 	public int getTimer(){

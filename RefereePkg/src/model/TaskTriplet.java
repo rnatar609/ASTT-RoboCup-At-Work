@@ -1,8 +1,5 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class TaskTriplet {
 	private String place;
