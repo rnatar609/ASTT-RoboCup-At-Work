@@ -297,14 +297,14 @@ public class MainController {
 				timekeeper.startTimer();
 				mG.setTimerStartStopButtonText("Timer Stop");
 				mG.setCompetitionMode(true);
-				System.out.println(timekeeper.MasterTimer.isRunning());
+				//System.out.println(timekeeper.MasterTimer.isRunning());
 			} else {
 				timekeeper.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
 				// here should come something with save competition, I think
 				tS.resetStates();
-				mG.setCompetitionMode(false);
-				System.out.println(timekeeper.MasterTimer.isRunning());
+				//mG.setCompetitionMode(false);
+				//System.out.println(timekeeper.MasterTimer.isRunning());
 			}
 		}
 	};
@@ -356,14 +356,8 @@ public class MainController {
 						+ ").");
 				mG.setTableCellCorrected(selectedRow, selectedColumn);
 				mG.getTripletsTable().clearSelection();
-				logg.LoggingFile(
-						triplets,
-						"Updated triplet state (" + tT.getPlace() + ", "
-								+ tT.getOrientation() + ", " + tT.getPause()
-								+ ") " + tT.getState());
 			}
 		}
-
 	};
 
 	public MainController(String[] args) {
