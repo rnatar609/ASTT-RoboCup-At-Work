@@ -2,7 +2,6 @@ package model;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
@@ -13,21 +12,18 @@ public class Map {
 	private static final String imageFormat = new String("png");
 	private static BufferedImage map;
 
-	public static BufferedImage loadBackgroundMap(String path) {
-		ConfigFile cfg = new ConfigFile();
+	public static BufferedImage loadBackgroundMap(ConfigFile cfgFile, String pathPrefix) {
 		String filePath = null;
 		try {
-			cfg.loadProperties();
-			Properties pr = cfg.getProperties();
-			String fileName = pr.getProperty("map");
-			filePath = path + System.getProperty("file.separator") + fileName;
+			String fileName = cfgFile.getProperties().getProperty("map");
+			filePath = pathPrefix + System.getProperty("file.separator") + fileName;
 			File backgroundFile = new File(filePath);
 			map = ImageIO.read(backgroundFile);
 			System.out.println("background file "
 					+ backgroundFile.getAbsolutePath() + " exists.");
 			return map;
 		} catch (Exception e) {
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error: " + e.getMessage() + " " + filePath);
 			return null;
 		}
 

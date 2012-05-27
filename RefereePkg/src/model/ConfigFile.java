@@ -10,12 +10,13 @@ public class ConfigFile
 {
 	private static String configFileFullName; // = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
 	private Properties tripletProperties;
-	private Logging logg = Logging.getInstance("TaskLog.log");
-	private String configinfo= "Configuration";
+	private Logging logg; 
+	private String configLogID= "Configuration";
 	
 	public ConfigFile()
 	{
 		tripletProperties = new Properties();
+		logg = Logging.getInstance();
 	}
 	
 	public boolean setConfigFile(File fileObj)
@@ -33,6 +34,7 @@ public class ConfigFile
 		{			
 			FileInputStream in = new FileInputStream( ConfigFile.configFileFullName);
 			tripletProperties.load( in );
+			logg.LoggingFile(configLogID, "Properties loaded from " + configFileFullName);
 			in.close();			
 		} catch ( Exception e )
 		{
