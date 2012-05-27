@@ -126,6 +126,10 @@ public class TaskSpec {
 	public List<TaskTriplet> getTaskTripletList() {
 		return taskTripletList;
 	}
+	
+	public TaskTriplet getTaskTripletAtIndex(int index){
+		return taskTripletList.get(index);
+	}
 
 	public void addTripletListener(TripletListener tL) {
 		listOfTripletListeners.add(TripletListener.class, tL);

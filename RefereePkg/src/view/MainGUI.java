@@ -603,11 +603,11 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	public void setOrientationsBoxSelected(String orientation) {
-		placesBox.setSelectedItem(orientation);
+		orientationsBox.setSelectedItem(orientation);
 	}
 
 	public void setPausesBoxSelected(Short pause) {
-		placesBox.setSelectedItem(pause);
+		pausesBox.setSelectedItem(pause);
 	}
 
 	public JToggleButton getTimerStartStopButton() {

@@ -322,6 +322,18 @@ public class MainController {
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			// TODO Auto-generated method stub
+			int selectedRow = mG.getTripletsTable().getSelectedRow();
+            System.out.println("Mouse clicked at index " + selectedRow);
+            if (selectedRow >= 0)
+            {
+            	TaskTriplet tT = tS.getTaskTripletAtIndex(selectedRow);
+				mG.setPlacesBoxSelected(tT.getPlace());
+				mG.setOrientationsBoxSelected(tT.getOrientation());
+				mG.setPausesBoxSelected(tT.getPause());
+				mG.setStatusLine("Selected triplet (" + tT.getPlace()
+						+ ", " + tT.getOrientation() + ", "
+						+ tT.getPause() + ").");
+            }
 			
 		}
 
