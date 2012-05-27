@@ -23,7 +23,8 @@ import controller.TripletListener;
 public class TaskSpec {
 	private List<TaskTriplet> taskTripletList;
 	private EventListenerList listOfTripletListeners = new EventListenerList();
-	private Logging logg = Logging.getInstance("TaskLog.log");
+	private Logging logg;
+	private String taskTripletListName = "TaskTripletList";
 
 	private String removeSpaces(String str) {
 		StringTokenizer tokens = new StringTokenizer(str, " ", false);
@@ -36,6 +37,8 @@ public class TaskSpec {
 
 	public TaskSpec() {
 		taskTripletList = new ArrayList<TaskTriplet>();
+		Logging.setFileName("TaskLog.log");
+		logg = Logging.getInstance();
 	}
 
 	public String getTaskSpecString() {
@@ -77,7 +80,7 @@ public class TaskSpec {
 
 	public void addTriplet(TaskTriplet triplet) {
 		taskTripletList.add(triplet);
-		logg.LoggingFile("TaskTripletList", triplet.getTaskTripletString()
+		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
 				+ " no. " + taskTripletList.indexOf(triplet) + " added");
 		notifyTaskSpecChanged(new TripletEvent(triplet, taskTripletList.size(),
 				taskTripletList));
@@ -85,7 +88,7 @@ public class TaskSpec {
 
 	public TaskTriplet deleteTriplet(int tripletIndex) {
 		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-		logg.LoggingFile("TaskTripletList", triplet.getTaskTripletString()
+		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
 				+ " no. " + tripletIndex + " deleted");
 		notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 				taskTripletList));
@@ -98,7 +101,7 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex - 1, triplet);
-			logg.LoggingFile("TaskTripletList", triplet.getTaskTripletString()
+			logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(triplet) + " moved up");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
@@ -112,8 +115,9 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex + 1, triplet);
-			logg.LoggingFile("TaskTripletList", triplet.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(triplet) + " moved down");
+			logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
+					+ " no. " + taskTripletList.indexOf(triplet)
+					+ " moved down");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
@@ -126,8 +130,9 @@ public class TaskSpec {
 			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
 			notifyTaskSpecChanged(new TripletEvent(updateTriplet, tripletIndex,
 					taskTripletList));
-			logg.LoggingFile("TaskTripletList", tt.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(updateTriplet) + " updated to " + updateTriplet.getTaskTripletString());
+			logg.LoggingFile(taskTripletListName, tt.getTaskTripletString()
+					+ " no. " + taskTripletList.indexOf(updateTriplet)
+					+ " updated to " + updateTriplet.getTaskTripletString());
 			return tt;
 		} catch (Exception e) {
 			return null;
@@ -214,6 +219,8 @@ public class TaskSpec {
 			tT.setState(State.INIT);
 		else
 			tT.setState(newState);
+		logg.LoggingFile(taskTripletListName, tT.getTaskTripletString() + " no. "
+				+ taskTripletList.indexOf(tT) + " new state: " + tT.getState());
 		notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
 				taskTripletList.size(), taskTripletList));
 		return tT;
@@ -222,8 +229,9 @@ public class TaskSpec {
 	public void resetStates() {
 		for (TaskTriplet tT : taskTripletList) {
 			tT.setState(State.INIT);
-			logg.LoggingFile("TaskTripletList", tT.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(tT) + " new state: INIT");
+			logg.LoggingFile(taskTripletListName, tT.getTaskTripletString()
+					+ " no. " + taskTripletList.indexOf(tT)
+					+ " new state: INIT");
 		}
 	}
 }
