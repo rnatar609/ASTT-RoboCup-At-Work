@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -301,12 +302,25 @@ public class MainController {
 			} else {
 				timekeeper.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
-				// here should come something with save competition, I think
-				tS.resetStates();
-				//mG.setCompetitionMode(false);
+				mG.getCompetitionStopButton().setEnabled(true);
 				//System.out.println(timekeeper.MasterTimer.isRunning());
 			}
 		}
+	};
+	
+	public ActionListener actionListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent evt) {
+			if (evt.getSource()== mG.getCompetitionStopButton()) {
+				// here should come something with save competition, I think
+				tS.resetStates();
+				mG.setCompetitionMode(false);
+				mG.getCompetitionStopButton().setEnabled(false);
+				logg.LoggingFile("Competition", "Team " + mG.getConnectedLabel() + " finished");
+			}
+		}
+		
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -424,6 +438,7 @@ public class MainController {
 		timekeeper = TimeKeeper.getInstance();
 		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
+		mG.addActionListener(actionListener);
 		mG.pack();
 	}
 

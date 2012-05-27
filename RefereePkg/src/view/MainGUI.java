@@ -115,6 +115,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private DefaultTableCellRenderer rendTriplets;
 	private DefaultTableCellRenderer rendPassed;
 	private DefaultTableCellRenderer rendFailed;
+	private JButton competitionStopButton;
 
 	class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
@@ -307,11 +308,16 @@ public class MainGUI extends JFrame implements TripletListener,
 						timerStartStopButton = new JToggleButton("Timer Start");
 						timerStartStopButton.setEnabled(false);
 						timerStartStopButton.setAlignmentX(CENTER_ALIGNMENT);
-					}
+						competitionStopButton = new JButton("Competition Finished");
+						competitionStopButton.setEnabled(false);
+						competitionStopButton.setAlignmentX(CENTER_ALIGNMENT);
+					}	
 					serverPanel.add(lowerServerPanel);
 					serverPanel.add(Box.createVerticalStrut(GAP));
-					serverPanel.add(timerStartStopButton);
-				}
+					serverPanel.add(timerStartStopButton);		
+					serverPanel.add(Box.createVerticalStrut(GAP));	
+					serverPanel.add(competitionStopButton);
+					}
 				westPanel.add(serverPanel, BorderLayout.SOUTH);
 			}
 			contentPanel.add(westPanel, BorderLayout.WEST);
@@ -692,5 +698,13 @@ public class MainGUI extends JFrame implements TripletListener,
 		if (column == 2)
 			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
 		tripletTable.repaint();
+	}
+
+	public void addActionListener(ActionListener actionListener) {
+		competitionStopButton.addActionListener(actionListener);
+	}
+
+	public JButton getCompetitionStopButton() {
+		return competitionStopButton;
 	}
 }
