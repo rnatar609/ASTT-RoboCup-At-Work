@@ -33,7 +33,7 @@ public class MainController {
 	private TaskServer tServer;
 	private Logging logg;
 	private String triplets = "Triplets";
-	TimeKeeper timekeeper;
+	private TimeKeeper timekeeper;
 	private boolean unsavedChanges = false;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 
@@ -55,7 +55,7 @@ public class MainController {
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
-					unsavedChanges = false;
+					setSavedChanges();
 					logg.LoggingFile(
 							triplets,
 							"saved actual task specification in >"
@@ -83,7 +83,7 @@ public class MainController {
 				if (tS.openTaskSpec(file)) {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
-					unsavedChanges = false;
+					setSavedChanges();
 					logg.LoggingFile(triplets, "Opened task specification >"
 							+ file.getName() + "<");
 				} else {
@@ -159,10 +159,7 @@ public class MainController {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
-					unsavedChanges = true;
-					logg.LoggingFile(triplets, "Triplet (" + t.getPlace()
-							+ ", " + t.getOrientation() + ", " + t.getPause()
-							+ ") moved up.");
+					setUnsavedChanges();
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
 			} else {
@@ -185,10 +182,7 @@ public class MainController {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
-					unsavedChanges = true;
-					logg.LoggingFile(triplets, "Triplet (" + t.getPlace()
-							+ ", " + t.getOrientation() + ", " + t.getPause()
-							+ ") moved down.");
+					setUnsavedChanges();
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
 			} else {
@@ -215,13 +209,8 @@ public class MainController {
 						mG.setStatusLine("Updated Triplet (" + t.getPlace()
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
-						unsavedChanges = true;
-						logg.LoggingFile(
-								triplets,
-								"Updated Triplet (" + t.getPlace() + ", "
-										+ t.getOrientation() + ", "
-										+ t.getPause() + ").");
-					} else
+						setUnsavedChanges();
+							} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
 			} else {
@@ -244,9 +233,7 @@ public class MainController {
 				tS.addTriplet(t);
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
-				unsavedChanges = true;
-				logg.LoggingFile(triplets, "added triplet (" + t.getPlace()
-						+ ", " + t.getOrientation() + ", " + t.getPause() + ")");
+				setUnsavedChanges();
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -267,13 +254,8 @@ public class MainController {
 					TaskTriplet t = tS.deleteTriplet(pos);
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
-					unsavedChanges = true;
-					logg.LoggingFile(
-							triplets,
-							"Deleted triplet (" + t.getPlace() + ", "
-									+ t.getOrientation() + ", " + t.getPause()
-									+ ")");
-				} else {
+					setUnsavedChanges();
+					} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
 			} else {
@@ -316,12 +298,15 @@ public class MainController {
 			if (mG.getTimerStartStopButton().isSelected()) {
 				timekeeper.startTimer();
 				mG.setTimerStartStopButtonText("Timer Stop");
-				mG.setCompetitionMode();
-				System.out.println(timekeeper.MasterTimer.isRunning());
+				mG.setCompetitionMode(true);
+				//System.out.println(timekeeper.MasterTimer.isRunning());
 			} else {
 				timekeeper.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
-				System.out.println(timekeeper.MasterTimer.isRunning());
+				// here should come something with save competition, I think
+				tS.resetStates();
+				//mG.setCompetitionMode(false);
+				//System.out.println(timekeeper.MasterTimer.isRunning());
 			}
 		}
 	};
@@ -375,7 +360,6 @@ public class MainController {
 				mG.getTripletsTable().clearSelection();
 			}
 		}
-
 	};
 	
 	
@@ -477,5 +461,15 @@ public class MainController {
 	private boolean warningIgnored(String actionName) {
 		return (mG.getUserConfirmation(unsavedWarningMsg, "Confirm "
 				+ actionName) != 0);
-	}	
+	}
+
+	private void setUnsavedChanges() {
+		unsavedChanges = true;
+		mG.getTimerStartStopButton().setEnabled(false);
+	}
+
+	private void setSavedChanges() {
+		unsavedChanges = false;
+		mG.getTimerStartStopButton().setEnabled(true);
+	}
 }

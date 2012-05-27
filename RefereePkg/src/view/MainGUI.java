@@ -668,18 +668,36 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
-	public void setCompetitionMode() {
-		tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		tripletTableM.addColumn("Passed");
-		tripletTableM.addColumn("Failed");
-		/*
-		 * tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
-		 * tripletTable.getColumn("Passed").setCellRenderer(rendPassed);
-		 * tripletTable.getColumn("Failed").setCellRenderer(rendFailed);
-		 */
-		rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-		tripletTableScrollPane
-				.setPreferredSize(tripletTable.getPreferredSize());
+	public void setCompetitionMode(Boolean enable) {
+		if (enable) {
+			tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+			tripletTableM.addColumn("Passed");
+			tripletTableM.addColumn("Failed");
+			tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
+			rendTriplets.setHorizontalAlignment(JLabel.CENTER);
+			tripletTableScrollPane.setPreferredSize(tripletTable
+					.getPreferredSize());
+			Component[] comp = editTripletPane.getComponents();
+			for (int i = 0; i < comp.length; i++) {
+				// don't change the glues!
+				if (comp[i].getPreferredSize().width != 0) {
+					comp[i].setEnabled(false);
+				}
+			}
+		} else {
+			tripletTableM.setColumnCount(1);
+			tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
+			rendTriplets.setHorizontalAlignment(JLabel.CENTER);
+			tripletTableScrollPane.setPreferredSize(tripletTable
+					.getPreferredSize());
+			Component[] comp = editTripletPane.getComponents();
+			for (int i = 0; i < comp.length; i++) {
+				// don't change the glues!
+				if (comp[i].getPreferredSize().width != 0) {
+					comp[i].setEnabled(true);
+				}
+			}
+		}
 		this.validate();
 	}
 
