@@ -3,7 +3,8 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import model.TaskServer;
+
+import model.TaskScheduler;
 import model.Logging;
 import view.MainGUI;
 
@@ -16,7 +17,7 @@ public class TimeKeeper{
 	private double maximumTimeInMinutes = 0.0;
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
-	private TaskServer taskServer;
+	private TaskScheduler taskscheduler;
 	public MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
@@ -57,9 +58,9 @@ public class TimeKeeper{
         	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
         		MasterTimer.stop();
         		timeCounterInSeconds = 0;
+        		taskscheduler = TaskScheduler.getInstance();
         		try {
-        			taskServer.listenForConnection();
-        			//taskServer.taskComplete();
+        			taskscheduler.taskServer.listenForConnection();
         		}
         		catch(Exception ex) {
         			System.out.println("Exception in TimeKeeper actionPerformed (for MasterTimer): " + ex.getMessage());
