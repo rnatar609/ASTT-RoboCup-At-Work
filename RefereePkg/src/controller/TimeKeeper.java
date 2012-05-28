@@ -16,7 +16,7 @@ public class TimeKeeper{
 	private double maximumTimeInMinutes = 0.0;
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
-	private TaskServer tServer;
+	private TaskServer taskServer;
 	private MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
@@ -57,28 +57,32 @@ public class TimeKeeper{
         	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
         		MasterTimer.stop();
         		timeCounterInSeconds = 0;
-        		tServer.listenForConnection();
+        		try {
+        			taskServer.listenForConnection();
+        			//taskServer.taskComplete();
+        		}
+        		catch(Exception ex) {
+        			System.out.println("Exception in TimeKeeper actionPerformed (for MasterTimer): " + ex.getMessage());
+        		}
         	}
         }
     });
 	   
-	public void startTimer(){
-		System.out.println(timeCounterInSeconds);
+	public void startTimer() {
+		System.out.println("00:00");
 		MasterTimer.start();
 		if(mainGui != null) 
 			mainGui.setTimerLabelText("00:00");
 		logg.LoggingFile(timerLogID,"Started");
 	}
 	
-	public void stopTimer(){
-		System.out.println(timeCounterInSeconds);
+	public void stopTimer() {
 		MasterTimer.stop();
 		logg.LoggingFile(timerLogID,"Stopped in " + timeCounterInSeconds + "sec");
 		timeCounterInSeconds = 0;
 	}
 	
-	public int getTimer(){
-		System.out.println(timeCounterInSeconds);
+	public int getTimer() {
 		return timeCounterInSeconds;
 	}
 	
@@ -113,6 +117,5 @@ public class TimeKeeper{
 	public void setMaximumTimeInMinutes() {
 		maximumTimeInMinutes = configurationTimeInMinutes + runTimeInMinutes;
 		System.out.println("maxInMin: " + maximumTimeInMinutes);
-	}
-	
+	}	
 }
