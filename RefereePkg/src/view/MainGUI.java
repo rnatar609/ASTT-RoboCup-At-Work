@@ -318,11 +318,9 @@ public class MainGUI extends JFrame implements TripletListener,
 								javax.swing.BoxLayout.LINE_AXIS);
 						lowerServerPanel.setLayout(serverLowerPanelLayout);
 						{
-							timerStartStopButton = new JToggleButton(
-									"Timer Start");
-							timerStartStopButton.setEnabled(false);
-							timerStartStopButton
-									.setAlignmentX(SwingConstants.LEFT);
+							timerStartStopButton = new JToggleButton("Timer Start");
+							//timerStartStopButton.setEnabled(false);
+							timerStartStopButton.setAlignmentX(SwingConstants.LEFT);
 						}
 						lowerServerPanel.add(timerStartStopButton);
 						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
