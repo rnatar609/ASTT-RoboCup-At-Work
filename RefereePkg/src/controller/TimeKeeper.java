@@ -17,27 +17,33 @@ public class TimeKeeper{
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
 	private TaskServer tServer;
-	private static MainGUI mainGui = null;
+	private MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
 	
 	private static TimeKeeper instance = null;
-	   protected TimeKeeper() {
+	   protected TimeKeeper(MainGUI mG) {
 		  logg = Logging.getInstance();
+		  mainGui = mG;
 	      // Exists only to defeat instantiation.
 	   }
 	   
 	   
 	   public static TimeKeeper getInstance(MainGUI mG) {
-	      if(instance == null)
-	         instance = new TimeKeeper();
-	      if(mG != null)
-	    	 mainGui = mG;
-	      
+	      if(instance == null) {
+	         instance = new TimeKeeper(mG);
+	      }
 	      return instance;
 	   }
-
-	public Timer MasterTimer = new Timer(1000, new ActionListener() { 
+	   
+	   public static TimeKeeper getInstance() {
+		      if(instance == null) {
+		         System.out.println("error");
+		      }
+		      return instance;
+		   }
+	 
+	public Timer MasterTimer = new Timer(1000, new ActionListener() {
         public void actionPerformed(ActionEvent e)
         {
         	timeCounterInSeconds++;

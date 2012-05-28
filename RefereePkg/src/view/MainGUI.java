@@ -117,6 +117,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private DefaultTableCellRenderer rendTriplets;
 	private DefaultTableCellRenderer rendPassed;
 	private DefaultTableCellRenderer rendFailed;
+	private JButton competitionStopButton;
 
 	class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
@@ -282,7 +283,7 @@ public class MainGUI extends JFrame implements TripletListener,
 						upperServerPanel.add(connectedLabel);
 					}
 					serverPanel.add(upperServerPanel);
-					
+
 					serverPanel.add(Box.createVerticalStrut(GAP));
 					{
 						middleServerPanel = new JPanel();
@@ -307,29 +308,40 @@ public class MainGUI extends JFrame implements TripletListener,
 						middleServerPanel.add(sendTripletsButton);
 					}
 					serverPanel.add(middleServerPanel);
-					
+
 					serverPanel.add(Box.createVerticalStrut(GAP));
+
 					{
 						lowerServerPanel = new JPanel();
 						BoxLayout serverLowerPanelLayout = new BoxLayout(
-						        lowerServerPanel,
-						        javax.swing.BoxLayout.LINE_AXIS);
+								lowerServerPanel,
+								javax.swing.BoxLayout.LINE_AXIS);
 						lowerServerPanel.setLayout(serverLowerPanelLayout);
 						{
-							timerStartStopButton = new JToggleButton("Timer Start");
-							// timerStartStopButton.setEnabled(false);
-							timerStartStopButton.setAlignmentX(SwingConstants.LEFT);
+							timerStartStopButton = new JToggleButton(
+									"Timer Start");
+							timerStartStopButton.setEnabled(false);
+							timerStartStopButton
+									.setAlignmentX(SwingConstants.LEFT);
 						}
 						lowerServerPanel.add(timerStartStopButton);
 						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
 						{
 							timerLabel = new JLabel();
 							timerLabel.setAlignmentX(SwingConstants.RIGHT);
-							timerLabel.setText("00:00"); 
+							timerLabel.setText("00:00");
 						}
 						lowerServerPanel.add(timerLabel);
-					}	
+					}
 					serverPanel.add(lowerServerPanel);
+					serverPanel.add(Box.createVerticalStrut(GAP));
+					{
+						competitionStopButton = new JButton(
+								"Competition Finished");
+						competitionStopButton.setEnabled(false);
+						competitionStopButton.setAlignmentX(CENTER_ALIGNMENT);
+					}
+					serverPanel.add(competitionStopButton);
 				}
 				westPanel.add(serverPanel, BorderLayout.SOUTH);
 			}
@@ -670,18 +682,21 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setCompetitionMode(Boolean enable) {
 		if (enable) {
-			tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			tripletTableM.addColumn("Passed");
-			tripletTableM.addColumn("Failed");
-			tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
-			rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-			tripletTableScrollPane.setPreferredSize(tripletTable
-					.getPreferredSize());
-			Component[] comp = editTripletPane.getComponents();
-			for (int i = 0; i < comp.length; i++) {
-				// don't change the glues!
-				if (comp[i].getPreferredSize().width != 0) {
-					comp[i].setEnabled(false);
+			if (tripletTable.getColumnCount() == 1) {
+				tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				tripletTableM.addColumn("Passed");
+				tripletTableM.addColumn("Failed");
+				tripletTable.getColumn("Triplets")
+						.setCellRenderer(rendTriplets);
+				rendTriplets.setHorizontalAlignment(JLabel.CENTER);
+				tripletTableScrollPane.setPreferredSize(tripletTable
+						.getPreferredSize());
+				Component[] comp = editTripletPane.getComponents();
+				for (int i = 0; i < comp.length; i++) {
+					// don't change the glues!
+					if (comp[i].getPreferredSize().width != 0) {
+						comp[i].setEnabled(false);
+					}
 				}
 			}
 		} else {
@@ -712,9 +727,16 @@ public class MainGUI extends JFrame implements TripletListener,
 			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
 		tripletTable.repaint();
 	}
-	
-	public void setTimerLabelText(String s)
-	{
+
+	public void addActionListener(ActionListener actionListener) {
+		competitionStopButton.addActionListener(actionListener);
+	}
+
+	public JButton getCompetitionStopButton() {
+		return competitionStopButton;
+	}
+
+	public void setTimerLabelText(String s) {
 		timerLabel.setText(s);
 	}
 }

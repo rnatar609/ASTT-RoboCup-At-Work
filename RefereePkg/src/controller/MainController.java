@@ -14,7 +14,6 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.Timer;
 
 import model.ConfigFile;
 import model.Logging;
@@ -303,12 +302,25 @@ public class MainController {
 			} else {
 				timekeeper.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
-				// here should come something with save competition, I think
-				tS.resetStates();
-				//mG.setCompetitionMode(false);
+				mG.getCompetitionStopButton().setEnabled(true);
 				//System.out.println(timekeeper.MasterTimer.isRunning());
 			}
 		}
+	};
+	
+	public ActionListener actionListener = new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent evt) {
+			if (evt.getSource()== mG.getCompetitionStopButton()) {
+				// here should come something with save competition, I think
+				tS.resetStates();
+				mG.setCompetitionMode(false);
+				mG.getCompetitionStopButton().setEnabled(false);
+				logg.LoggingFile("Competition", "Team " + mG.getConnectedLabel() + " finished");
+			}
+		}
+		
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -361,8 +373,6 @@ public class MainController {
 			}
 		}
 	};
-	
-	
 
 	public MainController(String[] args) {
 		// here is the place to handle parameters from program start ie. a
@@ -428,6 +438,7 @@ public class MainController {
 		timekeeper = TimeKeeper.getInstance(mG);
 		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
+		mG.addActionListener(actionListener);
 		mG.pack();
 	}
 
