@@ -9,7 +9,7 @@ import controller.TimeKeeper;
 
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
-	private TimeKeeper timekeeper = TimeKeeper.getInstance();
+	private TimeKeeper timekeeper; 
 	private TaskScheduler taskscheduler;
 	private TaskServer taskServer;
 	
@@ -25,6 +25,7 @@ public class TaskScheduler extends TimerTask {
 	   }
 	   
 	public void timeOut(){
+		timekeeper = TimeKeeper.getInstance();
 		if(timekeeper.getTimer() > (int)(timekeeper.getConfigurationTimeInMinutes()*60)){
 			timekeeper.setElapsedTimeInMinutes(timekeeper.getTimer()/60);
 			timekeeper.remainingTimeInMinutes = timekeeper.getMaximumTimeInMinutes() - timekeeper.getElapsedTimeInMinutes();

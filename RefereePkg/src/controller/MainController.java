@@ -369,6 +369,7 @@ public class MainController {
 	}
 
 	private void init() {
+		timekeeper = TimeKeeper.getInstance(mG);
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -417,7 +418,6 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
-		timekeeper = TimeKeeper.getInstance(mG);
 		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
 		mG.addActionListener(actionListener);
