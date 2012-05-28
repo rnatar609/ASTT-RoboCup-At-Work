@@ -73,6 +73,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JButton loadConfigButton;
 	private JLabel statusLine;
 	private JLabel timerLabel;
+	private JLabel maxTimeLabel;
 	private JButton deleteTripletButton;
 	private JButton addTripletButton;
 	private JButton sendTripletsButton;
@@ -326,10 +327,17 @@ public class MainGUI extends JFrame implements TripletListener,
 						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
 						{
 							timerLabel = new JLabel();
-							timerLabel.setAlignmentX(SwingConstants.RIGHT);
+							timerLabel.setAlignmentX(SwingConstants.CENTER);
 							timerLabel.setText("00:00");
 						}
 						lowerServerPanel.add(timerLabel);
+						lowerServerPanel.add(Box.createHorizontalStrut(GAP));
+						{
+							maxTimeLabel = new JLabel();
+							maxTimeLabel.setAlignmentX(SwingConstants.RIGHT);
+							maxTimeLabel.setText("[max N/A]");
+						}
+						lowerServerPanel.add(maxTimeLabel);
 					}
 					serverPanel.add(lowerServerPanel);
 					serverPanel.add(Box.createVerticalStrut(GAP));
@@ -736,5 +744,9 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	public void setTimerLabelText(String s) {
 		timerLabel.setText(s);
+	}
+	
+	public void setMaxTimeLabelText(String s) {
+		maxTimeLabel.setText(s);
 	}
 }

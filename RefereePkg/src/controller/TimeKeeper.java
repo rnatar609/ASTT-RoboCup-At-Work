@@ -17,7 +17,7 @@ public class TimeKeeper{
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
 	private TaskServer taskServer;
-	private MainGUI mainGui;
+	public MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
 	
@@ -118,4 +118,6 @@ public class TimeKeeper{
 		maximumTimeInMinutes = configurationTimeInMinutes + runTimeInMinutes;
 		System.out.println("maxInMin: " + maximumTimeInMinutes);
 	}	
+	
+	
 }

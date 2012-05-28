@@ -49,6 +49,12 @@ public class ConfigFile
 		timekeeper.setConfigurationTimeInMinutes(getConfigurationTime());
 		timekeeper.setRunTimeInMinutes(getRunTime());
 		timekeeper.setMaximumTimeInMinutes();
+		double maximumTimeInSeconds = timekeeper.getMaximumTimeInMinutes() *60.0;
+		int minutes = (int)timekeeper.getMaximumTimeInMinutes();
+		int seconds = (int)maximumTimeInSeconds % 60;
+		String min = (minutes <10?"0" + minutes: "" + minutes);
+		String sec = (seconds <10?"0" + seconds: "" + seconds);
+		timekeeper.mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
 	}
 
 	public Properties getProperties()
