@@ -9,7 +9,7 @@ import controller.TimeKeeper;
 
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
-	private TimeKeeper timekeeper = TimeKeeper.getInstance();
+	private TimeKeeper timekeeper = TimeKeeper.getInstance(null);
 	private TaskScheduler taskscheduler;
 	private TaskServer taskServer;
 	
@@ -25,13 +25,13 @@ public class TaskScheduler extends TimerTask {
 	   }
 	   
 	public void timeOut(){
-		if(timekeeper.getTimer() > (int)(timekeeper.configurationTimeInMinutes*60)){
-			timekeeper.elapsedTimeInMinutes = timekeeper.getTimer()/60;
-			timekeeper.remainingTimeInMinutes = timekeeper.maximumTimeInMinutes - timekeeper.elapsedTimeInMinutes;
+		if(timekeeper.getTimer() > (int)(timekeeper.getConfigurationTimeInMinutes()*60)){
+			timekeeper.setElapsedTimeInMinutes(timekeeper.getTimer()/60);
+			timekeeper.remainingTimeInMinutes = timekeeper.getMaximumTimeInMinutes() - timekeeper.getElapsedTimeInMinutes();
 			timer.schedule (taskscheduler,(int)(timekeeper.remainingTimeInMinutes * 60 * 1000));
 		}
 		else{
-			timer.schedule (taskscheduler,(int)(timekeeper.runTimeInMinutes * 60 * 1000));
+			timer.schedule (taskscheduler,(int)(timekeeper.getRunTimeInMinutes() * 60 * 1000));
 		}
 	}
 

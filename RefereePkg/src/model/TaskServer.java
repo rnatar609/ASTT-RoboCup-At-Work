@@ -17,7 +17,7 @@ public class TaskServer implements Runnable{
 	private int port;
 	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
-	private TimeKeeper timekeeper = TimeKeeper.getInstance();
+	private TimeKeeper timekeeper = TimeKeeper.getInstance(null);
 	private TaskScheduler taskscheduler = TaskScheduler.getInstance();;
 	private Logging logg;
 	private Thread serverThread;

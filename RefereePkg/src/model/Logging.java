@@ -20,7 +20,6 @@ public class Logging {
 	DateFormat dateformat;
 	
 	protected Logging() {
-		dateformat = new SimpleDateFormat("HH:mm:ss");
 		file=new File(filename);
 		BufferedWriter output;
 		boolean exists = file.exists();

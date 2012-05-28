@@ -53,7 +53,7 @@ public class ValidTripletElements {
 					x = Integer.parseInt(sx);
 				} catch (NumberFormatException e) {
 					System.out
-							.println("Ivalid place label "
+							.println("Invalid place label "
 									+ s
 									+ " in Config File. Place label format should be ([A-Z][0-9]).");
 					allValid = false;
@@ -64,7 +64,7 @@ public class ValidTripletElements {
 					y = Integer.parseInt(sy);
 				} catch (NumberFormatException e) {
 					System.out
-							.println("Ivalid place label "
+							.println("Invalid place label "
 									+ s
 									+ " in Config File. Place label format should be ([A-Z][0-9]).");
 					allValid = false;
@@ -72,7 +72,7 @@ public class ValidTripletElements {
 				validPositions.put(s, new Point(x, y));
 			} else {
 				System.out
-						.println("Ivalid place label "
+						.println("Invalid place label "
 								+ s
 								+ " in Config File. Place label format should be ([A-Z][0-9]).");
 				allValid = false;
