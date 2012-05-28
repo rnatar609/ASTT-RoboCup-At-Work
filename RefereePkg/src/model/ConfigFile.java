@@ -45,16 +45,8 @@ public class ConfigFile
 			System.out.println( "Exception in ConfigFile loadProperties: " + e.getMessage() );
 			throw e;
 		}
-		timekeeper = TimeKeeper.getInstance();
-		timekeeper.setConfigurationTimeInMinutes(getConfigurationTime());
-		timekeeper.setRunTimeInMinutes(getRunTime());
-		timekeeper.setMaximumTimeInMinutes();
-		double maximumTimeInSeconds = timekeeper.getMaximumTimeInMinutes() *60.0;
-		int minutes = (int)timekeeper.getMaximumTimeInMinutes();
-		int seconds = (int)maximumTimeInSeconds % 60;
-		String min = (minutes <10?"0" + minutes: "" + minutes);
-		String sec = (seconds <10?"0" + seconds: "" + seconds);
-		timekeeper.mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
+		// this method should be moved to timekeeper
+		timekeeperMethod();
 	}
 
 	public Properties getProperties()
@@ -88,6 +80,19 @@ public class ConfigFile
 			System.out.println("No double in getRunTime");
 		
 		return  d;
+	}
+	
+	private void timekeeperMethod() throws Exception{
+		timekeeper = TimeKeeper.getInstance();
+		timekeeper.setConfigurationTimeInMinutes(getConfigurationTime());
+		timekeeper.setRunTimeInMinutes(getRunTime());
+		timekeeper.setMaximumTimeInMinutes();
+		double maximumTimeInSeconds = timekeeper.getMaximumTimeInMinutes() *60.0;
+		int minutes = (int)timekeeper.getMaximumTimeInMinutes();
+		int seconds = (int)maximumTimeInSeconds % 60;
+		String min = (minutes <10?"0" + minutes: "" + minutes);
+		String sec = (seconds <10?"0" + seconds: "" + seconds);
+		timekeeper.mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
 	}
 }
 

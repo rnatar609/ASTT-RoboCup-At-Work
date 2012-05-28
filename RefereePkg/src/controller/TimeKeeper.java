@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import model.TaskScheduler;
+import model.ConfigFile;
 import model.Logging;
 import view.MainGUI;
 
@@ -18,6 +19,7 @@ public class TimeKeeper{
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
 	private TaskScheduler taskscheduler;
+	private ConfigFile cfgFile;
 	public MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
@@ -87,6 +89,7 @@ public class TimeKeeper{
 		logg.LoggingFile(timerLogID, "Execution Time for " + taskscheduler.taskServer.getTeamName() + "is" + getTotalTeamTimeInMinutes());
 		taskscheduler.taskServer.listenForConnection();
 		timeCounterInSeconds = 0;
+		taskscheduler.newTimer();
 	}
 	
 	public int getTimer() {
@@ -133,6 +136,4 @@ public class TimeKeeper{
 	public void setTotalTeamTimeInMinutes(double d) {
 		totalTeamTimeInMinutes = d;
 	}
-	
-	
 }

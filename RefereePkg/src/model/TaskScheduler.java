@@ -56,4 +56,9 @@ public class TaskScheduler extends TimerTask {
 	public void run() {
 		taskServer.taskComplete();
 	}
+	
+	public void newTimer() {
+		timer = new Timer();
+		if(timer == null){System.out.println("TaskSCheduler newTimer timer is null");}
+	}
 }
