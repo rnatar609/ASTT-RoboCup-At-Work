@@ -11,7 +11,7 @@ import view.MainGUI;
 public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
 	public int taskExecutionTimeInSeconds;
-	public int totalTeamTimeInMinutes;
+	private double totalTeamTimeInMinutes;
 	private static double configurationTimeInMinutes;
 	private static double runTimeInMinutes;
 	private double maximumTimeInMinutes = 0.0;
@@ -78,8 +78,15 @@ public class TimeKeeper{
 	}
 	
 	public void stopTimer() {
+		taskscheduler = TaskScheduler.getInstance();
 		MasterTimer.stop();
 		logg.LoggingFile(timerLogID,"Stopped in " + timeCounterInSeconds + "sec");
+		
+		totalTeamTimeInMinutes = getTimer() / 60;
+		taskscheduler.timer.cancel();
+		System.out.println("Execution Time for " + taskscheduler.taskServer.getTeamName() + " is " + totalTeamTimeInMinutes);
+		taskscheduler.taskServer.listenForConnection();
+		
 		timeCounterInSeconds = 0;
 	}
 	
@@ -103,6 +110,10 @@ public class TimeKeeper{
 		return elapsedTimeInMinutes;
 	}
 	
+	public double getTotalTeamTimeInMinutes() {
+		return totalTeamTimeInMinutes;
+	}
+	
 	public void setElapsedTimeInMinutes(double d) {
 		elapsedTimeInMinutes = d;
 	}
@@ -119,6 +130,10 @@ public class TimeKeeper{
 		maximumTimeInMinutes = configurationTimeInMinutes + runTimeInMinutes;
 		System.out.println("maxInMin: " + maximumTimeInMinutes);
 	}	
+	
+	public void setTotalTeamTimeInMinutes(double d) {
+		totalTeamTimeInMinutes = d;
+	}
 	
 	
 }

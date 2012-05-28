@@ -17,6 +17,7 @@ public class TaskScheduler extends TimerTask {
 	   protected TaskScheduler(TaskServer tServer) {
 	      // Exists only to defeat instantiation.
 		  taskServer = tServer; 
+		  timer = new Timer();
 	   }
 	   public static TaskScheduler getInstance(TaskServer tServer) {
 	      if(instance == null) {
@@ -34,7 +35,7 @@ public class TaskScheduler extends TimerTask {
 	   
 	public void timeOut(){
 		timekeeper = TimeKeeper.getInstance();
-		timer = new Timer();
+		//timer = new Timer();
 		
 		if(timer == null){System.out.println("timer is null");}
 		if(instance == null){System.out.println("taskscheduler is null");}
@@ -55,5 +56,4 @@ public class TaskScheduler extends TimerTask {
 	public void run() {
 		taskServer.taskComplete();
 	}
-
 }
