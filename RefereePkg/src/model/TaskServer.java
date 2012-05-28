@@ -76,7 +76,7 @@ public class TaskServer implements Runnable{
 		notifyTaskSpecSent();
 		// Start setup phase timer
 		taskscheduler.timeOut();
-		sendStartMsgToClient();
+		//sendStartMsgToClient();
 	}
 
 	public void taskComplete() {
