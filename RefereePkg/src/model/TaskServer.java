@@ -83,15 +83,11 @@ public class TaskServer implements Runnable{
 		timekeeper = TimeKeeper.getInstance();
 		//byte recvdMsg[] = refereeSocket.recv(0);
 		//System.out.println("In WAIT_FOR_COMPLETE state, received msg: " + recvdMsg.toString());
-		//taskExecutionTimeInSeconds =
-		timekeeper.setTotalTeamTimeInMinutes((timekeeper.getTimer()) / 60);
-		taskscheduler.timer.cancel();
+		
+		//timekeeper.setTotalTeamTimeInMinutes((timekeeper.getTimer()) / 60);
+		//taskscheduler.timer.cancel();
 		timekeeper.stopTimer();
-		System.out.println("Execution Time for " + teamName + "is" + timekeeper.getTotalTeamTimeInMinutes());
-		logg.LoggingFile(commLogID, "Execution Time for " + teamName + "is" + timekeeper.getTotalTeamTimeInMinutes());
-		listenForConnection();
-		//Send disconnect message
-		//disconnectClient(teamName);
+		//listenForConnection();
 	}
 
 	public void sendStartMsgToClient() {

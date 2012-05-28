@@ -81,12 +81,11 @@ public class TimeKeeper{
 		taskscheduler = TaskScheduler.getInstance();
 		MasterTimer.stop();
 		logg.LoggingFile(timerLogID,"Stopped in " + timeCounterInSeconds + "sec");
-		
 		totalTeamTimeInMinutes = getTimer() / 60;
 		taskscheduler.timer.cancel();
-		System.out.println("Execution Time for " + taskscheduler.taskServer.getTeamName() + " is " + totalTeamTimeInMinutes);
+		System.out.println("TimeKeeper: Execution Time for " + taskscheduler.taskServer.getTeamName() + " is " + totalTeamTimeInMinutes);
+		logg.LoggingFile(timerLogID, "Execution Time for " + taskscheduler.taskServer.getTeamName() + "is" + getTotalTeamTimeInMinutes());
 		taskscheduler.taskServer.listenForConnection();
-		
 		timeCounterInSeconds = 0;
 	}
 	
