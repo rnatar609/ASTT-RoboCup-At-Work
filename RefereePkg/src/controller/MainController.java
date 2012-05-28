@@ -295,6 +295,7 @@ public class MainController {
 				tS.resetStates();
 				mG.setCompetitionMode(false);
 				mG.getCompetitionStopButton().setEnabled(false);
+				mG.setTimerLabelText("00:00");
 				logg.LoggingFile("Competition", "Team " + mG.getConnectedLabel() + " finished");
 			}
 		}
