@@ -104,29 +104,7 @@ public class MainController {
 			}
 			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
 			if (file != null) {
-				if (cfgFile.setConfigFile(file)) {
-					try{
-					cfgFile.loadProperties();
-					}catch(Exception e){
-						System.out.println("Exception while loading config properties: " + e);
-					}
-					initializeValidTriplets();
-					if (initializeBackgroundMap(file.getParent())) {
-						mG.pack();
-						mG.configFileLoaded();
-						mG.setStatusLine("Loaded configuration file >"
-								+ file.getName() + "<");
-						logg.LoggingFile(triplets,
-								"Loaded configuration file >" + file.getName()
-										+ "<");
-					} else {
-						mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-								+ "</FONT> No background file loaded. </html>");
-					}
-				} else {
-					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No config file loaded. </html>");
-				}
+				loadConfigurationFile(file);
 			} else {
 				mG.setStatusLine("Load Config command cancelled by user.");
 			}
@@ -384,6 +362,10 @@ public class MainController {
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		init();
+		if (args.length > 0) {
+			File file = new File(System.getProperty("user.home")+System.getProperty("file.separator")+args[0]);
+			loadConfigurationFile(file);
+		}
 	}
 
 	private void init() {
@@ -482,5 +464,31 @@ public class MainController {
 	private void setSavedChanges() {
 		unsavedChanges = false;
 		mG.getTimerStartStopButton().setEnabled(true);
+	}
+	
+	private void loadConfigurationFile(File file) {
+		if (cfgFile.setConfigFile(file)) {
+			try{
+			cfgFile.loadProperties();
+			}catch(Exception e){
+				System.out.println("Exception while loading config properties: " + e);
+			}
+			initializeValidTriplets();
+			if (initializeBackgroundMap(file.getParent())) {
+				mG.pack();
+				mG.configFileLoaded();
+				mG.setStatusLine("Loaded configuration file >"
+						+ file.getName() + "<");
+				logg.LoggingFile(triplets,
+						"Loaded configuration file >" + file.getName()
+								+ "<");
+			} else {
+				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+						+ "</FONT> No background file loaded. </html>");
+			}
+		} else {
+			mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
+					+ "</FONT> No config file loaded. </html>");
+		}
 	}
 }
