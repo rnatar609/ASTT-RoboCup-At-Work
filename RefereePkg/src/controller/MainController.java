@@ -474,6 +474,10 @@ public class MainController {
 			}catch(Exception e){
 				System.out.println("Exception while loading config properties: " + e);
 			}
+			try {
+				timekeeper.setConfig(cfgFile);
+			} catch(Exception e){}
+			
 			initializeValidTriplets();
 			if (initializeBackgroundMap(file.getParent())) {
 				mG.pack();

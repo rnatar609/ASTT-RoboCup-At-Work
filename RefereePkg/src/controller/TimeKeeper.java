@@ -19,7 +19,7 @@ public class TimeKeeper{
 	public static double elapsedTimeInMinutes = 0.0;
 	public double remainingTimeInMinutes;
 	private TaskScheduler taskscheduler;
-	private ConfigFile cfgFile;
+	//private ConfigFile cfgFile;
 	public MainGUI mainGui;
 	private Logging logg;
 	private String timerLogID= "Timer";
@@ -28,7 +28,6 @@ public class TimeKeeper{
 	   protected TimeKeeper(MainGUI mG) {
 		  logg = Logging.getInstance();
 		  mainGui = mG;
-	      // Exists only to defeat instantiation.
 	   }
 	   
 	   
@@ -121,10 +120,12 @@ public class TimeKeeper{
 	}
 	
 	public void setConfigurationTimeInMinutes(double d) {
+		
 		configurationTimeInMinutes = d;
 	}
 	
 	public void setRunTimeInMinutes(double d) {
+		
 		runTimeInMinutes = d;
 	}
 	
@@ -135,5 +136,17 @@ public class TimeKeeper{
 	
 	public void setTotalTeamTimeInMinutes(double d) {
 		totalTeamTimeInMinutes = d;
+	}
+	
+	public void setConfig(ConfigFile cfgFile) throws Exception{
+		setConfigurationTimeInMinutes(cfgFile.getConfigurationTime());
+		setRunTimeInMinutes(cfgFile.getRunTime());
+		setMaximumTimeInMinutes();
+		double maximumTimeInSeconds = getMaximumTimeInMinutes() *60.0;
+		int minutes = (int)getMaximumTimeInMinutes();
+		int seconds = (int)maximumTimeInSeconds % 60;
+		String min = (minutes <10?"0" + minutes: "" + minutes);
+		String sec = (seconds <10?"0" + seconds: "" + seconds);
+		mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
 	}
 }

@@ -1,12 +1,10 @@
 package model;
 
-import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.Scanner;
 
-import controller.TimeKeeper;
 import model.Logging;
 
 public class ConfigFile
@@ -15,7 +13,6 @@ public class ConfigFile
 	private Properties properties;
 	private Logging logg; 
 	private String configLogID= "Configuration";
-	private TimeKeeper timekeeper;
 	
 	public ConfigFile()
 	{
@@ -45,8 +42,6 @@ public class ConfigFile
 			System.out.println( "Exception in ConfigFile loadProperties: " + e.getMessage() );
 			throw e;
 		}
-		// this method should be moved to timekeeper
-		timekeeperMethod();
 	}
 
 	public Properties getProperties()
@@ -54,7 +49,7 @@ public class ConfigFile
 		return properties;
 	}
 	
-	private double getConfigurationTime() throws Exception
+	public double getConfigurationTime() throws Exception
 	{
 		String str = properties.getProperty("configTime");
 		double d = 0.0;
@@ -68,7 +63,7 @@ public class ConfigFile
 		return d;
 	}
 	
-	private double getRunTime() 
+	public double getRunTime() 
 	{
 		String str = properties.getProperty("runTime");
 		double d = 0.0;
@@ -80,19 +75,6 @@ public class ConfigFile
 			System.out.println("No double in getRunTime");
 		
 		return  d;
-	}
-	
-	private void timekeeperMethod() throws Exception{
-		timekeeper = TimeKeeper.getInstance();
-		timekeeper.setConfigurationTimeInMinutes(getConfigurationTime());
-		timekeeper.setRunTimeInMinutes(getRunTime());
-		timekeeper.setMaximumTimeInMinutes();
-		double maximumTimeInSeconds = timekeeper.getMaximumTimeInMinutes() *60.0;
-		int minutes = (int)timekeeper.getMaximumTimeInMinutes();
-		int seconds = (int)maximumTimeInSeconds % 60;
-		String min = (minutes <10?"0" + minutes: "" + minutes);
-		String sec = (seconds <10?"0" + seconds: "" + seconds);
-		timekeeper.mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
 	}
 }
 
