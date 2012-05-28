@@ -9,7 +9,7 @@ import controller.TimeKeeper;
 
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
-	private TimeKeeper timekeeper = TimeKeeper.getInstance(null);
+	private TimeKeeper timekeeper = TimeKeeper.getInstance();
 	private TaskScheduler taskscheduler;
 	private TaskServer taskServer;
 	

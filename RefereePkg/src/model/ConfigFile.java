@@ -45,7 +45,7 @@ public class ConfigFile
 			System.out.println( "Exception in ConfigFile loadProperties: " + e.getMessage() );
 			throw e;
 		}
-		timekeeper = TimeKeeper.getInstance(null);
+		timekeeper = TimeKeeper.getInstance();
 		timekeeper.setConfigurationTimeInMinutes(getConfigurationTime());
 		timekeeper.setRunTimeInMinutes(getRunTime());
 		timekeeper.setMaximumTimeInMinutes();
