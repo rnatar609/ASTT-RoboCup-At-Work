@@ -167,15 +167,6 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		westPanel.add(tripletTableScrollPane, BorderLayout.WEST);
 	}
 	
-	private void createWestPanelInContentPanel(){
-		westPanel = new JPanel();
-		westPanel.setLayout(new BorderLayout());
-		createTripletTableScrollPaneInWestPanel();
-        createEditTripletPanelInWestPanel();
-        createServerPanelInWestPanel();
-    	contentPanel.add(westPanel, BorderLayout.WEST);
-	}
-	
 	private void createBoxPanelInEditTripletPanel(){
 		boxPanel = new JPanel();
 		boxPanel.setRequestFocusEnabled(false);
@@ -304,6 +295,15 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		createCompetitionStopButtonInServerPanel();
     	westPanel.add(serverPanel, BorderLayout.SOUTH);
     }
+    
+	private void createWestPanelInContentPanel(){
+		westPanel = new JPanel();
+		westPanel.setLayout(new BorderLayout());
+		createTripletTableScrollPaneInWestPanel();
+        createEditTripletPanelInWestPanel();
+        createServerPanelInWestPanel();
+    	contentPanel.add(westPanel, BorderLayout.WEST);
+	}
     
     private void createMapAreaInContentPanel(){
     	mapArea = new MapArea();
@@ -634,11 +634,9 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 				tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 				tripletTableM.addColumn("Passed");
 				tripletTableM.addColumn("Failed");
-				tripletTable.getColumn("Triplets")
-						.setCellRenderer(rendTriplets);
+				tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
 				rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-				tripletTableScrollPane.setPreferredSize(tripletTable
-						.getPreferredSize());
+				tripletTableScrollPane.setPreferredSize(tripletTable.getPreferredSize());
 				Component[] comp = editTripletPanel.getComponents();
 				for (int i = 0; i < comp.length; i++) {
 					// don't change the glues!
@@ -651,8 +649,7 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 			tripletTableM.setColumnCount(1);
 			tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
 			rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-			tripletTableScrollPane.setPreferredSize(tripletTable
-					.getPreferredSize());
+			tripletTableScrollPane.setPreferredSize(tripletTable.getPreferredSize());
 			Component[] comp = editTripletPanel.getComponents();
 			for (int i = 0; i < comp.length; i++) {
 				// don't change the glues!

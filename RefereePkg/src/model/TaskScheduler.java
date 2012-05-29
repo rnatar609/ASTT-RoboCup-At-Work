@@ -10,7 +10,6 @@ import controller.TimeKeeper;
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
 	private TimeKeeper timekeeper; 
-	//private TaskScheduler taskscheduler;
 	public TaskServer taskServer;
 	
 	private static TaskScheduler instance = null;

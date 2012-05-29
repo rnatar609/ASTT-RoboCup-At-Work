@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
 
-import model.TaskTriplet.State;
+import model.TripletState;
 
 import view.Utils;
 import controller.TripletListener;
@@ -188,11 +188,7 @@ public class TaskSpec {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				// Right now works only for one task spec. If there are more
-				// task specs in a file, then the functionality needs to be
-				// extended.
-				taskTripletList = new ArrayList<TaskTriplet>(); // a new triplet
-																// list
+				taskTripletList = new ArrayList<TaskTriplet>(); 
 				if (!parseTaskSpecString(strLine))
 					return false;
 				System.out.println("Found and parsed task spec string: "
@@ -201,7 +197,7 @@ public class TaskSpec {
 						taskTripletList.size(), taskTripletList));
 			}
 			in.close();
-		} catch (Exception e) {// Catch exception if any
+		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return false;
 		}
@@ -210,13 +206,13 @@ public class TaskSpec {
 
 	public synchronized TaskTriplet setTripletState(int tripletIndex, int column) {
 		TaskTriplet tT = taskTripletList.get(tripletIndex);
-		State newState;
+		TripletState newState;
 		if (column == 1)
-			newState = State.PASSED;
+			newState = TripletState.PASSED;
 		else
-			newState = State.FAILED;
+			newState = TripletState.FAILED;
 		if (tT.getState() == newState)
-			tT.setState(State.INIT);
+			tT.setState(TripletState.INIT);
 		else
 			tT.setState(newState);
 		logg.LoggingFile(taskTripletListName, tT.getTaskTripletString() + " no. "
@@ -228,7 +224,7 @@ public class TaskSpec {
 
 	public void resetStates() {
 		for (TaskTriplet tT : taskTripletList) {
-			tT.setState(State.INIT);
+			tT.setState(TripletState.INIT);
 			logg.LoggingFile(taskTripletListName, tT.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(tT)
 					+ " new state: INIT");

@@ -16,7 +16,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import model.ConfigFile;
-import model.Logging;
 import model.Map;
 import model.TaskServer;
 import model.TaskSpec;
@@ -30,8 +29,6 @@ public class MainController {
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
-	private Logging logg;
-	private String triplets = "Triplets";
 	private TimeKeeper timekeeper;
 	private boolean unsavedChanges = false;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
@@ -50,18 +47,11 @@ public class MainController {
 
 			File file = mG.showSaveDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
-				if (tS.saveTaskSpec(file)
-						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
-					mG.setStatusLine("saved actual task specification in >"
-							+ file.getName() + "<");
-					setSavedChanges();
-					logg.LoggingFile(
-							triplets,
-							"saved actual task specification in >"
-									+ file.getName() + "<");
+				if (tS.saveTaskSpec(file) && Map.saveTaskSpecMap(file, mG.getMapArea())) {
+					mG.setStatusLine("saved actual task specification in >"	+ file.getName() + "<");
+					unsavedChanges = false;
 				} else {
-					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No map saved </html>");
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!" + "</FONT> No map saved </html>");
 				}
 			} else {
 				mG.setStatusLine("save command cancelled by user");
@@ -80,14 +70,10 @@ public class MainController {
 			if (file != null) {
 
 				if (tS.openTaskSpec(file)) {
-					mG.setStatusLine("Opened task specification >"
-							+ file.getName() + "<");
-					setSavedChanges();
-					logg.LoggingFile(triplets, "Opened task specification >"
-							+ file.getName() + "<");
+					mG.setStatusLine("Opened task specification >" + file.getName() + "<");
+					unsavedChanges = false;
 				} else {
-					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
-							+ "</FONT> No task spec file opened </html>");
+					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!" + "</FONT> No task spec file opened </html>");
 				}
 			} else {
 				mG.setStatusLine("Open command cancelled by user.");
@@ -131,12 +117,10 @@ public class MainController {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet t = tS.moveUpTriplet(pos);
 				if (t != null) {
-					mG.getTripletsTable().changeSelection(pos - 1, -1, false,
-							false);
+					mG.getTripletsTable().changeSelection(pos - 1, -1, false, false);
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause()
-							+ ") moved up.");
-					setUnsavedChanges();
+							+ t.getOrientation() + ", " + t.getPause() + ") moved up.");
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
 			} else {
@@ -159,7 +143,7 @@ public class MainController {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
-					setUnsavedChanges();
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
 			} else {
@@ -176,18 +160,16 @@ public class MainController {
 			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet tt = new TaskTriplet();
-				if (tt.setPlace((String) mG.getPlacesBox().getSelectedItem())
-						&& tt.setOrientation((String) mG.getOrientationsBox()
-								.getSelectedItem())
-						&& tt.setPause((String) mG.getPausesBox()
-								.getSelectedItem().toString())) {
+				tt.setPlace((String)mG.getPlacesBox().getSelectedItem());
+				tt.setOrientation((String) mG.getOrientationsBox().getSelectedItem());
+				if (tt.setPause((String) mG.getPausesBox().getSelectedItem().toString())) {
 					TaskTriplet t = tS.editTriplet(pos, tt);
 					if (t != null) {
 						mG.setStatusLine("Updated Triplet (" + t.getPlace()
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
-						setUnsavedChanges();
-							} else
+						unsavedChanges = true;
+					} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
 			} else {
@@ -202,15 +184,13 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 
 			TaskTriplet t = new TaskTriplet();
-			if (t.setPlace((String) mG.getPlacesBox().getSelectedItem())
-					&& t.setOrientation((String) mG.getOrientationsBox()
-							.getSelectedItem())
-					&& t.setPause((String) mG.getPausesBox().getSelectedItem()
-							.toString())) {
+			t.setPlace((String) mG.getPlacesBox().getSelectedItem());
+			t.setOrientation((String) mG.getOrientationsBox().getSelectedItem());
+			if(t.setPause((String) mG.getPausesBox().getSelectedItem().toString())) {
 				tS.addTriplet(t);
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
-				setUnsavedChanges();
+				unsavedChanges = true;
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -231,7 +211,7 @@ public class MainController {
 					TaskTriplet t = tS.deleteTriplet(pos);
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
-					setUnsavedChanges();
+					unsavedChanges = true;
 					} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
@@ -247,7 +227,6 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			tServer.sendTaskSpecToClient(tS);
 			mG.setStatusLine("Task specification sent to the team.");
-			logg.LoggingFile(triplets, "Task specification sent to the team.");
 		}
 	};
 
@@ -258,7 +237,6 @@ public class MainController {
 			String teamName = mG.getConnectedLabel();
 			tServer.disconnectClient(teamName);
 			mG.setStatusLine("Team " + teamName + " disconnected.");
-			logg.LoggingFile(triplets, "Team " + teamName + " disconnected.");
 		}
 	};
 
@@ -296,7 +274,6 @@ public class MainController {
 				mG.setCompetitionMode(false);
 				mG.getCompetitionStopButton().setEnabled(false);
 				mG.setTimerLabelText("00:00");
-				logg.LoggingFile("Competition", "Team " + mG.getConnectedLabel() + " finished");
 			}
 		}
 		
@@ -354,10 +331,6 @@ public class MainController {
 	};
 
 	public MainController(String[] args) {
-		// here is the place to handle parameters from program start ie. a
-		// special config file.
-		Logging.setFileName("TaskLog.log");
-		logg = Logging.getInstance();
 		tS = new TaskSpec();
 		mG = new MainGUI();
 		cfgFile = new ConfigFile();
@@ -435,7 +408,6 @@ public class MainController {
 				mG.setValidPauses(vte.getValidPauses());
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -458,16 +430,6 @@ public class MainController {
 				+ actionName) != 0);
 	}
 
-	private void setUnsavedChanges() {
-		unsavedChanges = true;
-		mG.getTimerStartStopButton().setEnabled(false);
-	}
-
-	private void setSavedChanges() {
-		unsavedChanges = false;
-		mG.getTimerStartStopButton().setEnabled(true);
-	}
-	
 	private void loadConfigurationFile(File file) {
 		if (cfgFile.setConfigFile(file)) {
 			try{
@@ -485,9 +447,6 @@ public class MainController {
 				mG.configFileLoaded();
 				mG.setStatusLine("Loaded configuration file >"
 						+ file.getName() + "<");
-				logg.LoggingFile(triplets,
-						"Loaded configuration file >" + file.getName()
-								+ "<");
 			} else {
 				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 						+ "</FONT> No background file loaded. </html>");

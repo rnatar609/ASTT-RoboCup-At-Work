@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import model.TaskTriplet;
-import model.TaskTriplet.State;
+import model.TripletState;
 import model.TripletEvent;
 import controller.TripletListener;
 
@@ -90,11 +90,11 @@ public class MapArea extends JScrollPane implements TripletListener {
 				} else if (tT.getOrientation().equals("NW")) {
 					theta = 135;
 				}
-				if (tT.getState() == State.INIT)
+				if (tT.getState() == TripletState.INIT)
 					g.setColor(Color.cyan);
-				if (tT.getState() == State.PASSED)
+				if (tT.getState() == TripletState.PASSED)
 					g.setColor(Color.green);
-				if (tT.getState() == State.FAILED)
+				if (tT.getState() == TripletState.FAILED)
 					g.setColor(Color.red);
 				Point p = validPositions.get(tT.getPlace());
 				drawArrow(g, p, theta * Math.PI / 180.0);

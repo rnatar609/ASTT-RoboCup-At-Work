@@ -5,49 +5,31 @@ public class TaskTriplet {
 	private String place;
 	private String orientation;
 	private Short pause;
-	private State state;
+	private TripletState state;
 
-	public enum State {
-		INIT, PASSED, FAILED
-	}
-
-	/* Default constructor */
 	public TaskTriplet() {
 		place = "D0";
 		orientation = "N";
 		pause = 1;
-		state = State.INIT;
+		state = TripletState.INIT;
 	}
 
-	public boolean setPlace(String s) {
-		// if (TaskTriplet.isValidTripletElementPlace(s)) {
+	public void setPlace(String s) {
 		place = s;
-		return true;
-		// }
-		// return false;
 	}
 
-	public boolean setOrientation(String s) {
-		if (TaskTriplet.isValidTripletElementOrientation(s)) {
+	public void setOrientation(String s) {
 			orientation = s;
-			return true;
-		}
-		return false;
 	}
 
 	public boolean setPause(String s) {
 		try {
-			if (TaskTriplet.isValidTripletElementPause(s)) {
 				pause = Short.parseShort(s);
-				return true;
-			} else {
-				return false;
-			}
 		} catch (Exception e) {
-			System.out.println("Exception in TaskTriplet_setPause(): "
-					+ e.getMessage());
+			System.out.println("Exception in TaskTriplet_setPause(): " + e.getMessage());
 			return false;
 		}
+		return true;
 	}
 
 	public String getPlace() {
@@ -62,7 +44,7 @@ public class TaskTriplet {
 		return pause;
 	}
 
-	public State getState() {
+	public TripletState getState() {
 		return state;
 	}
 
@@ -76,22 +58,7 @@ public class TaskTriplet {
 		return vte.getValidTripletPattern();
 	}
 
-	private static boolean isValidTripletElementOrientation(String s) {
-		ValidTripletElements vte = ValidTripletElements.getInstance();
-		return vte.isOrientationValid(s);
-	}
-
-	private static boolean isValidTripletElementPause(String s) {
-		ValidTripletElements vte = ValidTripletElements.getInstance();
-		return vte.isPauseValid(s);
-	}
-
-/*	static boolean getValidTripletElements() throws Exception {
-		ValidTripletElements vte = ValidTripletElements.getInstance();
-		return vte.readFromConfigFile();
-	}*/
-
-	public void setState(State newState) {
+	public void setState(TripletState newState) {
 		this.state = newState;
 	}
 }
