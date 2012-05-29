@@ -257,7 +257,6 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
     	lowerServerPanel = new JPanel();
 		lowerServerPanel.setLayout(new BoxLayout(lowerServerPanel, javax.swing.BoxLayout.LINE_AXIS));
 		timerStartStopButton = new JToggleButton("Timer Start");
-		//timerStartStopButton.setEnabled(false);
 		timerStartStopButton.setAlignmentX(SwingConstants.LEFT);
 		lowerServerPanel.add(timerStartStopButton);
 		lowerServerPanel.add(Box.createHorizontalStrut(GAP));
@@ -307,7 +306,6 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
     
     private void createMapAreaInContentPanel(){
     	mapArea = new MapArea();
-		// mapArea.setBackground(Color.white);
 		contentPanel.add(mapArea, BorderLayout.CENTER);
     }
     

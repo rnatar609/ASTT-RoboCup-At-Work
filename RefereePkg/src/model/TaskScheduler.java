@@ -5,8 +5,6 @@ import java.util.TimerTask;
 
 import controller.TimeKeeper;
 
-
-
 public class TaskScheduler extends TimerTask {
 	public Timer timer;
 	private TimeKeeper timekeeper; 
