@@ -370,7 +370,8 @@ public class MainController {
 	}
 
 	private void init() {
-		timekeeper = TimeKeeper.getInstance(mG);
+		timekeeper = TimeKeeper.getInstance();
+		timekeeper.SetMainGUI(mG);
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(

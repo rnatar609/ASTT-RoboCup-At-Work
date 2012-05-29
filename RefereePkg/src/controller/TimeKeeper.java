@@ -13,39 +13,37 @@ public class TimeKeeper{
 	public int timeCounterInSeconds = 0;
 	public int taskExecutionTimeInSeconds;
 	private double totalTeamTimeInMinutes;
-	private static double configurationTimeInMinutes;
-	private static double runTimeInMinutes;
+	private double configurationTimeInMinutes;
+	private double runTimeInMinutes;
 	private double maximumTimeInMinutes = 0.0;
-	public static double elapsedTimeInMinutes = 0.0;
-	public double remainingTimeInMinutes;
+	public  double elapsedTimeInMinutes = 0.0;
+	public  double remainingTimeInMinutes;
 	private TaskScheduler taskscheduler;
 	//private ConfigFile cfgFile;
-	public MainGUI mainGui;
+	public MainGUI mainGUI;
 	private Logging logg;
 	private String timerLogID= "Timer";
 	
 	private static TimeKeeper instance = null;
-	   protected TimeKeeper(MainGUI mG) {
+	
+	protected TimeKeeper() {
 		  logg = Logging.getInstance();
-		  mainGui = mG;
 	   }
 	   
 	   
-	   public static TimeKeeper getInstance(MainGUI mG) {
+	   public static TimeKeeper getInstance() {
 	      if(instance == null) {
-	         instance = new TimeKeeper(mG);
+	         instance = new TimeKeeper();
 	      }
 	      return instance;
 	   }
 	   
-	   public static TimeKeeper getInstance() {
-		      if(instance == null) {
-		         System.out.println("error");
-		      }
-		      return instance;
-		   }
+	   public void SetMainGUI(MainGUI mG)
+	   {
+	      mainGUI = mG;
+	   }
 	 
-	public Timer MasterTimer = new Timer(1000, new ActionListener() {
+	   public Timer MasterTimer = new Timer(1000, new ActionListener() {
         public void actionPerformed(ActionEvent e)
         {
         	timeCounterInSeconds++;
@@ -54,8 +52,8 @@ public class TimeKeeper{
         	int seconds = (int) (timeCounterInSeconds) % 60;
         	
         	System.out.println( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
-        	if(mainGui != null) 
-        		mainGui.setTimerLabelText( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
+        	if(mainGUI != null) 
+        		mainGUI.setTimerLabelText( (minutes<10? "0" + minutes : minutes) + ":" + (seconds<10? "0" + seconds : seconds) );
         	if(timeCounterInSeconds >= (maximumTimeInMinutes * 60)){
         		MasterTimer.stop();
         		timeCounterInSeconds = 0;
@@ -73,8 +71,8 @@ public class TimeKeeper{
 	public void startTimer() {
 		System.out.println("00:00");
 		MasterTimer.start();
-		if(mainGui != null) 
-			mainGui.setTimerLabelText("00:00");
+		if(mainGUI != null) 
+			mainGUI.setTimerLabelText("00:00");
 		logg.LoggingFile(timerLogID,"Started");
 	}
 	
@@ -115,6 +113,10 @@ public class TimeKeeper{
 		return totalTeamTimeInMinutes;
 	}
 	
+	public double getRemainingTimeInMinutes(){
+	    return remainingTimeInMinutes;	
+	}
+	
 	public void setElapsedTimeInMinutes(double d) {
 		elapsedTimeInMinutes = d;
 	}
@@ -147,6 +149,6 @@ public class TimeKeeper{
 		int seconds = (int)maximumTimeInSeconds % 60;
 		String min = (minutes <10?"0" + minutes: "" + minutes);
 		String sec = (seconds <10?"0" + seconds: "" + seconds);
-		mainGui.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
+		mainGUI.setMaxTimeLabelText("[max " + min + ":" + sec + "]");
 	}
 }

@@ -22,6 +22,7 @@ public class TaskServer implements Runnable{
 	private Logging logg;
 	private Thread serverThread;
 	private String teamName;
+	private String clientIP;
 	private byte[] clientID;
 	private String commLogID= "Communication";
 
@@ -59,6 +60,7 @@ public class TaskServer implements Runnable{
 				+ refereeSocket);
 		logg.LoggingFile(commLogID, "Waiting for Client Requests on socket... ");
 		byte bytes[] = refereeSocket.recv(0);
+		clientIP = getClientIP();
 		clientID = refereeSocket.getIdentity();
 		System.out.println(clientID);
 		teamName = new String(bytes);
@@ -69,6 +71,11 @@ public class TaskServer implements Runnable{
 
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
+		if (clientIP != getClientIP()){
+			System.out.println("Wrong Client Connected");
+			listenForConnection();
+		}
+		else{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		refereeSocket.send(reply, 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
@@ -77,6 +84,7 @@ public class TaskServer implements Runnable{
 		// Start setup phase timer
 		taskscheduler.timeOut();
 		//sendStartMsgToClient();
+		}
 	}
 
 	public void taskComplete() {
@@ -151,6 +159,17 @@ public class TaskServer implements Runnable{
 				((ConnectionListener) listeners[i + 1]).taskSpecSent();
 			}
 		}
+	}
+	
+	public String getClientIP(){
+		try {
+		     InetAddress clientIP = InetAddress.getLocalHost();
+		     System.out.println("IP:"+clientIP.getHostAddress());
+		     }
+		    catch(Exception e) {
+		     e.printStackTrace();
+		     }
+		return clientIP;
 	}
 	
 	public String getTeamName() {
