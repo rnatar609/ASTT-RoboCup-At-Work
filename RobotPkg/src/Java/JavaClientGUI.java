@@ -25,6 +25,7 @@ import org.zeromq.ZMQ;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
+	private static final long serialVersionUID = 1L;
 	private JTextField jTextField_ipaddress;
 	private JLabel jLabel_ipaddress;
 	private JButton jButton_Complete;

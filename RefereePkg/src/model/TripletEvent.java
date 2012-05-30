@@ -6,14 +6,13 @@ import java.util.List;
 public class TripletEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 	private TaskTriplet taskTriplet;
-	private int tripNumber;
+	private int tripletNumber;
 	private List<TaskTriplet> taskTripletList;
 
-	TripletEvent(TaskTriplet taskTriplet, int tripNumber,
-			List<TaskTriplet> taskTripletList) {
+	TripletEvent(TaskTriplet taskTriplet, int tripletNum, List<TaskTriplet> taskTripletList) {
 		super(taskTriplet);
 		this.taskTriplet = taskTriplet;
-		this.tripNumber = tripNumber;
+		this.tripletNumber = tripletNum;
 		this.taskTripletList = taskTripletList;
 	}
 
@@ -21,8 +20,8 @@ public class TripletEvent extends EventObject {
 		return taskTripletList;
 	}
 
-	public int getTripNumber() {
-		return tripNumber;
+	public int getTripletNumber() {
+		return tripletNumber;
 	}
 
 	public TaskTriplet getTaskTriplet() {

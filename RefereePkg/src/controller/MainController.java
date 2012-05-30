@@ -83,9 +83,7 @@ public class MainController implements TimerListener {
 				if (tS.openTaskSpec(file)) {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
-					setSavedChanges();
-					logg.LoggingFile(triplets, "Opened task specification >"
-							+ file.getName() + "<");
+					unsavedChanges = false;
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
@@ -137,7 +135,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved up.");
-					setUnsavedChanges();
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the beginning of the list.");
 			} else {
@@ -160,7 +158,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause()
 							+ ") moved down.");
-					setUnsavedChanges();
+					unsavedChanges = true;
 				} else
 					mG.setStatusLine("Triplet already at the end of the list.");
 			} else {
@@ -177,11 +175,11 @@ public class MainController implements TimerListener {
 			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
 				int pos = mG.getTripletsTable().getSelectedRow();
 				TaskTriplet tt = new TaskTriplet();
-				if (tt.setPlace((String) mG.getPlacesBox().getSelectedItem())
-						&& tt.setOrientation((String) mG.getOrientationsBox()
-								.getSelectedItem())
-						&& tt.setPause((String) mG.getPausesBox()
-								.getSelectedItem().toString())) {
+				tt.setPlace((String) mG.getPlacesBox().getSelectedItem());
+				tt.setOrientation((String) mG.getOrientationsBox()
+						.getSelectedItem());
+				if (tt.setPause((String) mG.getPausesBox().getSelectedItem()
+						.toString())) {
 					TaskTriplet t = tS.editTriplet(pos, tt);
 					if (t != null) {
 						mG.setStatusLine("Updated Triplet (" + t.getPlace()
@@ -203,15 +201,14 @@ public class MainController implements TimerListener {
 		public void actionPerformed(ActionEvent arg0) {
 
 			TaskTriplet t = new TaskTriplet();
-			if (t.setPlace((String) mG.getPlacesBox().getSelectedItem())
-					&& t.setOrientation((String) mG.getOrientationsBox()
-							.getSelectedItem())
-					&& t.setPause((String) mG.getPausesBox().getSelectedItem()
-							.toString())) {
+			t.setPlace((String) mG.getPlacesBox().getSelectedItem());
+			t.setOrientation((String) mG.getOrientationsBox().getSelectedItem());
+			if (t.setPause((String) mG.getPausesBox().getSelectedItem()
+					.toString())) {
 				tS.addTriplet(t);
 				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
 						+ t.getOrientation() + ", " + t.getPause() + ")");
-				setUnsavedChanges();
+				unsavedChanges = true;
 			} else {
 				mG.setStatusLine("error triplet");
 			}
@@ -359,15 +356,13 @@ public class MainController implements TimerListener {
 	};
 
 	public MainController(String[] args) {
-		// here is the place to handle parameters from program start ie. a
-		// special config file.
-		Logging.setFileName("TaskLog.log");
-		logg = Logging.getInstance();
 		tS = new TaskSpec();
 		mG = new MainGUI();
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		taskTimer = new TaskTimer();
+		Logging.setFileName("TaskLog.log");
+		logg = Logging.getInstance();
 		init();
 		if (args.length > 0) {
 			File file = new File(System.getProperty("user.home")
@@ -443,7 +438,6 @@ public class MainController implements TimerListener {
 				mG.setValidPauses(vte.getValidPauses());
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

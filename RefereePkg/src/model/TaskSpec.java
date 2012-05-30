@@ -195,11 +195,7 @@ public class TaskSpec {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				// Right now works only for one task spec. If there are more
-				// task specs in a file, then the functionality needs to be
-				// extended.
-				taskTripletList = new ArrayList<TaskTriplet>(); // a new triplet
-																// list
+				taskTripletList = new ArrayList<TaskTriplet>(); 
 				if (!parseTaskSpecString(strLine))
 					return false;
 				System.out.println("Found and parsed task spec string: "
@@ -208,7 +204,7 @@ public class TaskSpec {
 						taskTripletList.size(), taskTripletList));
 			}
 			in.close();
-		} catch (Exception e) {// Catch exception if any
+		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return false;
 		}

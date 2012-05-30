@@ -14,10 +14,9 @@ public class RefereeSystem {
 	public static void main(String[] args) {
 		Logging.setFileName("TaskLog.log");
 		logg = Logging.getInstance();
-		logg.LoggingFile("Application", 
-				"started");
+		logg.LoggingFile("Application", "started");
 		mC = new MainController(args);
 		mC.showView();
-		
+
 	}
 }

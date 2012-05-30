@@ -589,7 +589,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	public void taskSpecSent() {
 		sendTripletsButton.setEnabled(false);
 		disconnectButton.setEnabled(false);
-		}
+	}
 
 	public void configFileLoaded() {
 		openButton.setEnabled(true);
@@ -699,7 +699,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	public JButton getCompetitionStopButton() {
 		return competitionStopButton;
 	}
-	
+
 	public JButton getSendTripletsButton() {
 		return sendTripletsButton;
 	}
