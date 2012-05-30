@@ -174,8 +174,15 @@ public class TaskSpec {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(getTaskSpecString());
 			out.close();
+			logg.LoggingFile(
+					taskTripletListName,
+					"saved actual task specification in >"
+							+ file.getName() + "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
+			logg.LoggingFile(
+					taskTripletListName,
+					"saving failed! >");
 			return false;
 		}
 		return true;

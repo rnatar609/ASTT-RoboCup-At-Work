@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -40,6 +42,7 @@ import javax.swing.table.DefaultTableModel;
 import model.TaskTriplet;
 import model.TripletEvent;
 import controller.ConnectionListener;
+import controller.TimerListener;
 import controller.TripletListener;
 
 /**
@@ -57,7 +60,8 @@ import controller.TripletListener;
 /**
  * 
  */
-public class MainGUI extends JFrame implements TripletListener,	ConnectionListener {
+public class MainGUI extends JFrame implements TripletListener,
+		ConnectionListener, TimerListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
 	private JScrollPane tripletTableScrollPane;
@@ -117,6 +121,13 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 	class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
 
+		public Class getColumnClass(int column) {
+			if (column >= 1)
+				return Boolean.class;
+			else
+				return String.class;
+		}
+
 		public void clearColumn(int c) {
 			for (int i = 0; i < this.getRowCount(); i++) {
 				this.setValueAt(null, i, c);
@@ -133,28 +144,29 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 
 	public MainGUI() {
 		try {
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager
+					.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		initGUI();
 	}
-	
+
 	private void initGUI() {
 		this.setTitle("RoboCup@Work");
 		BorderLayout panelLayout = new BorderLayout();
 		this.setLayout(panelLayout);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		{
-		        createContentPanel();
-			    createMenuBar();		
-			    this.pack();
-	   }
+			createContentPanel();
+			createMenuBar();
+			this.pack();
+		}
 	}
-	
-	private void createTripletTableScrollPaneInWestPanel(){
+
+	private void createTripletTableScrollPaneInWestPanel() {
 		tripletTableScrollPane = new JScrollPane(
-		    	JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		tripletTableM = new TripletTableM();
 		tripletTableM.addColumn("Triplets");
@@ -163,20 +175,21 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
 		rendTriplets.setHorizontalAlignment(JLabel.CENTER);
 		tripletTableScrollPane.setViewportView(tripletTable);
-		tripletTableScrollPane.setPreferredSize(tripletTable.getPreferredSize());
+		tripletTableScrollPane
+				.setPreferredSize(tripletTable.getPreferredSize());
 		westPanel.add(tripletTableScrollPane, BorderLayout.WEST);
 	}
-	
-	private void createWestPanelInContentPanel(){
+
+	private void createWestPanelInContentPanel() {
 		westPanel = new JPanel();
 		westPanel.setLayout(new BorderLayout());
 		createTripletTableScrollPaneInWestPanel();
-        createEditTripletPanelInWestPanel();
-        createServerPanelInWestPanel();
-    	contentPanel.add(westPanel, BorderLayout.WEST);
+		createEditTripletPanelInWestPanel();
+		createServerPanelInWestPanel();
+		contentPanel.add(westPanel, BorderLayout.WEST);
 	}
-	
-	private void createBoxPanelInEditTripletPanel(){
+
+	private void createBoxPanelInEditTripletPanel() {
 		boxPanel = new JPanel();
 		boxPanel.setRequestFocusEnabled(false);
 		placesBox = new JComboBox<String>();
@@ -187,8 +200,8 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		boxPanel.add(pausesBox);
 		editTripletPanel.add(boxPanel);
 	}
-	
-	private void createEditTripletButtons(){
+
+	private void createEditTripletButtons() {
 		addTripletButton = new JButton();
 		addTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 		updateTripletButton = new JButton();
@@ -200,8 +213,8 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		downTripletButton = new JButton();
 		downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 	}
-	
-	private void addEditTripletButtonsToEditTripletPanel(){
+
+	private void addEditTripletButtonsToEditTripletPanel() {
 		editTripletPanel.add(addTripletButton);
 		editTripletPanel.add(Box.createVerticalStrut(GAP));
 		editTripletPanel.add(updateTripletButton);
@@ -214,8 +227,8 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		editTripletPanel.add(downTripletButton);
 		editTripletPanel.add(Box.createVerticalGlue());
 	}
-	
-	private void createHeaderInEditTripletPanel(){
+
+	private void createHeaderInEditTripletPanel() {
 		JLabel header = new JLabel("Place  Orientation  Time");
 		header.setHorizontalAlignment(JLabel.CENTER);
 		header.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -223,33 +236,37 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		header.setAlignmentX(CENTER_ALIGNMENT);
 		editTripletPanel.add(header);
 	}
-	
-    private void createEditTripletPanelInWestPanel(){
-    	editTripletPanel = new JPanel();
-		editTripletPanel.setLayout(new BoxLayout(editTripletPanel, BoxLayout.Y_AXIS));
+
+	private void createEditTripletPanelInWestPanel() {
+		editTripletPanel = new JPanel();
+		editTripletPanel.setLayout(new BoxLayout(editTripletPanel,
+				BoxLayout.Y_AXIS));
 		editTripletPanel.add(Box.createVerticalStrut(GAP));
 		createHeaderInEditTripletPanel();
 		createBoxPanelInEditTripletPanel();
 		editTripletPanel.add(Box.createVerticalGlue());
 		createEditTripletButtons();
-        addEditTripletButtonsToEditTripletPanel();
+		addEditTripletButtonsToEditTripletPanel();
 		westPanel.add(editTripletPanel, BorderLayout.CENTER);
-    }
-    
-    private void createUpperServerPanel(){
-    	upperServerPanel = new JPanel();
-		upperServerPanel.setLayout(new BoxLayout(upperServerPanel, javax.swing.BoxLayout.LINE_AXIS));
-		connectedIcon = new JLabel(new ImageIcon(getClass().getResource("/view/resources/icons/status-busy.png")));
+	}
+
+	private void createUpperServerPanel() {
+		upperServerPanel = new JPanel();
+		upperServerPanel.setLayout(new BoxLayout(upperServerPanel,
+				javax.swing.BoxLayout.LINE_AXIS));
+		connectedIcon = new JLabel(new ImageIcon(getClass().getResource(
+				"/view/resources/icons/status-busy.png")));
 		upperServerPanel.add(connectedIcon);
 		connectedLabel = new JLabel();
 		connectedLabel.setText("no team connected");
 		upperServerPanel.add(connectedLabel);
 		serverPanel.add(upperServerPanel);
-    }
-    
-    private void createMiddleServerPanel(){
-    	middleServerPanel = new JPanel();
-		middleServerPanel.setLayout(new BoxLayout(middleServerPanel, javax.swing.BoxLayout.LINE_AXIS));
+	}
+
+	private void createMiddleServerPanel() {
+		middleServerPanel = new JPanel();
+		middleServerPanel.setLayout(new BoxLayout(middleServerPanel,
+				javax.swing.BoxLayout.LINE_AXIS));
 		disconnectButton = new JButton();
 		disconnectButton.setEnabled(false);
 		disconnectButton.setHorizontalAlignment(SwingConstants.LEFT);
@@ -259,14 +276,15 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		sendTripletsButton.setEnabled(false);
 		sendTripletsButton.setHorizontalAlignment(SwingConstants.RIGHT);
 		middleServerPanel.add(sendTripletsButton);
-	    serverPanel.add(middleServerPanel);
-    }
-    
-    private void createLowerServerPanel(){
-    	lowerServerPanel = new JPanel();
-		lowerServerPanel.setLayout(new BoxLayout(lowerServerPanel, javax.swing.BoxLayout.LINE_AXIS));
+		serverPanel.add(middleServerPanel);
+	}
+
+	private void createLowerServerPanel() {
+		lowerServerPanel = new JPanel();
+		lowerServerPanel.setLayout(new BoxLayout(lowerServerPanel,
+				javax.swing.BoxLayout.LINE_AXIS));
 		timerStartStopButton = new JToggleButton("Timer Start");
-		//timerStartStopButton.setEnabled(false);
+		timerStartStopButton.setEnabled(false);
 		timerStartStopButton.setAlignmentX(SwingConstants.LEFT);
 		lowerServerPanel.add(timerStartStopButton);
 		lowerServerPanel.add(Box.createHorizontalStrut(GAP));
@@ -279,40 +297,41 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		maxTimeLabel.setAlignmentX(SwingConstants.RIGHT);
 		maxTimeLabel.setText("[max N/A]");
 		lowerServerPanel.add(maxTimeLabel);
-	    serverPanel.add(lowerServerPanel);
-    }
-    
-    private void createCompetitionStopButtonInServerPanel(){
-    	competitionStopButton = new JButton("Competition Finished");
+		serverPanel.add(lowerServerPanel);
+	}
+
+	private void createCompetitionStopButtonInServerPanel() {
+		competitionStopButton = new JButton("Competition Finished");
 		competitionStopButton.setEnabled(false);
 		competitionStopButton.setAlignmentX(CENTER_ALIGNMENT);
 		serverPanel.add(competitionStopButton);
-    }
-    
-    private void createServerPanelInWestPanel(){
-    	serverPanel = new JPanel();
-		serverPanel.setLayout(new BoxLayout(serverPanel, javax.swing.BoxLayout.PAGE_AXIS));
+	}
+
+	private void createServerPanelInWestPanel() {
+		serverPanel = new JPanel();
+		serverPanel.setLayout(new BoxLayout(serverPanel,
+				javax.swing.BoxLayout.PAGE_AXIS));
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		serverPanel.add(new JSeparator());
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		createUpperServerPanel();
 		serverPanel.add(Box.createVerticalStrut(GAP));
-	    createMiddleServerPanel();
+		createMiddleServerPanel();
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		createLowerServerPanel();
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		createCompetitionStopButtonInServerPanel();
-    	westPanel.add(serverPanel, BorderLayout.SOUTH);
-    }
-    
-    private void createMapAreaInContentPanel(){
-    	mapArea = new MapArea();
+		westPanel.add(serverPanel, BorderLayout.SOUTH);
+	}
+
+	private void createMapAreaInContentPanel() {
+		mapArea = new MapArea();
 		// mapArea.setBackground(Color.white);
 		contentPanel.add(mapArea, BorderLayout.CENTER);
-    }
-    
-    private void createStatusPanelInContentPanel(){
-    	statusPanel = new JPanel();
+	}
+
+	private void createStatusPanelInContentPanel() {
+		statusPanel = new JPanel();
 		statusLine = new JLabel();
 		statusLine.setName("statusLine");
 		statusLine.setHorizontalAlignment(JLabel.CENTER);
@@ -324,10 +343,10 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		statusPanel.setPreferredSize(size);
 		statusPanel.add(statusLine);
 		contentPanel.add(statusPanel, BorderLayout.SOUTH);
-    }
-    
-    private void createToolBarPanelInContentPanel(){
-    	toolBarPanel = new JPanel();
+	}
+
+	private void createToolBarPanelInContentPanel() {
+		toolBarPanel = new JPanel();
 		toolBarPanel.setLayout(new BorderLayout());
 		toolBar = new JToolBar();
 		openButton = new JButton();
@@ -339,20 +358,20 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		loadConfigButton = new JButton();
 		toolBar.add(loadConfigButton);
 		toolBarPanel.add(toolBar, BorderLayout.CENTER);
-	    contentPanel.add(toolBarPanel, BorderLayout.NORTH);
-    }
-    	
-    private void createContentPanel(){
+		contentPanel.add(toolBarPanel, BorderLayout.NORTH);
+	}
+
+	private void createContentPanel() {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
-    	createWestPanelInContentPanel();
-    	createMapAreaInContentPanel();
-    	createStatusPanelInContentPanel();
-    	createToolBarPanelInContentPanel();
+		createWestPanelInContentPanel();
+		createMapAreaInContentPanel();
+		createStatusPanelInContentPanel();
+		createToolBarPanelInContentPanel();
 		this.add(contentPanel, BorderLayout.CENTER);
-    }
-    
-    private void createFileMenu(){
+	}
+
+	private void createFileMenu() {
 		fileMenu = new JMenu();
 		fileMenu.setText("File");
 		openFileMenuItem = new JMenuItem();
@@ -366,10 +385,10 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		exitMenuItem = new JMenuItem();
 		fileMenu.add(exitMenuItem);
 		menuBar.add(fileMenu);
-    }
-    
-    private void createEditMenu(){
-    	editMenu = new JMenu();
+	}
+
+	private void createEditMenu() {
+		editMenu = new JMenu();
 		menuBar.add(editMenu);
 		editMenu.setText("Edit");
 		addMenuItem = new JMenuItem();
@@ -383,25 +402,25 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 		editMenu.add(new JSeparator());
 		editMenu.add(upMenuItem);
 		editMenu.add(downMenuItem);
-    }
-    
-    private void createHelpMenu(){
-    	helpMenu = new JMenu();
+	}
+
+	private void createHelpMenu() {
+		helpMenu = new JMenu();
 		menuBar.add(helpMenu);
 		helpMenu.setText("Help");
 		helpMenuItem = new JMenuItem();
 		helpMenuItem.setText("Help");
 		helpMenu.add(helpMenuItem);
-    }
-    
-    private void createMenuBar(){
-    	menuBar = new JMenuBar();
-        createFileMenu();
+	}
+
+	private void createMenuBar() {
+		menuBar = new JMenuBar();
+		createFileMenu();
 		createEditMenu();
 		createHelpMenu();
 		this.setJMenuBar(menuBar);
-    }
-    
+	}
+
 	public MapArea getMapArea() {
 		return mapArea;
 	}
@@ -419,12 +438,14 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 	}
 
 	public void setValidOrientations(List<String> orientations) {
-		orientationsCbm = new DefaultComboBoxModel<String>(orientations.toArray(new String[orientations.size()]));
+		orientationsCbm = new DefaultComboBoxModel<String>(
+				orientations.toArray(new String[orientations.size()]));
 		orientationsBox.setModel(orientationsCbm);
 	}
 
 	public void setValidPauses(List<Short> pauses) {
-		pausesCbm = new DefaultComboBoxModel<Short>(pauses.toArray(new Short[pauses.size()]));
+		pausesCbm = new DefaultComboBoxModel<Short>(
+				pauses.toArray(new Short[pauses.size()]));
 		pausesBox.setModel(pausesCbm);
 	}
 
@@ -550,7 +571,6 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 
 	@Override
 	public void teamConnected(String teamName) {
-		sendTripletsButton.setEnabled(true);
 		disconnectButton.setEnabled(true);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status.png")));
@@ -559,7 +579,6 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 
 	@Override
 	public void teamDisconnected() {
-		sendTripletsButton.setEnabled(false);
 		disconnectButton.setEnabled(false);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status-busy.png")));
@@ -570,10 +589,7 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 	public void taskSpecSent() {
 		sendTripletsButton.setEnabled(false);
 		disconnectButton.setEnabled(false);
-		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
-				"/view/resources/icons/status-busy.png")));
-		connectedLabel.setText("no client connected");
-	}
+		}
 
 	public void configFileLoaded() {
 		openButton.setEnabled(true);
@@ -683,12 +699,31 @@ public class MainGUI extends JFrame implements TripletListener,	ConnectionListen
 	public JButton getCompetitionStopButton() {
 		return competitionStopButton;
 	}
-
-	public void setTimerLabelText(String s) {
-		timerLabel.setText(s);
-	}
 	
-	public void setMaxTimeLabelText(String s) {
-		maxTimeLabel.setText(s);
+	public JButton getSendTripletsButton() {
+		return sendTripletsButton;
+	}
+
+	@Override
+	public void timerTick(String currentTime, boolean inTime) {
+		if (inTime)
+			timerLabel.setForeground(Color.black);
+		else
+			timerLabel.setForeground(Color.red);
+		timerLabel.setText(currentTime);
+	}
+
+	@Override
+	public void timerReset(String resetTime) {
+		timerLabel.setText(resetTime);
+	}
+
+	@Override
+	public void timerSetMaximumTime(String maxTime) {
+		maxTimeLabel.setText(maxTime);
+	}
+
+	@Override
+	public void timerOverrun() {
 	}
 }

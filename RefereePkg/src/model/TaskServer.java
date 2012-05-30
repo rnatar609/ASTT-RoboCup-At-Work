@@ -7,8 +7,6 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import controller.TimeKeeper;
-import model.TaskScheduler;
 import model.Logging;
 
 public class TaskServer implements Runnable{
@@ -17,8 +15,6 @@ public class TaskServer implements Runnable{
 	private int port;
 	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
-	private TimeKeeper timekeeper;
-	private TaskScheduler taskscheduler; // = TaskScheduler.getInstance();;
 	private Logging logg;
 	private Thread serverThread;
 	private String teamName;
@@ -27,7 +23,6 @@ public class TaskServer implements Runnable{
 	private String commLogID= "Communication";
 
 	public TaskServer() {
-		taskscheduler = TaskScheduler.getInstance(this);
 		try {
 			logg = Logging.getInstance();
 			localHost = new String();
@@ -82,19 +77,16 @@ public class TaskServer implements Runnable{
 		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
 		notifyTaskSpecSent();
 		// Start setup phase timer
-		taskscheduler.timeOut();
 		//sendStartMsgToClient();
 		}
 	}
 
 	public void taskComplete() {
-		timekeeper = TimeKeeper.getInstance();
 		//byte recvdMsg[] = refereeSocket.recv(0);
 		//System.out.println("In WAIT_FOR_COMPLETE state, received msg: " + recvdMsg.toString());
 		
 		//timekeeper.setTotalTeamTimeInMinutes((timekeeper.getTimer()) / 60);
 		//taskscheduler.timer.cancel();
-		timekeeper.stopTimer();
 		//listenForConnection();
 	}
 

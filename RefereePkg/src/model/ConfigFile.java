@@ -7,74 +7,67 @@ import java.util.Scanner;
 
 import model.Logging;
 
-public class ConfigFile
-{
-	private static String configFileFullName; // = new String( System.getenv( "TASK_SERVER_CONFIG_DIR" ) + File.separator + "config.txt") ;   
+public class ConfigFile {
+	private static String configFileFullName; // = new String( System.getenv(
+												// "TASK_SERVER_CONFIG_DIR" ) +
+												// File.separator +
+												// "config.txt") ;
 	private Properties properties;
-	private Logging logg; 
-	private String configLogID= "Configuration";
-	
-	public ConfigFile()
-	{
+	private Logging logg;
+	private String configLogID = "Configuration";
+
+	public ConfigFile() {
 		properties = new Properties();
 		logg = Logging.getInstance();
 	}
-	
-	public boolean setConfigFile(File fileObj)
-	{
+
+	public boolean setConfigFile(File fileObj) {
 		configFileFullName = new String(fileObj.getAbsolutePath());
-		if (!fileObj.exists()) 
+		if (!fileObj.exists())
 			return false;
-		System.out.println("config file " + fileObj.getAbsolutePath() + " exists.");
+		System.out.println("config file " + fileObj.getAbsolutePath()
+				+ " exists.");
 		return true;
 	}
-	
-	public void loadProperties() throws Exception
-	{
-		try
-		{			
-			FileInputStream in = new FileInputStream( ConfigFile.configFileFullName);
-			properties.load( in );
-			logg.LoggingFile(configLogID, "Properties loaded from " + configFileFullName);
-			in.close();			
-		} catch ( Exception e )
-		{
-			System.out.println( "Exception in ConfigFile loadProperties: " + e.getMessage() );
+
+	public void loadProperties() throws Exception {
+		try {
+			FileInputStream in = new FileInputStream(
+					ConfigFile.configFileFullName);
+			properties.load(in);
+			logg.LoggingFile(configLogID, "Properties loaded from "
+					+ configFileFullName);
+			in.close();
+		} catch (Exception e) {
+			System.out.println("Exception in ConfigFile loadProperties: "
+					+ e.getMessage());
 			throw e;
 		}
 	}
 
-	public Properties getProperties()
-	{
+	public Properties getProperties() {
 		return properties;
 	}
-	
-	public double getConfigurationTime() throws Exception
-	{
-		String str = properties.getProperty("configTime");
-		double d = 0.0;
-		Scanner scnr = new Scanner(str);
-		if (scnr.hasNextDouble()) {
-			d = scnr.nextDouble();
-		} 
-		else
-			System.out.println("No double in getRunTime");
 
-		return d;
-	}
-	
-	public double getRunTime() 
-	{
-		String str = properties.getProperty("runTime");
-		double d = 0.0;
+	public long getConfigurationTime() {
+		String str = properties.getProperty("configTime");
+		long configTime = 0;
 		Scanner scnr = new Scanner(str);
-		if (scnr.hasNextDouble()) {
-			d = scnr.nextDouble();
-		}
-		else 
-			System.out.println("No double in getRunTime");
-		
-		return  d;
+		if (scnr.hasNextLong()) {
+			configTime = scnr.nextLong();
+		} else
+			logg.LoggingFile(configLogID, "no configuration time");
+		return configTime;
+	}
+
+	public long getRunTime() {
+		String str = properties.getProperty("runTime");
+		long runTime = 0;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNextLong()) {
+			runTime = scnr.nextLong();
+		} else
+			logg.LoggingFile(configLogID, "no configuration time");
+		return runTime;
 	}
 }
-

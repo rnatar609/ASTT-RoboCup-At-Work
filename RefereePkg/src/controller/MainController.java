@@ -20,20 +20,25 @@ import model.Logging;
 import model.Map;
 import model.TaskServer;
 import model.TaskSpec;
+import model.TaskTimer;
 import model.TaskTriplet;
 import model.ValidTripletElements;
 import view.FileType;
 import view.MainGUI;
 
-public class MainController {
+/**
+ * @author Beate
+ * 
+ */
+public class MainController implements TimerListener {
 	private MainGUI mG;
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
 	private Logging logg;
 	private String triplets = "Triplets";
-	private TimeKeeper timekeeper;
 	private boolean unsavedChanges = false;
+	private TaskTimer taskTimer;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 
 	private WindowAdapter windowAdapter = new WindowAdapter() {
@@ -55,10 +60,6 @@ public class MainController {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					setSavedChanges();
-					logg.LoggingFile(
-							triplets,
-							"saved actual task specification in >"
-									+ file.getName() + "<");
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -187,7 +188,7 @@ public class MainController {
 								+ ", " + t.getOrientation() + ", "
 								+ t.getPause() + ").");
 						setUnsavedChanges();
-							} else
+					} else
 						mG.setStatusLine("Triplet could not be updated.");
 				}
 			} else {
@@ -232,7 +233,7 @@ public class MainController {
 					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
 							+ t.getOrientation() + ", " + t.getPause() + ")");
 					setUnsavedChanges();
-					} else {
+				} else {
 					mG.setStatusLine("Triplet not deleted.");
 				}
 			} else {
@@ -247,7 +248,6 @@ public class MainController {
 		public void actionPerformed(ActionEvent arg0) {
 			tServer.sendTaskSpecToClient(tS);
 			mG.setStatusLine("Task specification sent to the team.");
-			logg.LoggingFile(triplets, "Task specification sent to the team.");
 		}
 	};
 
@@ -255,10 +255,9 @@ public class MainController {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			String teamName = mG.getConnectedLabel();
+			String teamName = tServer.getTeamName();
 			tServer.disconnectClient(teamName);
 			mG.setStatusLine("Team " + teamName + " disconnected.");
-			logg.LoggingFile(triplets, "Team " + teamName + " disconnected.");
 		}
 	};
 
@@ -271,35 +270,41 @@ public class MainController {
 	};
 
 	public ItemListener timerListener = new ItemListener() {
-		public void itemStateChanged(ItemEvent ev) {
-			if (mG.getTimerStartStopButton().isSelected()) {
-				timekeeper.startTimer();
+		public void itemStateChanged(ItemEvent evt) {
+			if (evt.getStateChange() == ItemEvent.SELECTED) {
+				long configTime = cfgFile.getConfigurationTime();
+				long runTime = cfgFile.getRunTime();
+				taskTimer.startNewTimer(configTime, runTime);
 				mG.setTimerStartStopButtonText("Timer Stop");
 				mG.setCompetitionMode(true);
-				//System.out.println(timekeeper.MasterTimer.isRunning());
+				mG.getCompetitionStopButton().setEnabled(false);
+				mG.getSendTripletsButton().setEnabled(true);
 			} else {
-				timekeeper.stopTimer();
+				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
 				mG.getCompetitionStopButton().setEnabled(true);
-				//System.out.println(timekeeper.MasterTimer.isRunning());
+				mG.getSendTripletsButton().setEnabled(false);
 			}
 		}
 	};
-	
+
 	public ActionListener actionListener = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			if (evt.getSource()== mG.getCompetitionStopButton()) {
+			if (evt.getSource() == mG.getCompetitionStopButton()) {
 				// here should come something with save competition, I think
-				tS.resetStates();
+				String teamName = tServer.getTeamName();
+				// tServer.disconnectClient(teamName); always crashes!!!
 				mG.setCompetitionMode(false);
 				mG.getCompetitionStopButton().setEnabled(false);
-				mG.setTimerLabelText("00:00");
-				logg.LoggingFile("Competition", "Team " + mG.getConnectedLabel() + " finished");
+				taskTimer.resetTimer();
+				logg.LoggingFile("Competition",
+						"Team " + mG.getConnectedLabel() + " finished");
+				tS.resetStates();
 			}
 		}
-		
+
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -362,16 +367,16 @@ public class MainController {
 		mG = new MainGUI();
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
+		taskTimer = new TaskTimer();
 		init();
 		if (args.length > 0) {
-			File file = new File(System.getProperty("user.home")+System.getProperty("file.separator")+args[0]);
+			File file = new File(System.getProperty("user.home")
+					+ System.getProperty("file.separator") + args[0]);
 			loadConfigurationFile(file);
 		}
 	}
 
 	private void init() {
-		timekeeper = TimeKeeper.getInstance();
-		timekeeper.SetMainGUI(mG);
 		save.putValue(
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
@@ -420,9 +425,12 @@ public class MainController {
 		tServer.addConnectionListener(mG);
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
-		mG.addTimerListener(timerListener);
 		mG.addtripletTableListener(tripletTableListener);
 		mG.addActionListener(actionListener);
+		mG.addTimerListener(timerListener);
+		taskTimer.addTimerListener(mG);
+		taskTimer.addTimerListener(this);
+		tServer.addConnectionListener(taskTimer);
 		mG.pack();
 	}
 
@@ -467,27 +475,26 @@ public class MainController {
 		unsavedChanges = false;
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
-	
+
 	private void loadConfigurationFile(File file) {
 		if (cfgFile.setConfigFile(file)) {
-			try{
-			cfgFile.loadProperties();
-			}catch(Exception e){
-				System.out.println("Exception while loading config properties: " + e);
-			}
 			try {
-				timekeeper.setConfig(cfgFile);
-			} catch(Exception e){}
-			
+				cfgFile.loadProperties();
+			} catch (Exception e) {
+				System.out
+						.println("Exception while loading config properties: "
+								+ e);
+			}
+
 			initializeValidTriplets();
 			if (initializeBackgroundMap(file.getParent())) {
 				mG.pack();
 				mG.configFileLoaded();
-				mG.setStatusLine("Loaded configuration file >"
-						+ file.getName() + "<");
+				mG.setStatusLine("Loaded configuration file >" + file.getName()
+						+ "<");
+				// not the right place
 				logg.LoggingFile(triplets,
-						"Loaded configuration file >" + file.getName()
-								+ "<");
+						"Loaded configuration file >" + file.getName() + "<");
 			} else {
 				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 						+ "</FONT> No background file loaded. </html>");
@@ -496,5 +503,30 @@ public class MainController {
 			mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 					+ "</FONT> No config file loaded. </html>");
 		}
+	}
+
+	@Override
+	public void timerTick(String currentTime, boolean inTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void timerReset(String resetTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void timerSetMaximumTime(String maxTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void timerOverrun() {
+		mG.setTimerStartStopButtonText("Timer Start");
+		mG.getTimerStartStopButton().setSelected(false);
+		mG.getCompetitionStopButton().setEnabled(true);
 	}
 }
