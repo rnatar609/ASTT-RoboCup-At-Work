@@ -1,7 +1,6 @@
 package controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -27,7 +26,7 @@ import view.FileType;
 import view.MainGUI;
 
 /**
- * @author BRSU-MAS-SoSe2012
+ * @author BRSU-MAS-ASTT-SoSe2012
  * 
  */
 public class MainController implements TimerListener {
@@ -38,8 +37,10 @@ public class MainController implements TimerListener {
 	private Logging logg;
 	private String triplets = "Triplets";
 	private boolean unsavedChanges = false;
+	private boolean enteredCompetitionMode = false;
 	private TaskTimer taskTimer;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
+	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
 
 	private WindowAdapter windowAdapter = new WindowAdapter() {
 		public void windowClosing(WindowEvent evt) {
@@ -114,6 +115,10 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
+			if (enteredCompetitionMode){
+				mG.showMessageDialog(exitNotAllowedMsg, "Competition Running");
+				return;
+			}
 			if (unsavedChanges && warningIgnored("Exit")) {
 				return;
 			}
@@ -276,6 +281,7 @@ public class MainController implements TimerListener {
 				mG.setCompetitionMode(true);
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				mG.getSendTripletsButton().setEnabled(true);
+				setEnteredCompetitionMode(true);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
@@ -293,6 +299,7 @@ public class MainController implements TimerListener {
 				String teamName = tServer.getTeamName();
 				mG.setCompetitionMode(false);
 				mG.getCompetitionFinishedButton().setEnabled(false);
+				setEnteredCompetitionMode(false);
 				taskTimer.resetTimer();
 				tS.resetStates();
 			}
@@ -464,6 +471,10 @@ public class MainController implements TimerListener {
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
 
+	private void setEnteredCompetitionMode(boolean flag){
+		enteredCompetitionMode = flag;	
+	}
+	
 	private void loadConfigurationFile(File file) {
 		if (cfgFile.setConfigFile(file)) {
 			try {

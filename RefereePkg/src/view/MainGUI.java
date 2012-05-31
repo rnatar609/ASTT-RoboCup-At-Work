@@ -581,13 +581,20 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	/**Display user confirmation dialog.
-	 * @param msg A string representing the message to be displayed in the dialog.
+	 * @param message A string representing the message to be displayed in the dialog.
 	 * @param title A string representing the title of the dialog.
 	 * @return An integer representing the option selected by the user.
 	 */
-	public int getUserConfirmation(String msg, String title) {
-		return JOptionPane.showConfirmDialog(this, msg, title,
-				JOptionPane.YES_NO_OPTION);
+	public int getUserConfirmation(String message, String title) {
+		return JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+	}
+	
+	/**Display message dialog.
+	 * @param message A string representing the message to be displayed in the dialog.
+	 * @param title A string representing the title of the dialog.
+	 */
+	public void showMessageDialog(String message, String title) {
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**Get the GUI component that displays the list of valid orientations.
