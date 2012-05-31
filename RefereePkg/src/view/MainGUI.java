@@ -6,14 +6,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Point;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,8 +55,14 @@ import controller.TripletListener;
  * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
  * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-/**
+
+/**This class implements the Graphical User Interface for RoboCup@Work referee system.
  * 
+ * @author BRSU-MAS-SoSe2012
+ */
+/**
+ * @author rh
+ *
  */
 public class MainGUI extends JFrame implements TripletListener,
 		ConnectionListener, TimerListener {
@@ -116,18 +120,18 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JTable tripletTable;
 	private TripletTableM tripletTableM;
 	private DefaultTableCellRenderer rendTriplets;
-	private JButton competitionStopButton;
+	private JButton competitionFinishedButton;
 
-	class TripletTableM extends DefaultTableModel {
+	private class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
 
 		public Class getColumnClass(int column) {
 			if (column >= 1)
-				return Boolean.class;
+			return Boolean.class;
 			else
-				return String.class;
+			return String.class;
 		}
-
+		
 		public void clearColumn(int c) {
 			for (int i = 0; i < this.getRowCount(); i++) {
 				this.setValueAt(null, i, c);
@@ -142,6 +146,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
+	/**Default constructor*/
 	public MainGUI() {
 		try {
 			UIManager.setLookAndFeel(UIManager
@@ -229,7 +234,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	private void createHeaderInEditTripletPanel() {
-		JLabel header = new JLabel("Place  Orientation  Time");
+		JLabel header = new JLabel("Place  Orientation  Pause");
 		header.setHorizontalAlignment(JLabel.CENTER);
 		header.setHorizontalTextPosition(SwingConstants.CENTER);
 		header.setIconTextGap(0);
@@ -300,11 +305,11 @@ public class MainGUI extends JFrame implements TripletListener,
 		serverPanel.add(lowerServerPanel);
 	}
 
-	private void createCompetitionStopButtonInServerPanel() {
-		competitionStopButton = new JButton("Competition Finished");
-		competitionStopButton.setEnabled(false);
-		competitionStopButton.setAlignmentX(CENTER_ALIGNMENT);
-		serverPanel.add(competitionStopButton);
+	private void createcompetitionFinishedButtonInServerPanel() {
+		competitionFinishedButton = new JButton("Competition Finished");
+		competitionFinishedButton.setEnabled(false);
+		competitionFinishedButton.setAlignmentX(CENTER_ALIGNMENT);
+		serverPanel.add(competitionFinishedButton);
 	}
 
 	private void createServerPanelInWestPanel() {
@@ -320,7 +325,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		createLowerServerPanel();
 		serverPanel.add(Box.createVerticalStrut(GAP));
-		createCompetitionStopButtonInServerPanel();
+		createcompetitionFinishedButtonInServerPanel();
 		westPanel.add(serverPanel, BorderLayout.SOUTH);
 	}
 
@@ -421,10 +426,16 @@ public class MainGUI extends JFrame implements TripletListener,
 		this.setJMenuBar(menuBar);
 	}
 
+	/**Get the GUI component representing the map area.
+	 * @return Reference to an object of type MapArea
+	 */
 	public MapArea getMapArea() {
 		return mapArea;
 	}
 
+	/**Update appropriate GUI components with the provided valid positions.
+	 * @param A set of valid place labels and their pixel positions.
+	 */
 	public void setValidPositions(LinkedHashMap<String, Point> positions) {
 		String[] posString = new String[positions.size()];
 		int i = 0;
@@ -437,23 +448,35 @@ public class MainGUI extends JFrame implements TripletListener,
 		mapArea.setValidPositions(positions);
 	}
 
+	/**Update appropriate GUI components with the provided valid orientations.
+	 * @param A list of strings representing valid orientations.
+	 */
 	public void setValidOrientations(List<String> orientations) {
 		orientationsCbm = new DefaultComboBoxModel<String>(
 				orientations.toArray(new String[orientations.size()]));
 		orientationsBox.setModel(orientationsCbm);
 	}
 
+	/**Update appropriate GUI components with the provided valid pause durations.
+	 * @param A list of short integers representing valid pauses. 
+	 */
 	public void setValidPauses(List<Short> pauses) {
 		pausesCbm = new DefaultComboBoxModel<Short>(
 				pauses.toArray(new Short[pauses.size()]));
 		pausesBox.setModel(pausesCbm);
 	}
 
+	/**Connect Load Config button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectLoadConfigAction(Action loadConfig) {
 		loadConfigButton.setAction(loadConfig);
 		loadConfigMenuItem.setAction(loadConfig);
 	}
 
+	/**Connect Save button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectSaveAction(Action save) {
 		saveButton.setAction(save);
 		saveMenuItem.setAction(save);
@@ -461,6 +484,9 @@ public class MainGUI extends JFrame implements TripletListener,
 		saveMenuItem.setEnabled(false);
 	}
 
+	/**Connect Open button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectOpenAction(Action open) {
 		openButton.setAction(open);
 		openFileMenuItem.setAction(open);
@@ -468,50 +494,80 @@ public class MainGUI extends JFrame implements TripletListener,
 		openFileMenuItem.setEnabled(false);
 	}
 
+	/**Connect Exit button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectExitAction(Action exit) {
 		exitMenuItem.setAction(exit);
 	}
 
+	/**Connect Send Triplets button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectSendTriplets(Action sendTriplets) {
 		sendTripletsButton.setAction(sendTriplets);
 		sendTripletsButton.setEnabled(false);
 	}
-
+	
+	/**Connect Disconnect button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectDisconnet(Action disconnect) {
 		disconnectButton.setAction(disconnect);
 		disconnectButton.setEnabled(false);
 	}
 
+	/**Connect Help Menu Item to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectHelpAction(Action help) {
 		helpMenuItem.setAction(help);
 	}
 
+	/**Connect Up Triplet button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectUpTriplet(Action upTriplet) {
 		upTripletButton.setAction(upTriplet);
 		upMenuItem.setAction(upTriplet);
 	}
 
+	/**Connect Down Triplet button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectDownTriplet(Action downTriplet) {
 		downTripletButton.setAction(downTriplet);
 		downMenuItem.setAction(downTriplet);
 	}
 
+	/**Connect Edit Triplet button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectEditTriplet(Action editTriplet) {
 		updateTripletButton.setAction(editTriplet);
 		updateMenuItem.setAction(editTriplet);
 	}
 
+	/**Connect Add Triplet button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectAddTriplet(Action addTriplet) {
 		addTripletButton.setAction(addTriplet);
 		addMenuItem.setAction(addTriplet);
 	}
 
+	/**Connect Delete Triplet button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
 	public void connectDeleteTriplet(Action deleteTriplet) {
 		deleteTripletButton.setAction(deleteTriplet);
 		deleteMenuItem.setAction(deleteTriplet);
 	}
 
-	public File showSaveDialog(FileType ftype) {
+	/**Display folder browser dialog.
+	 * @param A FileType enumerator constant indicating the desired file type.
+	 */
+	public File showFolderDialog(FileType ftype) {
 		JFileChooser fc = new JFileChooser();
 		if (ftype == FileType.FILETYPE_TSP)
 			fc.setFileFilter(new TspFilter());
@@ -521,45 +577,61 @@ public class MainGUI extends JFrame implements TripletListener,
 		return null;
 	}
 
-	public File showOpenDialog(FileType ftype) {
-		JFileChooser fc = new JFileChooser();
-		if (ftype == FileType.FILETYPE_TSP)
-			fc.setFileFilter(new TspFilter());
-		if (fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
-			return fc.getSelectedFile();
-		}
-		return null;
-	}
-
+	/**Display a message on the status line of the GUI.
+	 * @param A string representing the message to be displayed.
+	 */
 	public void setStatusLine(String status) {
 		statusLine.setText(status);
 	}
 
+	/**Display user confirmation dialog.
+	 * @param msg: A string representing the message to be displayed in the dialog.
+	 * @param title: A string representing the title of the dialog.
+	 * @return An integer representing the option selected by the user.
+	 */
 	public int getUserConfirmation(String msg, String title) {
 		return JOptionPane.showConfirmDialog(this, msg, title,
 				JOptionPane.YES_NO_OPTION);
 	}
 
+	/**Get the GUI component that displays the list of valid orientations.
+	 * @return A reference to the orientations Combo Box.
+	 */
 	public JComboBox<String> getOrientationsBox() {
 		return orientationsBox;
 	}
 
+	/**Get the GUI component that displays the list of valid pauses.
+	 * @return A reference to the pauses Combo Box.
+	 */
 	public JComboBox<Short> getPausesBox() {
 		return pausesBox;
 	}
 
+	/**Get the GUI component that displays the list of valid places.
+	 * @return A reference to the places Combo Box.
+	 */
 	public JComboBox<String> getPlacesBox() {
 		return placesBox;
 	}
 
+	/**Get the GUI component that displays the triplets in the task specification.
+	 * @return A reference to the triplets table.
+	 */
 	public JTable getTripletsTable() {
 		return tripletTable;
 	}
 
+	/**Get the text displayed in the GUI component that shows which team is now in the competition.
+	 * @return A string representing the text displayed.
+	 */
 	public String getConnectedLabel() {
 		return connectedLabel.getText();
 	}
 
+	/**Update the view to reflect the changes in the task specification.
+	 * @param A TripletEvent object containing the new list of task triplets.
+	 */
 	public void taskSpecChanged(TripletEvent evt) {
 		tripletTableM.clearColumn(0);
 		tripletTableM.setRowCount(evt.getTaskTripletList().size());
@@ -569,7 +641,9 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
-	@Override
+	/**Update the view after a team connected.
+	 * @param A string containing the name of the team that has connected.
+	 */
 	public void teamConnected(String teamName) {
 		disconnectButton.setEnabled(true);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
@@ -577,7 +651,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		connectedLabel.setText(teamName);
 	}
 
-	@Override
+	/**Update the view after a team disconnected.*/
 	public void teamDisconnected() {
 		disconnectButton.setEnabled(false);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
@@ -585,12 +659,13 @@ public class MainGUI extends JFrame implements TripletListener,
 		connectedLabel.setText("no client connected");
 	}
 
-	@Override
+	/**Update the view after task specification has been sent to the team.*/
 	public void taskSpecSent() {
 		sendTripletsButton.setEnabled(false);
 		disconnectButton.setEnabled(false);
 	}
 
+	/**Update the view after configuration file has been loaded.*/
 	public void configFileLoaded() {
 		openButton.setEnabled(true);
 		openFileMenuItem.setEnabled(true);
@@ -600,18 +675,30 @@ public class MainGUI extends JFrame implements TripletListener,
 		loadConfigMenuItem.setEnabled(false);
 	}
 
+	/**Select the entry in the places Combo Box.
+	 * @param String containing the place label to be selected.
+	 */
 	public void setPlacesBoxSelected(String place) {
 		placesBox.setSelectedItem(place);
 	}
 
+	/**Select the entry in the orientations Combo Box.
+	 * @param String containing the orientation to be selected.
+	 */
 	public void setOrientationsBoxSelected(String orientation) {
 		orientationsBox.setSelectedItem(orientation);
 	}
 
+	/**Select the entry in the pauses Combo Box.
+	 * @param Short integer containing the pause value to be selected.
+	 */
 	public void setPausesBoxSelected(Short pause) {
 		pausesBox.setSelectedItem(pause);
 	}
-
+	
+	/**Get the GUI component representing the timer start-stop button.
+	 * @return A reference to the toggle button.
+	 */
 	public JToggleButton getTimerStartStopButton() {
 		return timerStartStopButton;
 	}
@@ -620,10 +707,14 @@ public class MainGUI extends JFrame implements TripletListener,
 		timerStartStopButton.addItemListener(timerListener);
 	}
 
+	/**Set the text displayed on the Timer Start-Stop button.
+	 * @param A string containing the text to be displayed.
+	 */
 	public void setTimerStartStopButtonText(String text) {
 		timerStartStopButton.setText(text);
 	}
 
+	/**Set the dimensions of buttons on the GUI.*/
 	public void setButtonDimension() {
 		int width = 0;
 		Component[] comp = editTripletPanel.getComponents();
@@ -644,6 +735,9 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
+	/**Set the view to competition mode or non-competition mode, as specified in the parameter. 
+	 * @param A boolean value that is true if competition mode is enabled, and false if otherwise.
+	 */
 	public void setCompetitionMode(Boolean enable) {
 		if (enable) {
 			if (tripletTable.getColumnCount() == 1) {
@@ -680,6 +774,9 @@ public class MainGUI extends JFrame implements TripletListener,
 		this.validate();
 	}
 
+	/**Register objects that listen for mouse events in the triplet table area of the GUI.
+	 * @param An object of type MouseListener.
+	 */
 	public void addtripletTableListener(MouseListener tL) {
 		tripletTable.addMouseListener(tL);
 	}
@@ -692,14 +789,20 @@ public class MainGUI extends JFrame implements TripletListener,
 		tripletTable.repaint();
 	}
 
-	public void addActionListener(ActionListener actionListener) {
-		competitionStopButton.addActionListener(actionListener);
+	/**Connect Competition Finished button to the corresponding action.
+	 * @param Reference to an object of type Action that performs the functionality.
+	 */
+	public void connectCompetitionFinished(Action competitionFinished) {
+		competitionFinishedButton.setAction(competitionFinished);
+		competitionFinishedButton.setEnabled(false);
 	}
 
-	public JButton getCompetitionStopButton() {
-		return competitionStopButton;
+	/**Get the reference to the GUI component Competition Finished button.*/
+	public JButton getCompetitionFinishedButton() {
+		return competitionFinishedButton;
 	}
 
+	/**Get the reference to the GUI component Send Triplets button.*/
 	public JButton getSendTripletsButton() {
 		return sendTripletsButton;
 	}

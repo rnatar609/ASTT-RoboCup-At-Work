@@ -27,7 +27,7 @@ import view.FileType;
 import view.MainGUI;
 
 /**
- * @author Beate
+ * @author BRSU-MAS-SoSe2012
  * 
  */
 public class MainController implements TimerListener {
@@ -53,7 +53,7 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			File file = mG.showSaveDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
@@ -77,7 +77,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Open")) {
 				return;
 			}
-			File file = mG.showOpenDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
 			if (file != null) {
 
 				if (tS.openTaskSpec(file)) {
@@ -101,7 +101,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Load Config")) {
 				return;
 			}
-			File file = mG.showOpenDialog(FileType.FILETYPE_ALL);
+			File file = mG.showFolderDialog(FileType.FILETYPE_ALL);
 			if (file != null) {
 				loadConfigurationFile(file);
 			} else {
@@ -274,34 +274,28 @@ public class MainController implements TimerListener {
 				taskTimer.startNewTimer(configTime, runTime);
 				mG.setTimerStartStopButtonText("Timer Stop");
 				mG.setCompetitionMode(true);
-				mG.getCompetitionStopButton().setEnabled(false);
+				mG.getCompetitionFinishedButton().setEnabled(false);
 				mG.getSendTripletsButton().setEnabled(true);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
-				mG.getCompetitionStopButton().setEnabled(true);
+				mG.getCompetitionFinishedButton().setEnabled(true);
 				mG.getSendTripletsButton().setEnabled(false);
 			}
 		}
 	};
 
-	public ActionListener actionListener = new ActionListener() {
+	public Action competitionFinished = new AbstractAction("competitionFinished") {
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			if (evt.getSource() == mG.getCompetitionStopButton()) {
-				// here should come something with save competition, I think
 				String teamName = tServer.getTeamName();
-				// tServer.disconnectClient(teamName); always crashes!!!
 				mG.setCompetitionMode(false);
-				mG.getCompetitionStopButton().setEnabled(false);
+				mG.getCompetitionFinishedButton().setEnabled(false);
 				taskTimer.resetTimer();
-				logg.LoggingFile("Competition",
-						"Team " + mG.getConnectedLabel() + " finished");
 				tS.resetStates();
 			}
-		}
-
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -414,6 +408,7 @@ public class MainController implements TimerListener {
 		mG.connectEditTriplet(updateTriplet);
 		mG.connectDeleteTriplet(deleteTriplet);
 		mG.connectDisconnet(disconnect);
+		mG.connectCompetitionFinished(competitionFinished);
 		mG.setButtonDimension();
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
@@ -421,7 +416,6 @@ public class MainController implements TimerListener {
 		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
 		mG.addtripletTableListener(tripletTableListener);
-		mG.addActionListener(actionListener);
 		mG.addTimerListener(timerListener);
 		taskTimer.addTimerListener(mG);
 		taskTimer.addTimerListener(this);
@@ -521,6 +515,6 @@ public class MainController implements TimerListener {
 	public void timerOverrun() {
 		mG.setTimerStartStopButtonText("Timer Start");
 		mG.getTimerStartStopButton().setSelected(false);
-		mG.getCompetitionStopButton().setEnabled(true);
+		mG.getCompetitionFinishedButton().setEnabled(true);
 	}
 }
