@@ -14,6 +14,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
+import model.CompetitionLogging;
 import model.ConfigFile;
 import model.Logging;
 import model.Map;
@@ -297,6 +298,9 @@ public class MainController implements TimerListener {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 				String teamName = tServer.getTeamName();
+				CompetitionLogging.setTeamName(teamName);
+				CompetitionLogging.storeParams();
+				CompetitionLogging.resetParams();
 				mG.setCompetitionMode(false);
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				setEnteredCompetitionMode(false);

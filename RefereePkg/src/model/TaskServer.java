@@ -7,6 +7,7 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
+import model.CompetitionLogging;
 import model.Logging;
 
 public class TaskServer implements Runnable{
@@ -77,6 +78,8 @@ public class TaskServer implements Runnable{
 		}
 		else{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
+		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
+		CompetitionLogging.setClientIP(clientIP);
 		refereeSocket.send(reply, 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
 		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
