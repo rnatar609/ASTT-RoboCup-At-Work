@@ -37,7 +37,6 @@ public class TaskSpec {
 
 	public TaskSpec() {
 		taskTripletList = new ArrayList<TaskTriplet>();
-		Logging.setFileName("TaskLog.log");
 		logg = Logging.getInstance();
 	}
 
