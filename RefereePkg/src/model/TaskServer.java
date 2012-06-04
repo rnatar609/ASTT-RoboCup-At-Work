@@ -1,5 +1,6 @@
 package model;
 
+import java.io.*;
 import java.net.InetAddress;
 
 import javax.swing.event.EventListenerList;
@@ -42,6 +43,10 @@ public class TaskServer implements Runnable{
 		catch (Exception e) {
 			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
 			//e.printStackTrace();
+			File file = new File(Logging.filename);
+			if (!file.delete()) {
+				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
+			}
 			System.exit(1);
 		}
 	}
