@@ -298,7 +298,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		lowerServerPanel.add(Box.createHorizontalStrut(GAP));
 		maxTimeLabel = new JLabel();
 		maxTimeLabel.setAlignmentX(SwingConstants.RIGHT);
-		maxTimeLabel.setText("[max N/A]");
+		maxTimeLabel.setVisible(false);
 		lowerServerPanel.add(maxTimeLabel);
 		serverPanel.add(lowerServerPanel);
 	}
@@ -881,11 +881,11 @@ public class MainGUI extends JFrame implements TripletListener,
 						comp[i].setEnabled(false);
 					}
 				}
-				timerStartStopButton.setText("Timer Stop");
-				competitionFinishedButton.setEnabled(false);
-				if (disconnectButton.isEnabled()) {
-					sendTripletsButton.setEnabled(true);
-				}
+			}
+			timerStartStopButton.setText("Timer Stop");
+			competitionFinishedButton.setEnabled(false);
+			if (disconnectButton.isEnabled()) {
+				sendTripletsButton.setEnabled(true);
 			}
 
 		} else {
@@ -963,11 +963,14 @@ public class MainGUI extends JFrame implements TripletListener,
 
 	@Override
 	public void timerReset(String resetTime) {
+		timerLabel.setForeground(Color.black);
 		timerLabel.setText(resetTime);
+		maxTimeLabel.setVisible(false);
 	}
 
 	@Override
 	public void timerSetMaximumTime(String maxTime) {
+		maxTimeLabel.setVisible(true);
 		maxTimeLabel.setText(maxTime);
 	}
 

@@ -36,7 +36,6 @@ public class MainController implements TimerListener {
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
 	private Logging logg;
-	private CompetitionLogging competitionLogging;
 	private String triplets = "Triplets";
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
@@ -117,7 +116,7 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			if (competitionMode){
+			if (competitionMode) {
 				mG.showMessageDialog(exitNotAllowedMsg, "Competition Running");
 				return;
 			}
@@ -281,7 +280,6 @@ public class MainController implements TimerListener {
 				taskTimer.startNewTimer(configTime, runTime);
 				setCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
-				tS.addTripletListener(competitionLogging);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
@@ -291,19 +289,20 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	public Action competitionFinished = new AbstractAction("competitionFinished") {
+	public Action competitionFinished = new AbstractAction(
+			"competitionFinished") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-				String teamName = tServer.getTeamName();
-				CompetitionLogging.setTeamName(teamName);
-				CompetitionLogging.storeParams();
-				CompetitionLogging.resetParams();
-				setCompetitionMode(false);
-				taskTimer.resetTimer();
-				tS.resetStates();
-			}
+			String teamName = tServer.getTeamName();
+			CompetitionLogging.setTeamName(teamName);
+			CompetitionLogging.storeParams();
+			CompetitionLogging.resetParams();
+			setCompetitionMode(false);
+			taskTimer.resetTimer();
+			tS.resetStates();
+		}
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -346,7 +345,8 @@ public class MainController implements TimerListener {
 			int selectedRow = mG.getTripletsTable().getSelectedRow();
 			int selectedColumn = mG.getTripletsTable().getSelectedColumn();
 			if (selectedColumn > 0) {
-				TaskTriplet tT = tS.setTripletState(selectedRow, selectedColumn);
+				TaskTriplet tT = tS
+						.setTripletState(selectedRow, selectedColumn);
 				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
 						+ ", " + tT.getOrientation() + ", " + tT.getPause()
 						+ ").");
@@ -474,11 +474,11 @@ public class MainController implements TimerListener {
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
 
-	private void setCompetitionMode(boolean mode){
-		competitionMode = mode;	
+	private void setCompetitionMode(boolean mode) {
+		competitionMode = mode;
 		mG.setCompetitionMode(mode);
 	}
-	
+
 	private void loadConfigurationFile(File file) {
 		if (cfgFile.setConfigFile(file)) {
 			try {
