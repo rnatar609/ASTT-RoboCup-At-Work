@@ -91,6 +91,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
 				}
+				CompetitionLogging.setFilePath(file);
 			} else {
 				mG.setStatusLine("Open command cancelled by user.");
 			}

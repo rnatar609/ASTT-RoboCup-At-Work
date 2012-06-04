@@ -9,6 +9,7 @@ import controller.TripletListener;
 import model.TaskTriplet.State;
 
 public class CompetitionLogging implements TripletListener {
+	static String fileParent = "";
 	static String teamName = "";
 	static String taskSpecString = "Triplets not sent";
 	static String clientIP = "N/A";
@@ -64,6 +65,12 @@ public class CompetitionLogging implements TripletListener {
 		}
 	}
 	
+	public static void setFilePath(File file) {
+		//filePath = file.getAbsolutePath();
+		fileParent = file.getParent();
+		System.out.println("CompetitionLogging directory (parent): " + fileParent);
+	}
+	
 	public static void storeParams() {
 		if(teamName == null || teamName.equals("")) {
 			teamName = "Unknown";
@@ -71,7 +78,8 @@ public class CompetitionLogging implements TripletListener {
 		DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
 		Date date = new Date();
 		String fileName = new String(teamName + "_Competition_" + competitionNumber + "_" + dateformat.format(date.getTime()) +  ".log");
-		File file = new File(fileName);
+		File file = new File(fileParent + File.separatorChar + fileName);
+		System.out.println("CompetitionLogging filePath: " + file.getPath());
 		boolean exists = file.exists();
 		try {
 			if(!exists) {			
@@ -109,6 +117,7 @@ public class CompetitionLogging implements TripletListener {
 	}
 	
 	public static void resetParams() {
+		fileParent = "";
 		teamName="";
 		taskSpecString = "Triplets not sent";
 		clientIP = "N/A";
