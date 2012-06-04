@@ -19,6 +19,7 @@ public class TaskServer implements Runnable{
 	private Logging logg;
 	private Thread serverThread;
 	private String teamName;
+	private String tripletAcknowledge;
 	private String clientIP;
 	private byte[] clientID;
 	private String commLogID= "Communication";
@@ -65,6 +66,10 @@ public class TaskServer implements Runnable{
 		notifyTeamConnected();
 	}
 
+	public ZMQ.Socket getrefereeSocket(){
+		return refereeSocket;
+	}
+	
 	public void sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		if (clientIP != getClientIP()){
@@ -78,6 +83,10 @@ public class TaskServer implements Runnable{
 		refereeSocket.send(reply, 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
 		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
+		byte bytes[] = refereeSocket.recv(0);
+		tripletAcknowledge = new String(bytes);
+		System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
+		logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
 		notifyTaskSpecSent();
 		// Start setup phase timer
 		//sendStartMsgToClient();
@@ -105,11 +114,11 @@ public class TaskServer implements Runnable{
 
 	public void disconnectClient(String teamName) {
 		// Send disconnect message
-		String msg = new String("Disconnecting " + teamName);
-		byte reply[] = msg.getBytes();
-		refereeSocket.send(reply, 0);
-		System.out.println("Disconnect msg sent to client: " + msg);
-		logg.LoggingFile(commLogID, "Disconnect msg sent to client: " + msg);
+		//String msg = new String("Disconnecting " + teamName);
+		//byte reply[] = msg.getBytes();
+		refereeSocket.close();
+		System.out.println("Client Disconnected");
+		logg.LoggingFile(commLogID, "Client Disconnected");
 		notifyTeamDisconnected();
 		// Listen for new connection requests
 		listenForConnection();

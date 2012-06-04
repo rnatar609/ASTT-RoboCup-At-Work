@@ -38,6 +38,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 	
 	String taskSpecFromServer;
 	String teamName;
+	String tripletAcknowledge;
 	String ready;
 	String start;
 	String complete;
@@ -78,6 +79,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 		teamName = new String("Team-Name");
 		ready = new String("Ready to Roll");
 		complete = new String("Task Completed");
+		tripletAcknowledge = new String("Task Specification Received");
 	}
 	
 	private void initGUI() {
@@ -187,6 +189,7 @@ public class JavaClientGUI extends javax.swing.JFrame implements ActionListener{
 		taskSpecFromServer = new String(reply_taskspec);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
 		jStatusBar.setText("Received taskSpecification from Referee");
+		RobotClient_Socket.send(tripletAcknowledge.getBytes(), 0);
 		//RobotClient_Socket.send(ready.getBytes(), 1);
 		//System.out.println("Ready");
 		//jStatusBar.setText("Ready");

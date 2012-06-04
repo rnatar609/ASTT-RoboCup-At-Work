@@ -5,13 +5,13 @@ import org.zeromq.*;
 public class JavaClient {
 	String taskSpecFromServer;
 	String teamName;
-	String ready;
+	String tripletAcknowledge;
 	String start;
 	String taskcomplete;
 
 	public JavaClient() {
 		teamName = new String("Team-Name");
-		ready = new String("Ready to Roll");
+		tripletAcknowledge = new String("Task Specification Received");
 	}
 
 	public void obtainTaskSpecFromServer(String serverIP, String port) {
@@ -24,12 +24,11 @@ public class JavaClient {
 		System.out.println("Sent team name to server... " + teamName);
 		byte[] reply_taskspec = RobotClient_Socket.recv(0);
 		taskSpecFromServer = new String(reply_taskspec);
+		RobotClient_Socket.send(tripletAcknowledge.getBytes(), 0);
 		System.out.println("Received taskSpecification: " + taskSpecFromServer);
-		//RobotClient_Socket.send(ready.getBytes(), 0);
-		//System.out.println("Ready to Roll");
-		byte[] reply_start = RobotClient_Socket.recv(0);
-		start = new String(reply_start);
-		System.out.println("Starting the navigation");
+		//byte[] reply_start = RobotClient_Socket.recv(0);
+		//start = new String(reply_start);
+		//System.out.println("Starting the navigation");
 		RobotClient_Socket.close();
 		RobotModule.term();
 	}
