@@ -4,9 +4,13 @@ import java.io.*;
 import java.util.Date;
 import java.text.*;
 
-public class CompetitionLogging {
+import controller.TripletListener;
+
+import model.TaskTriplet.State;
+
+public class CompetitionLogging implements TripletListener {
 	static String teamName = "";
-	static String taskSpecString = "";
+	static String taskSpecString = "Triplets not sent";
 	static String clientIP = "";
 	static String runTimeStart = "";
 	static String stopTime = "";
@@ -16,6 +20,7 @@ public class CompetitionLogging {
 	static int runTimeInSeconds = 0;
 	static int competitionTimeInSeconds = 0;
 	static int taskTripletListLength = 0;
+	static boolean lengthAlreadySet = false;
 	static TaskTriplet.State taskTripletState[];
 
 	
@@ -54,6 +59,9 @@ public class CompetitionLogging {
 	public static void setTaskTripletListLength(TaskSpec tS) {
 		taskTripletListLength = tS.getTaskTripletList().size();
 		taskTripletState = new TaskTriplet.State[taskTripletListLength];
+		for(int i=0;i<taskTripletListLength;i++) {
+			taskTripletState[i] = State.INIT; 
+		}
 	}
 	
 	public static void storeParams() {
@@ -102,7 +110,7 @@ public class CompetitionLogging {
 	
 	public static void resetParams() {
 		teamName="";
-		taskSpecString = "";
+		taskSpecString = "Triplets not sent";
 		clientIP = "";
 		runTimeStart = "";
 		stopTime = "";
@@ -113,5 +121,13 @@ public class CompetitionLogging {
 		competitionTimeInSeconds = 0;
 		taskTripletListLength = 0;
 		taskTripletState = new TaskTriplet.State[taskTripletListLength];
+		lengthAlreadySet = false;
 	}
+
+	@Override
+	public void taskSpecChanged(TripletEvent evt) {
+		setTripletState(evt.getTripletNumber(),evt.getTaskTriplet().getState());
+	}
+	
+	
 }

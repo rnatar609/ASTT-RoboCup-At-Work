@@ -36,6 +36,7 @@ public class MainController implements TimerListener {
 	private ConfigFile cfgFile;
 	private TaskServer tServer;
 	private Logging logg;
+	private CompetitionLogging competitionLogging;
 	private String triplets = "Triplets";
 	private boolean unsavedChanges = false;
 	private boolean enteredCompetitionMode = false;
@@ -284,6 +285,7 @@ public class MainController implements TimerListener {
 				mG.getSendTripletsButton().setEnabled(true);
 				setEnteredCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
+				tS.addTripletListener(competitionLogging);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
