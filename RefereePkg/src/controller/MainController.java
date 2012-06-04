@@ -63,6 +63,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					setSavedChanges();
+					CompetitionLogging.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -87,11 +88,11 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
 					setSavedChanges();
+					CompetitionLogging.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
 				}
-				CompetitionLogging.setFilePath(file);
 			} else {
 				mG.setStatusLine("Open command cancelled by user.");
 			}
@@ -280,6 +281,7 @@ public class MainController implements TimerListener {
 				long configTime = cfgFile.getConfigurationTime();
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
+				mG.setTimerStartStopButtonText("Timer Stop");
 				setCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
 				tS.addTripletListener(competitionLogging);

@@ -68,7 +68,6 @@ public class CompetitionLogging implements TripletListener {
 	public static void setFilePath(File file) {
 		//filePath = file.getAbsolutePath();
 		fileParent = file.getParent();
-		System.out.println("CompetitionLogging directory (parent): " + fileParent);
 	}
 	
 	public static void storeParams() {
