@@ -368,7 +368,6 @@ public class MainController implements TimerListener {
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		taskTimer = new TaskTimer();
-		Logging.setFileName("TaskLog.log");
 		logg = Logging.getInstance();
 		init();
 		if (args.length > 0) {

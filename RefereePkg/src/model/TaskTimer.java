@@ -58,7 +58,6 @@ public class TaskTimer implements ConnectionListener {
 	}
 
 	public TaskTimer() {
-		Logging.setFileName("TaskLog.log");
 		logg = Logging.getInstance();
 		timerStop = true;
 	}
