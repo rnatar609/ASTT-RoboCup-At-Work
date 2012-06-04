@@ -8,6 +8,8 @@ public class CompetitionLogging {
 	static String teamName = "";
 	static String taskSpecString = "";
 	static String clientIP = "";
+	static String runTimeStart = "";
+	static String stopTime = "";
 	static int competitionNumber = 0;
 	static boolean receivedACK = false; 
 	static int configurationTimeInSeconds = 0;
@@ -24,6 +26,22 @@ public class CompetitionLogging {
 	
 	public static void setClientIP(String s) {
 		clientIP = s;
+	}
+	
+	public static void setReceivedACK(boolean b) {
+		receivedACK = b;
+	}
+	
+	public static void setRunTimeStart(String s) {
+		runTimeStart = s;
+	}
+	
+	public static void setStopTime(String s) {
+		stopTime = s;
+	}
+	
+	public static void setTripletStates() {
+		
 	}
 	
 	public static void storeParams() {
@@ -55,6 +73,9 @@ public class CompetitionLogging {
 			output.write("Teamname: " + teamName + "\n");
 			output.write("Task specification: " + taskSpecString + "\n");
 			output.write("Client IP: " + clientIP + "\n");
+			output.write("Acknowledge received: " + receivedACK + "\n");
+			output.write("Run time start time: " + runTimeStart + "\n");
+			output.write("Stop time: " + stopTime + "\n");
 			//output.write("" + "\n");
 			output.close();
 		}
@@ -67,6 +88,8 @@ public class CompetitionLogging {
 		teamName="";
 		taskSpecString = "";
 		clientIP = "";
+		runTimeStart = "";
+		stopTime = "";
 		competitionNumber = 0;
 		receivedACK = false;
 		configurationTimeInSeconds = 0;

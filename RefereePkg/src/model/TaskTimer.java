@@ -95,6 +95,7 @@ public class TaskTimer implements ConnectionListener {
 	public void stopTimer() {
 		timerStop = true;
 		logg.LoggingFile(logId, "stopped at " + secToString(currentSec));
+		CompetitionLogging.setStopTime(secToString(currentSec));
 	}
 
 	public void resetTimer() {
@@ -114,6 +115,7 @@ public class TaskTimer implements ConnectionListener {
 		notifyTimerSetMaximumTime(millisecToString(currentSec * 1000 + runTime));
 		logg.LoggingFile(logId, "Run time started at "
 				+ secToString(currentSec));
+		CompetitionLogging.setRunTimeStart(secToString(currentSec));
 	}
 
 	private void notifyTimerTick(String currentTime, boolean inTime) {
