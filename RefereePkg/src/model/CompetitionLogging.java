@@ -57,25 +57,23 @@ public class CompetitionLogging {
 	}
 	
 	public static void storeParams() {
-		if(!teamName.equals("")) {
-			DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
-			Date date = new Date();
-			String fileName = new String(teamName + "_Competition_" + competitionNumber + "_" + dateformat.format(date.getTime()) +  ".log");
-			File file = new File(fileName);
-			boolean exists = file.exists();
-			try {
-				if(!exists) {			
-					file.createNewFile();
-			    }
-			}
-			catch(IOException e) {
-				System.out.println("Exception caught in TeamLogging saveVariablesToFile: " + e);
-			}
-			writeParamsToFile(file);
+		if(teamName == null || teamName.equals("")) {
+			teamName = "Unknown";
 		}
-		else {
-			System.out.println("No Teamname available, therefore no competition performed");
+		DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+		Date date = new Date();
+		String fileName = new String(teamName + "_Competition_" + competitionNumber + "_" + dateformat.format(date.getTime()) +  ".log");
+		File file = new File(fileName);
+		boolean exists = file.exists();
+		try {
+			if(!exists) {			
+				file.createNewFile();
+		    }
 		}
+		catch(IOException e) {
+			System.out.println("Exception caught in TeamLogging saveVariablesToFile: " + e);
+		}
+		writeParamsToFile(file);
 	}
 	
 	private static void writeParamsToFile(File file) {
