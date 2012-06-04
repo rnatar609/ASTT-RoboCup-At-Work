@@ -11,7 +11,7 @@ import model.TaskTriplet.State;
 public class CompetitionLogging implements TripletListener {
 	static String teamName = "";
 	static String taskSpecString = "Triplets not sent";
-	static String clientIP = "";
+	static String clientIP = "N/A";
 	static String runTimeStart = "";
 	static String stopTime = "";
 	static int competitionNumber = 0;
@@ -111,7 +111,7 @@ public class CompetitionLogging implements TripletListener {
 	public static void resetParams() {
 		teamName="";
 		taskSpecString = "Triplets not sent";
-		clientIP = "";
+		clientIP = "N/A";
 		runTimeStart = "";
 		stopTime = "";
 		competitionNumber = 0;
@@ -128,6 +128,4 @@ public class CompetitionLogging implements TripletListener {
 	public void taskSpecChanged(TripletEvent evt) {
 		setTripletState(evt.getTripletNumber(),evt.getTaskTriplet().getState());
 	}
-	
-	
 }
