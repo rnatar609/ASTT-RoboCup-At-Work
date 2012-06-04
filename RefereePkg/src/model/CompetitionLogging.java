@@ -60,7 +60,7 @@ public class CompetitionLogging {
 		if(!teamName.equals("")) {
 			DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
 			Date date = new Date();
-			String fileName = new String("CompetitionLog_" + teamName + "_" + dateformat.format(date.getTime()) +  ".log");
+			String fileName = new String("Competition_" + competitionNumber + "_" + teamName + "_" + dateformat.format(date.getTime()) +  ".log");
 			File file = new File(fileName);
 			boolean exists = file.exists();
 			try {
