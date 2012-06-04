@@ -40,8 +40,9 @@ public class TaskServer implements Runnable{
 					+ " ipAddress: " + localHost + " port: " + port);
 		} 
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
+			//e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
