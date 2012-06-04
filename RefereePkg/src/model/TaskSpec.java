@@ -100,8 +100,10 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex - 1, triplet);
-			logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(triplet) + " moved up");
+			logg.LoggingFile(
+					taskTripletListName,
+					triplet.getTaskTripletString() + " no. "
+							+ taskTripletList.indexOf(triplet) + " moved up");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
@@ -114,9 +116,10 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex + 1, triplet);
-			logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(triplet)
-					+ " moved down");
+			logg.LoggingFile(
+					taskTripletListName,
+					triplet.getTaskTripletString() + " no. "
+							+ taskTripletList.indexOf(triplet) + " moved down");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
@@ -173,15 +176,12 @@ public class TaskSpec {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(getTaskSpecString());
 			out.close();
-			logg.LoggingFile(
-					taskTripletListName,
-					"saved actual task specification in >"
-							+ file.getName() + "<");
+			logg.LoggingFile(taskTripletListName,
+					"saved actual task specification in >" + file.getName()
+							+ "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-			logg.LoggingFile(
-					taskTripletListName,
-					"saving failed! >");
+			logg.LoggingFile(taskTripletListName, "saving failed! >");
 			return false;
 		}
 		return true;
@@ -194,7 +194,7 @@ public class TaskSpec {
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				taskTripletList = new ArrayList<TaskTriplet>(); 
+				taskTripletList = new ArrayList<TaskTriplet>();
 				if (!parseTaskSpecString(strLine))
 					return false;
 				System.out.println("Found and parsed task spec string: "
@@ -210,7 +210,7 @@ public class TaskSpec {
 		return true;
 	}
 
-	public synchronized TaskTriplet setTripletState(int tripletIndex, int column) {
+	public TaskTriplet setTripletState(int tripletIndex, int column) {
 		TaskTriplet tT = taskTripletList.get(tripletIndex);
 		State newState;
 		if (column == 1)
@@ -221,10 +221,13 @@ public class TaskSpec {
 			tT.setState(State.INIT);
 		else
 			tT.setState(newState);
-		logg.LoggingFile(taskTripletListName, tT.getTaskTripletString() + " no. "
-				+ taskTripletList.indexOf(tT) + " new state: " + tT.getState());
-		notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
-				taskTripletList.size(), taskTripletList));
+		logg.LoggingFile(
+				taskTripletListName,
+				tT.getTaskTripletString() + " no. "
+						+ taskTripletList.indexOf(tT) + " new state: "
+						+ tT.getState());
+		notifyTaskSpecChanged(new TripletEvent(tT, taskTripletList.indexOf(tT),
+				taskTripletList));
 		return tT;
 	}
 

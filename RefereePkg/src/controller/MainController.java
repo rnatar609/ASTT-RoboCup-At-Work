@@ -40,6 +40,7 @@ public class MainController implements TimerListener {
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
 	private TaskTimer taskTimer;
+	private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
 
@@ -280,9 +281,9 @@ public class MainController implements TimerListener {
 				long configTime = cfgFile.getConfigurationTime();
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
-				mG.setTimerStartStopButtonText("Timer Stop");
 				setCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
+				tS.addTripletListener(compLogging);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
@@ -369,6 +370,7 @@ public class MainController implements TimerListener {
 		unsavedChanges = false;
 		competitionMode = false;
 		logg = Logging.getInstance();
+		compLogging = new CompetitionLogging();
 		init();
 		if (args.length > 0) {
 			File file = new File(System.getProperty("user.home")

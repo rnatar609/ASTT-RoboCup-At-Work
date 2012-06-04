@@ -83,7 +83,8 @@ public class TaskTimer implements ConnectionListener {
 			logg.LoggingFile(logId, "Configuration time startet at "
 					+ millisecToString(currentSec));
 			notifyTimerReset(secToString(currentSec));
-			notifyTimerSetMaximumTime(("cfg time: ").concat(millisecToString(this.configTime)));
+			notifyTimerSetMaximumTime(("cfg time: ")
+					.concat(millisecToString(this.configTime)));
 		}
 	}
 
@@ -112,7 +113,8 @@ public class TaskTimer implements ConnectionListener {
 		currentSec = 0;
 		startRunTime = System.currentTimeMillis();
 		runTimeRunning = true;
-		notifyTimerSetMaximumTime(("run time: ").concat(millisecToString(runTime)));
+		notifyTimerSetMaximumTime(("run time: ")
+				.concat(millisecToString(runTime)));
 		logg.LoggingFile(logId, "Run time started at "
 				+ secToString(currentSec));
 		CompetitionLogging.setRunTimeStart(secToString(currentSec));

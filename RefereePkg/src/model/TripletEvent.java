@@ -9,7 +9,8 @@ public class TripletEvent extends EventObject {
 	private int tripletNumber;
 	private List<TaskTriplet> taskTripletList;
 
-	TripletEvent(TaskTriplet taskTriplet, int tripletNum, List<TaskTriplet> taskTripletList) {
+	TripletEvent(TaskTriplet taskTriplet, int tripletNum,
+			List<TaskTriplet> taskTripletList) {
 		super(taskTriplet);
 		this.taskTriplet = taskTriplet;
 		this.tripletNumber = tripletNum;
