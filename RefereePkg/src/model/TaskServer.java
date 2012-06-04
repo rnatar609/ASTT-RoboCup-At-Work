@@ -87,6 +87,7 @@ public class TaskServer implements Runnable{
 		tripletAcknowledge = new String(bytes);
 		System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
 		logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
+		CompetitionLogging.setReceivedACK(true);
 		notifyTaskSpecSent();
 		// Start setup phase timer
 		//sendStartMsgToClient();

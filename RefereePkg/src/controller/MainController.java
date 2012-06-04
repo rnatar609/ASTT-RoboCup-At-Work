@@ -283,6 +283,7 @@ public class MainController implements TimerListener {
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				mG.getSendTripletsButton().setEnabled(true);
 				setEnteredCompetitionMode(true);
+				CompetitionLogging.setTaskTripletListLength(tS);
 			} else {
 				taskTimer.stopTimer();
 				mG.setTimerStartStopButtonText("Timer Start");
@@ -349,8 +350,7 @@ public class MainController implements TimerListener {
 			int selectedRow = mG.getTripletsTable().getSelectedRow();
 			int selectedColumn = mG.getTripletsTable().getSelectedColumn();
 			if (selectedColumn > 0) {
-				TaskTriplet tT = tS
-						.setTripletState(selectedRow, selectedColumn);
+				TaskTriplet tT = tS.setTripletState(selectedRow, selectedColumn);
 				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
 						+ ", " + tT.getOrientation() + ", " + tT.getPause()
 						+ ").");
