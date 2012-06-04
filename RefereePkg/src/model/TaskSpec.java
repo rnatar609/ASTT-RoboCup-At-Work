@@ -224,7 +224,6 @@ public class TaskSpec {
 			tT.setState(newState);
 		logg.LoggingFile(taskTripletListName, tT.getTaskTripletString() + " no. "
 				+ taskTripletList.indexOf(tT) + " new state: " + tT.getState());
-		CompetitionLogging.setTripletState(taskTripletList.indexOf(tT),tT.getState());
 		notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
 				taskTripletList.size(), taskTripletList));
 		return tT;
