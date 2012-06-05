@@ -23,6 +23,7 @@ import model.TaskSpec;
 import model.TaskTimer;
 import model.TaskTriplet;
 import model.ValidTripletElements;
+import view.DialogType;
 import view.FileType;
 import view.MainGUI;
 
@@ -56,7 +57,7 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_SAVE);
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
@@ -81,7 +82,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Open")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_OPEN);
 			if (file != null) {
 
 				if (tS.openTaskSpec(file)) {
@@ -106,7 +107,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Load Config")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_ALL);
+			File file = mG.showFolderDialog(FileType.FILETYPE_ALL,  DialogType.DIALOG_OPEN);
 			if (file != null) {
 				loadConfigurationFile(file);
 			} else {
@@ -262,8 +263,8 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 			String teamName = tServer.getTeamName();
-			tServer.disconnectClient(teamName);
-			mG.setStatusLine("Team " + teamName + " disconnected.");
+			tServer.restartServer();
+			mG.setStatusLine("Team " + teamName + " disconnected. Listening for new connection.....");
 		}
 	};
 
@@ -286,7 +287,9 @@ public class MainController implements TimerListener {
 				tS.addTripletListener(compLogging);
 			} else {
 				taskTimer.stopTimer();
+				tServer.disconnectClient();
 				mG.setTimerStartStopButtonText("Timer Start");
+				mG.getTimerStartStopButton().setEnabled(false);
 				mG.getCompetitionFinishedButton().setEnabled(true);
 				mG.getSendTripletsButton().setEnabled(false);
 			}
@@ -299,14 +302,19 @@ public class MainController implements TimerListener {
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-			String teamName = tServer.getTeamName();
-			CompetitionLogging.setTeamName(teamName);
-			CompetitionLogging.storeParams();
-			CompetitionLogging.resetParams();
-			setCompetitionMode(false);
-			taskTimer.resetTimer();
-			tS.resetStates();
-		}
+				String teamName = tServer.getTeamName();
+				CompetitionLogging.setTeamName(teamName);
+				CompetitionLogging.storeParams();
+				CompetitionLogging.resetParams();
+				mG.setCompetitionMode(false);
+				mG.getCompetitionFinishedButton().setEnabled(false);
+				setEnteredCompetitionMode(false);
+				taskTimer.resetTimer();
+				mG.getTimerStartStopButton().setEnabled(true);
+				tS.resetStates();
+				tServer.listenForConnection();
+				mG.setStatusLine("Competition finished. Listening for next team.");
+			}
 	};
 
 	public MouseListener tripletTableListener = new MouseListener() {
@@ -535,5 +543,7 @@ public class MainController implements TimerListener {
 		mG.setTimerStartStopButtonText("Timer Start");
 		mG.getTimerStartStopButton().setSelected(false);
 		mG.getCompetitionFinishedButton().setEnabled(true);
+		tServer.disconnectClient();
+		mG.setStatusLine("Timeout. Team disconnected");
 	}
 }

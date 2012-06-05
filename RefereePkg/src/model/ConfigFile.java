@@ -60,6 +60,30 @@ public class ConfigFile {
 		return configTime;
 	}
 
+	public String getServerIP() {
+		String str = properties.getProperty("ServerIP");
+		String refIP = null;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNext()) {
+			refIP = scnr.next();
+			System.out.println(refIP);
+		} else
+			System.out.println("No ServerIP specified in the config file");
+		return refIP;
+	}
+	
+	public String getPortaddr() {
+		String str = properties.getProperty("Port");
+		String refPort = null;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNext()) {
+			refPort = scnr.next();
+			System.out.println(refPort);
+		} else
+			System.out.println("No ServerIP specified in the config file");
+		return refPort;
+	}
+	
 	public long getRunTime() {
 		String str = properties.getProperty("runTime");
 		long runTime = 0;

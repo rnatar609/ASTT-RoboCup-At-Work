@@ -24,6 +24,8 @@ public class TaskServer implements Runnable{
 	private String clientIP;
 	private byte[] clientID;
 	private String commLogID= "Communication";
+	
+	private ConfigFile configfile = new ConfigFile();
 
 	public TaskServer() {
 		try {
@@ -31,14 +33,7 @@ public class TaskServer implements Runnable{
 			localHost = new String();
 			port = 11111;
 			localHost = InetAddress.getLocalHost().getHostAddress();
-			// Prepare context and socket
-			ZMQ.Context context = ZMQ.context(1);
-			refereeSocket = context.socket(ZMQ.REP);
-			refereeSocket.bind("tcp://" + localHost + ":" + port);
-			System.out.println("Server socket created: " + refereeSocket
-					+ " ipAddress: " + localHost + " port: " + port);
-			logg.LoggingFile(commLogID, "Server socket created: "
-					+ " ipAddress: " + localHost + " port: " + port);
+			createServerSocket();
 		} 
 		catch (Exception e) {
 			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
@@ -51,7 +46,28 @@ public class TaskServer implements Runnable{
 		}
 	}
 
+	private void createServerSocket(){
+		// Prepare context and socket
+		//localHost = configfile.getServerIP();
+		//port = configfile.getPortaddr();
+		ZMQ.Context context = ZMQ.context(1);
+		refereeSocket = context.socket(ZMQ.REP);
+		refereeSocket.bind("tcp://" + localHost + ":" + port);
+		System.out.println("Server socket created: " + refereeSocket
+				+ " ipAddress: " + localHost + " port: " + port);
+		logg.LoggingFile(commLogID, "Server socket created: "
+				+ " ipAddress: " + localHost + " port: " + port);
+	}
+	
+	public void restartServer(){
+        disconnectClient();
+		createServerSocket();
+		listenForConnection();
+	}
+	
 	public void listenForConnection() {
+		teamName = new String();
+		//createServerSocket();
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
 		System.out.println("Server thread started... ");
@@ -119,16 +135,22 @@ public class TaskServer implements Runnable{
 		taskComplete();
 	}
 
-	public void disconnectClient(String teamName) {
-		// Send disconnect message
-		//String msg = new String("Disconnecting " + teamName);
-		//byte reply[] = msg.getBytes();
-		refereeSocket.close();
-		System.out.println("Client Disconnected");
-		logg.LoggingFile(commLogID, "Client Disconnected");
-		notifyTeamDisconnected();
-		// Listen for new connection requests
-		listenForConnection();
+	public boolean disconnectClient() {
+        if (teamName.isEmpty())
+        	return false;
+		try{
+			refereeSocket.close();	
+			System.out.println("Client Disconnected");
+			logg.LoggingFile(commLogID, "Client Disconnected");
+			notifyTeamDisconnected();
+			// Listen for new connection requests
+			//listenForConnection();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	public void addConnectionListener(ConnectionListener cL) {
