@@ -1,20 +1,45 @@
 package Java;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+import java.util.Scanner;
+
 import org.zeromq.*;
 
 public class JavaClient {
-	String taskSpecFromServer;
-	String teamName;
-	String tripletAcknowledge;
-	String start;
-	String taskcomplete;
+	private String taskSpecFromServer;
+	private String teamName;
+	private String tripletAcknowledge;
+	private String start;
+	private String taskcomplete;
+	private String serverIP;
+	private String port;
+	private Properties serverProperties;
+	//static private JavaClient javaclient;
 
 	public JavaClient() {
-		teamName = new String("Team-Name");
+		teamName = new String("bit-bots");
 		tripletAcknowledge = new String("Task Specification Received");
+		serverIP = new String("127.0.0.1");
+		port = new String("11111");
+		serverProperties = new Properties();
 	}
 
-	public void obtainTaskSpecFromServer(String serverIP, String port) {
+	public void obtainTaskSpecFromServer() throws Exception {
+		try {
+			FileInputStream in = new FileInputStream("/Users/Rnatar609/Documents/ASTT-RoboCup-At-Work/RobotPkg/src/Java/config.txt");
+			serverProperties.load(in);
+			in.close();
+		} catch (Exception e) {
+			System.out.println("Exception in loading Server Properties: "
+					+ e.getMessage());
+			throw e;
+		}
+		System.out.println(serverIP);
+		System.out.println(port);
+		serverIP = this.getServerIP();//javaclient.getServerIP();
+		port = this.getPortaddr();//javaclient.getPortaddr();
+		System.out.println("ServerIP: " + serverIP + " Server port: " + port);
 		ZMQ.Context RobotModule = ZMQ.context(1);
 		ZMQ.Socket RobotClient_Socket = RobotModule.socket(ZMQ.REQ);
 		String connectStr = new String("tcp://" + serverIP + ":" + port);
@@ -33,15 +58,45 @@ public class JavaClient {
 		RobotModule.term();
 	}
 
-	public static void main(String[] args) throws Exception {
-		// Note: The server IP address & port should be entered as command-line argument.
-		if (args.length < 2) {
-			System.out.println("Insufficient arguments:"+ args.length + "\nEnter server IP addr and port as Command-line arguments.");
-			return;
+	/*private void getServerIPaddrPort() throws Exception {
+		try {
+			FileInputStream in = new FileInputStream("config.txt");
+			serverProperties.load(in);
+			in.close();
+		} catch (Exception e) {
+			System.out.println("Exception in loading Server Properties: "
+					+ e.getMessage());
+			throw e;
 		}
+	}*/
+	
+	private String getServerIP() {
+		String str = serverProperties.getProperty("ServerIP");
+		String refIP = null;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNext()) {
+			refIP = scnr.next();
+			System.out.println(refIP);
+		} else
+			System.out.println("No ServerIP specified in the config file");
+		return refIP;
+	}
+	
+	private String getPortaddr() {
+		String str = serverProperties.getProperty("Port");
+		String refPort = null;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNext()) {
+			refPort = scnr.next();
+			System.out.println(refPort);
+		} else
+			System.out.println("No ServerIP specified in the config file");
+		return refPort;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		JavaClient javaclient = new JavaClient();
 		// Obtain task specification from server
-		JavaClient jClient = new JavaClient();
-		System.out.println("ServerIP: " + args[0] + " Server port: " + args[1]);
-		jClient.obtainTaskSpecFromServer(args[0], args[1]);
+		javaclient.obtainTaskSpecFromServer();
 	}
 }
