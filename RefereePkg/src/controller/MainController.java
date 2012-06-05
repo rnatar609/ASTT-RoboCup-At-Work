@@ -259,8 +259,8 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 			String teamName = tServer.getTeamName();
-			tServer.disconnectClient(teamName);
-			mG.setStatusLine("Team " + teamName + " disconnected.");
+			tServer.restartServer();
+			mG.setStatusLine("Team " + teamName + " disconnected. Listening for new connection.....");
 		}
 	};
 
@@ -285,7 +285,9 @@ public class MainController implements TimerListener {
 				setEnteredCompetitionMode(true);
 			} else {
 				taskTimer.stopTimer();
+				tServer.disconnectClient();
 				mG.setTimerStartStopButtonText("Timer Start");
+				mG.getTimerStartStopButton().setEnabled(false);
 				mG.getCompetitionFinishedButton().setEnabled(true);
 				mG.getSendTripletsButton().setEnabled(false);
 			}
@@ -305,7 +307,10 @@ public class MainController implements TimerListener {
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				setEnteredCompetitionMode(false);
 				taskTimer.resetTimer();
+				mG.getTimerStartStopButton().setEnabled(true);
 				tS.resetStates();
+				tServer.listenForConnection();
+				mG.setStatusLine("Competition finished. Listening for next team.");
 			}
 	};
 
@@ -531,5 +536,7 @@ public class MainController implements TimerListener {
 		mG.setTimerStartStopButtonText("Timer Start");
 		mG.getTimerStartStopButton().setSelected(false);
 		mG.getCompetitionFinishedButton().setEnabled(true);
+		tServer.disconnectClient();
+		mG.setStatusLine("Timeout. Team disconnected");
 	}
 }

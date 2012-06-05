@@ -1,17 +1,58 @@
 #include <zmq.hpp>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <cstring>
 
-int main (int argc, char **argv)
+const int MAX_CHARS_PER_LINE = 50;
+const int MAX_TOKENS_PER_LINE = 2;
+const char* const DELIMITER = " ";
+
+int main ()
 {
 	std::string referee_ip;
+	std::string referee_port;
+	std::string conn_infos;
+	const char* team_name = "bit-bots";
 	
-	if(argc != 3)
-		return -1;
+	// create a file-reading object
+	using std::ifstream;
+	ifstream fin;
+	fin.open("config.txt");
+	if (!fin.good()) 
+		std::cout << "Configfile not found" << std::endl;
+		return 1;
+	
+	while (!fin.eof())
+	{
+		// read an entire line into memory
+		char buf[MAX_CHARS_PER_LINE];
+		fin.getline(buf, MAX_CHARS_PER_LINE);
 		
-	std::cout << argv[1] << " " << argv[2] << std::endl;
+		// parse the line into blank-delimited tokens
+		int n = 0;
+		
+		// array to store memory addresses of the tokens in buf
+		const char* token[MAX_TOKENS_PER_LINE] = {0};
+		
+		// parse the line
+		token[0] = strtok(buf, DELIMITER); // first token
+		if (token[0]) // zero if line is blank
+		{
+			for (n = 1; n < MAX_TOKENS_PER_LINE; n++)
+			{
+				token[n] = strtok(0, DELIMITER);
+				if (!token[n]) break;
+			}
+		}
+		
+		referee_ip = token[1];
+		std::cout << "RefereeIP: " << referee_ip << std::endl;
+		referee_port = token[3];
+		std::cout << "RefereePort: " << referee_port << std::endl;
+	}
 	
-	std::string conn_infos = "tcp://" + std::string(argv[1]) + ":" + std::string(argv[2]);
+	conn_infos = "tcp://" + referee_ip + ":" + referee_port;
 	
 	std::cout << conn_infos << std::endl;
 	
@@ -24,8 +65,9 @@ int main (int argc, char **argv)
     socket.connect (conn_infos.c_str());
 	
 	zmq::message_t request (6);
-	memcpy ((void *) request.data (), "Hello Referee Please send the Triplets", 5);
+	memcpy ((void *) request.data (), team_name, 5);
 	socket.send (request);
+	std::cout << "Sent Teamname to Referee" << std::endl;
 	zmq::message_t reply(100);
 	socket.recv (&reply);
 	std::cout << reply.data() << std::endl;

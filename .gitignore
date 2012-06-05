@@ -5,14 +5,6 @@
 bin/
 /RobotPkg/nbproject/private/
 /RefereePkg/nbproject/private/
-/RefereePkg/build/
+build/
 .DS_Store
-RefereePkg/.DS_Store
-
-.DS_Store
-
-RefereePkg/src/.DS_Store
-
-RefereePkg/src/model/.DS_Store
-
-RefereePkg/src/view/.DS_Store
+.project
