@@ -31,5 +31,7 @@ std::string obtainTaskSpecFromServer(std::string server_ip, std::string server_p
 	socket.send (*send_ack);
 	
 
+	delete send_ack;
+	delete send_team_name;
 	return returnstring;
 }
