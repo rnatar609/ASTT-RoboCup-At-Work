@@ -23,6 +23,7 @@ import model.TaskSpec;
 import model.TaskTimer;
 import model.TaskTriplet;
 import model.ValidTripletElements;
+import view.DialogType;
 import view.FileType;
 import view.MainGUI;
 
@@ -56,7 +57,7 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_SAVE);
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
@@ -81,7 +82,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Open")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_OPEN);
 			if (file != null) {
 
 				if (tS.openTaskSpec(file)) {
@@ -106,7 +107,7 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Load Config")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_ALL);
+			File file = mG.showFolderDialog(FileType.FILETYPE_ALL,  DialogType.DIALOG_OPEN);
 			if (file != null) {
 				loadConfigurationFile(file);
 			} else {

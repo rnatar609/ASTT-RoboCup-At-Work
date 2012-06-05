@@ -623,17 +623,24 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	/**
-	 * Display folder browser dialog.
+	 * Display folder browser dialog for open and save.
 	 * 
 	 * @param fType
 	 *            A FileType enumerator constant indicating the desired file
 	 *            type.
+	 * 
+	 * @param diagType
+	 *  	 	  A DialogType enumerator constant indicating whether Open or Save dialog should be displayed.
 	 */
-	public File showFolderDialog(FileType fType) {
+	public File showFolderDialog(FileType fType, DialogType diagType) {
 		JFileChooser fc = new JFileChooser();
 		if (fType == FileType.FILETYPE_TSP)
 			fc.setFileFilter(new TspFilter());
-		if (fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
+		if (diagType == DialogType.DIALOG_SAVE && fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
+			return fc.getSelectedFile();
+		}
+		if (diagType == DialogType.DIALOG_OPEN && fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION)
+		{
 			return fc.getSelectedFile();
 		}
 		return null;
