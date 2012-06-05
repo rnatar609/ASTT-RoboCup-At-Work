@@ -282,7 +282,7 @@ public class MainController implements TimerListener {
 				long configTime = cfgFile.getConfigurationTime();
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
-				setCompetitionMode(true);
+				setEnteredCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
 				tS.addTripletListener(compLogging);
 			} else {
@@ -486,7 +486,7 @@ public class MainController implements TimerListener {
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
 
-	private void setCompetitionMode(boolean mode) {
+	private void setEnteredCompetitionMode(boolean mode) {
 		competitionMode = mode;
 		mG.setCompetitionMode(mode);
 	}
