@@ -1,16 +1,15 @@
 package model;
 
-
 public class TaskTriplet {
 	private String place;
 	private String orientation;
 	private Short pause;
 	private State state;
-	
+
 	public enum State {
-	 	 INIT, PASSED, FAILED
+		INIT, PASSED, FAILED
 	};
-	
+
 	public TaskTriplet() {
 		place = "D0";
 		orientation = "N";
@@ -23,14 +22,15 @@ public class TaskTriplet {
 	}
 
 	public void setOrientation(String s) {
-			orientation = s;
+		orientation = s;
 	}
 
 	public boolean setPause(String s) {
 		try {
-				pause = Short.parseShort(s);
+			pause = Short.parseShort(s);
 		} catch (Exception e) {
-			System.out.println("Exception in TaskTriplet_setPause(): " + e.getMessage());
+			System.out.println("Exception in TaskTriplet_setPause(): "
+					+ e.getMessage());
 			return false;
 		}
 		return true;

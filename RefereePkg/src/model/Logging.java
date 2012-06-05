@@ -10,6 +10,8 @@ import java.text.*;
 /**
  * @author Jeyaprakash Rajagopal, 
  * 		   Marc Wollenweber
+ * 
+ * 
  *
  */
 public class Logging {
@@ -39,9 +41,9 @@ public class Logging {
 		}
 	}
 	
-	public static void setFileName( String fileName)
+	public static void setFileName(String fileName)
 	{
-		filename = fileName;	
+		filename = fileName;
 	}
 	
 	public static Logging getInstance() {

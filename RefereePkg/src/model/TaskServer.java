@@ -1,5 +1,6 @@
 package model;
 
+import java.io.*;
 import java.net.InetAddress;
 
 import javax.swing.event.EventListenerList;
@@ -35,8 +36,13 @@ public class TaskServer implements Runnable{
 			createServerSocket();
 		} 
 		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
+			//e.printStackTrace();
+			File file = new File(Logging.filename);
+			if (!file.delete()) {
+				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
+			}
+			System.exit(1);
 		}
 	}
 
@@ -103,6 +109,7 @@ public class TaskServer implements Runnable{
 		tripletAcknowledge = new String(bytes);
 		System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
 		logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
+		CompetitionLogging.setReceivedACK(true);
 		notifyTaskSpecSent();
 		// Start setup phase timer
 		//sendStartMsgToClient();

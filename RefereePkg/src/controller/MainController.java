@@ -38,8 +38,9 @@ public class MainController implements TimerListener {
 	private Logging logg;
 	private String triplets = "Triplets";
 	private boolean unsavedChanges = false;
-	private boolean enteredCompetitionMode = false;
+	private boolean competitionMode = false;
 	private TaskTimer taskTimer;
+	private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
 
@@ -62,6 +63,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					setSavedChanges();
+					CompetitionLogging.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -85,7 +87,8 @@ public class MainController implements TimerListener {
 				if (tS.openTaskSpec(file)) {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
-					unsavedChanges = false;
+					setSavedChanges();
+					CompetitionLogging.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
@@ -116,7 +119,7 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			if (enteredCompetitionMode){
+			if (competitionMode) {
 				mG.showMessageDialog(exitNotAllowedMsg, "Competition Running");
 				return;
 			}
@@ -278,11 +281,9 @@ public class MainController implements TimerListener {
 				long configTime = cfgFile.getConfigurationTime();
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
-				mG.setTimerStartStopButtonText("Timer Stop");
-				mG.setCompetitionMode(true);
-				mG.getCompetitionFinishedButton().setEnabled(false);
-				mG.getSendTripletsButton().setEnabled(true);
-				setEnteredCompetitionMode(true);
+				setCompetitionMode(true);
+				CompetitionLogging.setTaskTripletListLength(tS);
+				tS.addTripletListener(compLogging);
 			} else {
 				taskTimer.stopTimer();
 				tServer.disconnectClient();
@@ -294,7 +295,8 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	public Action competitionFinished = new AbstractAction("competitionFinished") {
+	public Action competitionFinished = new AbstractAction(
+			"competitionFinished") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -371,8 +373,11 @@ public class MainController implements TimerListener {
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		taskTimer = new TaskTimer();
-		Logging.setFileName("TaskLog.log");
+		triplets = "Triplets";
+		unsavedChanges = false;
+		competitionMode = false;
 		logg = Logging.getInstance();
+		compLogging = new CompetitionLogging();
 		init();
 		if (args.length > 0) {
 			File file = new File(System.getProperty("user.home")
@@ -480,10 +485,11 @@ public class MainController implements TimerListener {
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
 
-	private void setEnteredCompetitionMode(boolean flag){
-		enteredCompetitionMode = flag;	
+	private void setCompetitionMode(boolean mode) {
+		competitionMode = mode;
+		mG.setCompetitionMode(mode);
 	}
-	
+
 	private void loadConfigurationFile(File file) {
 		if (cfgFile.setConfigFile(file)) {
 			try {
