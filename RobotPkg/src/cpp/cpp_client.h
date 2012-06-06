@@ -2,7 +2,6 @@
 #include <string>
 #include <iostream>
 
-#define REPLYSTRINGLENGHT 1000
 
 std::string obtainTaskSpecFromServer(std::string server_ip, std::string server_port, std::string team_name) {
 	
@@ -10,18 +9,18 @@ std::string obtainTaskSpecFromServer(std::string server_ip, std::string server_p
 	std::cout << conn_infos << std::endl;
 	
 	zmq::context_t context (1);
-    zmq::socket_t socket (context, ZMQ_REQ);
-    
-    std::cout << "Connecting to the Referee…" << std::endl;
-    socket.connect (conn_infos.c_str());
-    
-    zmq::message_t* send_team_name = new zmq::message_t(team_name.size());
+	zmq::socket_t socket (context, ZMQ_REQ);
+	
+	std::cout << "Connecting to the Referee…" << std::endl;
+	socket.connect (conn_infos.c_str());
+	
+	zmq::message_t* send_team_name = new zmq::message_t(team_name.size());
 	memcpy ((void *) send_team_name->data (), team_name.c_str(), team_name.size());
 	socket.send (*send_team_name);
 	
-	zmq::message_t reply(REPLYSTRINGLENGHT);
+	zmq::message_t reply;
 	socket.recv (&reply);
-	std::string returnstring((char*)reply.data());
+	std::string returnstring = std::string(static_cast<char*>(reply.data()), reply.size());
 	std::cout << returnstring << std::endl;
 	std::cout << "Received Triplet " << std::endl;
 	
