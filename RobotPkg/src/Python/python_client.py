@@ -27,6 +27,8 @@ def obtainTaskSpecFromServer(server_ip, server_port, team_name):
 	print "Received taskSpecification: ", message
 
 	socket.send ("ACK")
+	
+	socket.close()
 
 if __name__ == "__main__":
 	obtainTaskSpecFromServer("127.0.1.1","11111","python_client")
