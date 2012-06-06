@@ -2,6 +2,6 @@
 
 int main (int argc, char **argv)
 {	
-	obtainTaskSpecFromServer("127.0.1.1", "11111", "b-it-bots");
+	obtainTaskSpecFromServer("127.0.1.1", "11111", "cpp-client");
     return 0;
 }
