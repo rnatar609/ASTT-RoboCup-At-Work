@@ -8,25 +8,27 @@
 import zmq
 import sys
 
-context = zmq.Context()
+def obtainTaskSpecFromServer(server_ip, server_port, team_name):
+	context = zmq.Context()
 
-connection_address = "tcp://" + sys.argv[1] + ":" + sys.argv[2]
-print "Start connection to " + connection_address
-#  Socket to talk to server
-print "Connecting to server..."
-socket = context.socket(zmq.REQ)
-#socket.connect ("tcp://localhost:5555")
-socket.connect (connection_address)
+	connection_address = "tcp://" + server_ip + ":" + server_port
+	print "Start connection to " + connection_address
+	# Socket to talk to server
+	socket = context.socket(zmq.REQ)
+	
+	print "Connecting to server..."
+	socket.connect (connection_address)
 
-#for request in range (1,10):
-print "Sending request ..."
-socket.send ("b-it-bots")
+	print "Sent team name to server..."
+	socket.send (team_name)
     
-#  Get the reply.
-message = socket.recv()
-print "Received message: ", message
+	#  Get the reply.
+	message = socket.recv()
+	print "Received taskSpecification: ", message
 
-socket.send ("Triplet received")
+	socket.send ("ACK")
 
+if __name__ == "__main__":
+	obtainTaskSpecFromServer("127.0.1.1","11111","python_client")
 
 
