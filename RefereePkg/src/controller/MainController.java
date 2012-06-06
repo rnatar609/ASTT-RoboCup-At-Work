@@ -110,6 +110,8 @@ public class MainController implements TimerListener {
 			File file = mG.showFolderDialog(FileType.FILETYPE_ALL,  DialogType.DIALOG_OPEN);
 			if (file != null) {
 				loadConfigurationFile(file);
+				tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+				tServer.listenForConnection();
 			} else {
 				mG.setStatusLine("Load Config command cancelled by user.");
 			}
@@ -253,8 +255,10 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			tServer.sendTaskSpecToClient(tS);
-			mG.setStatusLine("Task specification sent to the team.");
+			if(tServer.sendTaskSpecToClient(tS))
+				mG.setStatusLine("Task specification sent to the team.");
+			else
+				mG.setStatusLine("<html><FONT COLOR=RED>Task specification could not be send to the team!</FONT>  </html>");
 		}
 	};
 
@@ -263,7 +267,9 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 			String teamName = tServer.getTeamName();
-			tServer.restartServer();
+			tServer.disconnectClient();
+			tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+			tServer.listenForConnection();
 			mG.setStatusLine("Team " + teamName + " disconnected. Listening for new connection.....");
 		}
 	};
@@ -312,6 +318,8 @@ public class MainController implements TimerListener {
 				taskTimer.resetTimer();
 				mG.getTimerStartStopButton().setEnabled(true);
 				tS.resetStates();
+				tServer.disconnectClient();
+				tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
 				tServer.listenForConnection();
 				mG.setStatusLine("Competition finished. Listening for next team.");
 			}
@@ -435,7 +443,6 @@ public class MainController implements TimerListener {
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);
-		tServer.listenForConnection();
 		mG.addWindowListener(windowAdapter);
 		mG.addtripletTableListener(tripletTableListener);
 		mG.addTimerListener(timerListener);

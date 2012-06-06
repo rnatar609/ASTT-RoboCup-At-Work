@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #
 #   Python Client
 #   Needs the tcp//... address of the server as argument 
@@ -8,29 +9,25 @@
 import zmq
 import sys
 
-def obtainTaskSpecFromServer(server_ip, server_port, team_name):
+def obtainTaskSpecFromServer(ServerIP, ServerPort, TeamName):
 	context = zmq.Context()
-
-	connection_address = "tcp://" + server_ip + ":" + server_port
+	connection_address = "tcp://" + ServerIP + ":" + ServerPort
 	print "Start connection to " + connection_address
-	# Socket to talk to server
-	socket = context.socket(zmq.REQ)
-	
+	#  Socket to talk to server
 	print "Connecting to server..."
+	socket = context.socket(zmq.REQ)
 	socket.connect (connection_address)
 
-	print "Sent team name to server..."
-	socket.send (team_name)
-    
+	print "Sending request ..."
+	socket.send (TeamName)
+		
 	#  Get the reply.
 	message = socket.recv()
-	print "Received taskSpecification: ", message
-
 	socket.send ("ACK")
-	
 	socket.close()
+	print "Received message: ", message
+	return message
 
-if __name__ == "__main__":
-	obtainTaskSpecFromServer("127.0.1.1","11111","python_client")
+
 
 
