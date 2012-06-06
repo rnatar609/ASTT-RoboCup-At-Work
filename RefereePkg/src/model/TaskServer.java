@@ -13,27 +13,17 @@ import model.Logging;
 
 public class TaskServer implements Runnable{
 
-	private String localHost;
-	private int port;
 	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private Logging logg;
 	private Thread serverThread;
 	private String teamName;
-	private String tripletAcknowledge;
-	private String clientIP;
-	private byte[] clientID;
 	private String commLogID= "Communication";
 	
-	private ConfigFile configfile = new ConfigFile();
-
 	public TaskServer() {
 		try {
 			logg = Logging.getInstance();
-			localHost = new String();
-			port = 11111;
-			localHost = InetAddress.getLocalHost().getHostAddress();
-			createServerSocket();
+			
 		} 
 		catch (Exception e) {
 			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
@@ -46,28 +36,20 @@ public class TaskServer implements Runnable{
 		}
 	}
 
-	private void createServerSocket(){
+	public void createServerSocket(String ServerIP, String ServerPort){
 		// Prepare context and socket
-		//localHost = configfile.getServerIP();
-		//port = configfile.getPortaddr();
 		ZMQ.Context context = ZMQ.context(1);
 		refereeSocket = context.socket(ZMQ.REP);
-		refereeSocket.bind("tcp://" + localHost + ":" + port);
+		refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
 		System.out.println("Server socket created: " + refereeSocket
-				+ " ipAddress: " + localHost + " port: " + port);
+				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
 		logg.LoggingFile(commLogID, "Server socket created: "
-				+ " ipAddress: " + localHost + " port: " + port);
+				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
 	}
 	
-	public void restartServer(){
-        disconnectClient();
-		createServerSocket();
-		listenForConnection();
-	}
 	
 	public void listenForConnection() {
 		teamName = new String();
-		//createServerSocket();
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
 		System.out.println("Server thread started... ");
@@ -78,10 +60,8 @@ public class TaskServer implements Runnable{
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
 		logg.LoggingFile(commLogID, "Waiting for Client Requests on socket... ");
+		refereeSocket.setReceiveTimeOut(-1);
 		byte bytes[] = refereeSocket.recv(0);
-		clientIP = getClientIP();
-		clientID = refereeSocket.getIdentity();
-		System.out.println(clientID);
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
 		logg.LoggingFile(commLogID, "Received message: " + teamName + " from client.");
@@ -92,59 +72,44 @@ public class TaskServer implements Runnable{
 		return refereeSocket;
 	}
 	
-	public void sendTaskSpecToClient(TaskSpec tSpec) {
+	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
-		if (clientIP != getClientIP()){
-			System.out.println("Wrong Client Connected");
-			listenForConnection();
-		}
-		else{
 		byte reply[] = tSpec.getTaskSpecString().getBytes();
 		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
-		CompetitionLogging.setClientIP(clientIP);
-		refereeSocket.send(reply, 0);
+		refereeSocket.send(tSpec.getTaskSpecString().getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
 		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
-		byte bytes[] = refereeSocket.recv(0);
-		tripletAcknowledge = new String(bytes);
-		System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
-		logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
-		CompetitionLogging.setReceivedACK(true);
-		notifyTaskSpecSent();
-		// Start setup phase timer
-		//sendStartMsgToClient();
-		}
-	}
-
-	public void taskComplete() {
-		//byte recvdMsg[] = refereeSocket.recv(0);
-		//System.out.println("In WAIT_FOR_COMPLETE state, received msg: " + recvdMsg.toString());
 		
-		//timekeeper.setTotalTeamTimeInMinutes((timekeeper.getTimer()) / 60);
-		//taskscheduler.timer.cancel();
-		//listenForConnection();
+		refereeSocket.setReceiveTimeOut(1000);
+		String tripletAcknowledge = "";
+		byte bytes[] = refereeSocket.recv(0);
+
+		if(!(bytes==null)) {
+			tripletAcknowledge = new String(bytes);
+		}
+
+		if(!tripletAcknowledge.equals("ACK")){
+			System.out.println("Could not send the task specification to the team: " + teamName);
+			logg.LoggingFile(commLogID, "Could not send the task specification to the team: " + teamName);
+			CompetitionLogging.setReceivedACK(false);
+			return false;
+		}else{
+			System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
+			logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
+			CompetitionLogging.setReceivedACK(true);
+			notifyTaskSpecSent();
+			return true;
+		}
+
 	}
 
-	public void sendStartMsgToClient() {
-		byte startMsg[] = "Start the Robot...... Runtime Started.......".getBytes();
-		refereeSocket.send(startMsg, 0);
-		System.out.println("In SEND_START state, sent start msg: " + startMsg.toString());
-		// Start run phase timer
-		//timer.schedule(runTimeOut, TaskServer.runTime);
-		// Wait for Completed message from client
-		taskComplete();
-	}
 
 	public boolean disconnectClient() {
-        if (teamName.isEmpty())
-        	return false;
 		try{
 			refereeSocket.close();	
 			System.out.println("Client Disconnected");
 			logg.LoggingFile(commLogID, "Client Disconnected");
 			notifyTeamDisconnected();
-			// Listen for new connection requests
-			//listenForConnection();
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -194,28 +159,9 @@ public class TaskServer implements Runnable{
 		}
 	}
 	
-	public String getClientIP(){
-		try {
-		     InetAddress clientIP = InetAddress.getLocalHost();
-		     System.out.println("IP:"+clientIP.getHostAddress());
-		     }
-		    catch(Exception e) {
-		     e.printStackTrace();
-		     }
-		return clientIP;
-	}
 	
 	public String getTeamName() {
 		return teamName;
 	}
-	
-	/*public void waitForClientReady() {
-	byte readyMsg[] = refereeSocket.recv(0);
-	System.out
-			.println("In WAIT_FOR_READY state, received msg: " + readyMsg.toString());
-	timer.cancel();
-	// Send start message
-	sendStartMsgToClient();
-    }*/
 	
 }
