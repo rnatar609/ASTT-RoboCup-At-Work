@@ -24,7 +24,7 @@ std::string obtainTaskSpecFromServer(std::string server_ip, std::string server_p
 	socket.recv (&reply);
 	std::string returnstring((char*)reply.data());
 	std::cout << returnstring << std::endl;
-	std::cout << "Recevied taskSpecification: " << returnstring << std::endl;
+	std::cout << "Received taskSpecification: " << returnstring << std::endl;
 	
 	std::string ack_msg = "ACK";
 	zmq::message_t* send_ack = new zmq::message_t(ack_msg.size());
