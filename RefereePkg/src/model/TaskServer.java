@@ -1,7 +1,6 @@
 package model;
 
 import java.io.*;
-import java.net.InetAddress;
 
 import javax.swing.event.EventListenerList;
 
@@ -71,7 +70,7 @@ public class TaskServer implements Runnable{
 	
 	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
-		byte reply[] = tSpec.getTaskSpecString().getBytes();
+		//byte reply[] = tSpec.getTaskSpecString().getBytes();
 		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
 		refereeSocket.send(tSpec.getTaskSpecString().getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
