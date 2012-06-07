@@ -21,32 +21,29 @@ public class TaskServer implements Runnable{
 	private String commLogID= "Communication";
 	
 	public TaskServer() {
-		try {
-			logg = Logging.getInstance();
-			
-		} 
-		catch (Exception e) {
-			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
-			//e.printStackTrace();
-			File file = new File(Logging.filename);
-			if (!file.delete()) {
-				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
-			}
-			System.exit(1);
-		}
+		logg = Logging.getInstance();
 	}
 
 	public void createServerSocket(String ServerIP, String ServerPort){
 		// Prepare context and socket
 		ZMQ.Context context = ZMQ.context(1);
 		refereeSocket = context.socket(ZMQ.REP);
-		refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
+		try {
+			refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
+		}
+		catch(Exception e) {
+			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
+			File file = new File(Logging.filename);
+			if (!file.delete()) {
+				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
+			}
+			//System.exit(1);
+		} 
 		System.out.println("Server socket created: " + refereeSocket
 				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
 		logg.LoggingFile(commLogID, "Server socket created: "
 				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
 	}
-	
 	
 	public void listenForConnection() {
 		teamName = new String();
