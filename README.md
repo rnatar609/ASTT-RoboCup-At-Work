@@ -1,19 +1,16 @@
 Installation
 ------------
 
-Requirements: 
-* Linux, Windows, OS X
-* Java 1.7
-* ZeroMQ 2.2
+The software should run under Linux, Windows and OS X.
 
-
-### Java 1.7
+# Requirements: 
+## Java 1.7
 To run and contribute to the Referee Box you need to have Java 1.7. [Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
-* Linux
+### Linux
 If your Linux does not provide a deb file for java 1.7 you can use these [instructions](http://askubuntu.com/questions/55848/how-do-i-install-oracle-java-jdk-7) to install it.
 
-### ZeroMQ 2.2 
+## ZeroMQ 2.2 
 The middle-ware ZeroMQ can be found here: [zeromq.org](http://www.zeromq.org)
 You first need to install the core ZeroMQ and afterwards the language bindings like java, python, C++.
 
@@ -29,6 +26,7 @@ After you started the Referee Box you first have to load a scenario configuratio
 When a team is connected to the server, by using one of the client implementations, you can send the triplet to the client. Automatically when the task specification is send to the team the run timer will start.
 
 The sequence in short:
+
 0. edit the server IP address int the config/config.txt file
 1. start Referee Box application
 2. load scenario configuration file
@@ -40,3 +38,4 @@ The sequence in short:
 8. monitor the run and tick passed are failed for the way points
 9. when the team is finished stop the run timer.
 10. save the competition to a file with the Competition Finished button
+
