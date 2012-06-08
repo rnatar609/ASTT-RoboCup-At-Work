@@ -392,6 +392,8 @@ public class MainController implements TimerListener {
 			File file = new File(System.getProperty("user.home")
 					+ System.getProperty("file.separator") + args[0]);
 			loadConfigurationFile(file);
+			tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+			tServer.listenForConnection();
 		}
 	}
 

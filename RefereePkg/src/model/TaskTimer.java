@@ -80,10 +80,10 @@ public class TaskTimer implements ConnectionListener {
 					+ millisecToString(this.configTime));
 			logg.LoggingFile(logId, "new run time "
 					+ millisecToString(this.runTime));
-			logg.LoggingFile(logId, "Configuration time startet at "
+			logg.LoggingFile(logId, "Setup time startet at "
 					+ millisecToString(currentSec));
 			notifyTimerReset(secToString(currentSec));
-			notifyTimerSetMaximumTime(("cfg time: ")
+			notifyTimerSetMaximumTime(("setup time: ")
 					.concat(millisecToString(this.configTime)));
 		}
 	}
