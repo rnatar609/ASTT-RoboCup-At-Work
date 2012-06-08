@@ -133,7 +133,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action upTriplet = new AbstractAction("Triplet up") {
+	private Action upTriplet = new AbstractAction("Up") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -156,7 +156,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action downTriplet = new AbstractAction("Triplet down") {
+	private Action downTriplet = new AbstractAction("Down") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -179,7 +179,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action updateTriplet = new AbstractAction("Update Triplet") {
+	private Action updateTriplet = new AbstractAction("Update") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -207,7 +207,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action addTriplet = new AbstractAction("Add Triplet") {
+	private Action addTriplet = new AbstractAction("Add") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -227,7 +227,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action deleteTriplet = new AbstractAction("Delete Triplet") {
+	private Action deleteTriplet = new AbstractAction("Delete") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -251,7 +251,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action sendTriplets = new AbstractAction("Send Triplets") {
+	private Action sendTriplets = new AbstractAction("Send Spec") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -303,7 +303,7 @@ public class MainController implements TimerListener {
 	};
 
 	public Action competitionFinished = new AbstractAction(
-			"competitionFinished") {
+			"Competition Finished") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
