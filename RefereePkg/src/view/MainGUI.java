@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ItemListener;
@@ -14,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -65,10 +63,11 @@ import controller.TripletListener;
  * 
  * @author BRSU-MAS-ASTT-SoSe2012
  */
-public class MainGUI extends JFrame implements TripletListener,
+public class MainGUI extends JFrame implements // TripletListener,
 		ConnectionListener, TimerListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
+	private static final int NUMBEROFCOMPETIONS = 0;
 	private JScrollPane tripletTableScrollPane;
 	private JPanel editTripletPanel;
 	private JPanel statusPanel;
@@ -79,8 +78,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	private JLabel statusLine;
 	private JLabel timerLabel;
 	private JLabel maxTimeLabel;
-	private JButton deleteTripletButton;
-	private JButton addTripletButton;
+
 	private JButton sendTripletsButton;
 	private JToggleButton timerStartStopButton;
 	private JPanel boxPanel;
@@ -111,20 +109,18 @@ public class MainGUI extends JFrame implements TripletListener,
 	private DefaultComboBoxModel<String> placesCbm;
 	private DefaultComboBoxModel<String> orientationsCbm;
 	private DefaultComboBoxModel<Short> pausesCbm;
-	private JButton updateTripletButton;
-	private JButton downTripletButton;
-	private JButton upTripletButton;
+
 	private JMenuItem upMenuItem;
 	private JMenuItem downMenuItem;
 	private JMenuItem updateMenuItem;
 	private JMenuItem loadConfigMenuItem;
-	private JTable tripletTable;
-	private TripletTableM tripletTableM;
-	private DefaultTableCellRenderer rendTriplets;
+	//private JTable tripletTable;
+	//private TripletTableM tripletTableM;
+	//private DefaultTableCellRenderer rendTriplets;
 	private JButton competitionFinishedButton;
+	private CompetitionPanel[] competitionPanel;
 	private JTabbedPane tabbedPane;
-	private JPanel bntPanel;
-	private JLabel boxLeftPanel;
+	private int NUMBEROFCOMPETITIONS;
 
 	private class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
@@ -151,13 +147,14 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	/** Default constructor */
-	public MainGUI() {
+	public MainGUI(int num) {
 		try {
 			UIManager.setLookAndFeel(UIManager
 					.getCrossPlatformLookAndFeelClassName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		NUMBEROFCOMPETITIONS = num;
 		initGUI();
 	}
 
@@ -173,7 +170,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 	}
 
-	private void createTripletTableScrollPaneInWestPanel() {
+/*	private void createTripletTableScrollPaneInBntPanel(int i) {
 		tripletTableScrollPane = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -186,41 +183,48 @@ public class MainGUI extends JFrame implements TripletListener,
 		tripletTableScrollPane.setViewportView(tripletTable);
 		tripletTableScrollPane
 				.setPreferredSize(tripletTable.getPreferredSize());
-		bntPanel.add(tripletTableScrollPane, BorderLayout.WEST);
-	}
+		competitionPanel[i].add(tripletTableScrollPane, BorderLayout.CENTER);
+	}*/
 
 	private void createWestPanelInContentPanel() {
-		westPanel = new JPanel();
-		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
-		westPanel.add(Box.createVerticalStrut(GAP));
-		//createHeaderInEditTripletPanel();
-		//createBoxPanelInEditTripletPanel();
-		//westPanel.add(Box.createVerticalGlue());
-		createEditTripletButtons();
-		addEditTripletButtonsToEditTripletPanel();
-		contentPanel.add(westPanel, BorderLayout.WEST);
+		westPanel = new JPanel(new BorderLayout());
+		createTabbedPanelInWestPanel();
 		createServerPanelInWestPanel();
-		// contentPanel.add(westPanel, BorderLayout.WEST);
+		contentPanel.add(westPanel, BorderLayout.WEST);
 	}
 
-	private void createBoxPanelInEditTripletPanel() {
-		
-		boxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private void createTabbedPanelInWestPanel() {
+		tabbedPane = new JTabbedPane();
+		competitionPanel = new CompetitionPanel[3];
+		for (int i = 0; i < NUMBEROFCOMPETITIONS; i++) {
+			competitionPanel[i] = new CompetitionPanel(getCompetitionNames(i));
+		    competitionPanel[i].setLayout(new BorderLayout());
+		    competitionPanel[i].createTableScrollPaneInPanel();
+		    competitionPanel[i].createEastPanel("place orientation pause");
+		    setButtonDimension(i);
+		    tabbedPane.addTab(getCompetitionNames(i),competitionPanel[i]);
+		}
+		westPanel.add(tabbedPane, BorderLayout.CENTER);
+	}
+
+	private String getCompetitionNames(int i) {
+		CompetitionNames[] allNames = CompetitionNames.values();
+		return allNames[i].toString();
+	}
+
+/*	private void createBoxPanelInEditTripletPanel() {
+		boxPanel = new JPanel();
 		boxPanel.setRequestFocusEnabled(false);
-		JLabel place = new JLabel("Place");
-		boxPanel.add(place);
 		placesBox = new JComboBox<String>();
 		boxPanel.add(placesBox);
-		boxPanel.add(new JLabel("Orientation "));
 		orientationsBox = new JComboBox<String>();
 		boxPanel.add(orientationsBox);
-		boxPanel.add(new JLabel("Pause "));
 		pausesBox = new JComboBox<Short>();
 		boxPanel.add(pausesBox);
-		bntPanel.add(boxPanel, BorderLayout.NORTH);
-	}
+		editTripletPanel.add(boxPanel);
+	}*/
 
-	private void createEditTripletButtons() {
+	/*private void createEditTripletButtons() {
 		addTripletButton = new JButton();
 		addTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 		updateTripletButton = new JButton();
@@ -232,20 +236,42 @@ public class MainGUI extends JFrame implements TripletListener,
 		downTripletButton = new JButton();
 		downTripletButton.setAlignmentX(CENTER_ALIGNMENT);
 	}
-
-	private void addEditTripletButtonsToEditTripletPanel() {
-		westPanel.add(addTripletButton);
-		westPanel.add(Box.createVerticalStrut(GAP));
-		westPanel.add(updateTripletButton);
-		westPanel.add(Box.createVerticalStrut(GAP));
-		westPanel.add(deleteTripletButton);
-		westPanel.add(Box.createVerticalStrut(GAP));
-		westPanel.add(Box.createVerticalGlue());
-		westPanel.add(upTripletButton);
-		westPanel.add(Box.createVerticalStrut(GAP));
-		westPanel.add(downTripletButton);
-		westPanel.add(Box.createVerticalGlue());
+*/
+/*	private void addEditTripletButtonsToEditTripletPanel() {
+		editTripletPanel.add(addTripletButton);
+		editTripletPanel.add(Box.createVerticalStrut(GAP));
+		editTripletPanel.add(updateTripletButton);
+		editTripletPanel.add(Box.createVerticalStrut(GAP));
+		editTripletPanel.add(deleteTripletButton);
+		editTripletPanel.add(Box.createVerticalStrut(GAP));
+		editTripletPanel.add(Box.createVerticalGlue());
+		editTripletPanel.add(upTripletButton);
+		editTripletPanel.add(Box.createVerticalStrut(GAP));
+		editTripletPanel.add(downTripletButton);
+		editTripletPanel.add(Box.createVerticalGlue());
 	}
+
+	private void createHeaderInEditTripletPanel() {
+		JLabel header = new JLabel("Place  Orientation  Pause");
+		header.setHorizontalAlignment(JLabel.CENTER);
+		header.setHorizontalTextPosition(SwingConstants.CENTER);
+		header.setIconTextGap(0);
+		header.setAlignmentX(CENTER_ALIGNMENT);
+		editTripletPanel.add(header);
+	}*/
+
+	/*private void createEditTripletPanelInBntPanel(int i) {
+		editTripletPanel = new JPanel();
+		editTripletPanel.setLayout(new BoxLayout(editTripletPanel,
+				BoxLayout.Y_AXIS));
+		editTripletPanel.add(Box.createVerticalStrut(GAP));
+		createHeaderInEditTripletPanel();
+		createBoxPanelInEditTripletPanel();
+		editTripletPanel.add(Box.createVerticalGlue());
+		createEditTripletButtons();
+		addEditTripletButtonsToEditTripletPanel();
+		competitionPanel[i].add(editTripletPanel, BorderLayout.EAST);
+	}*/
 
 	private void createUpperServerPanel() {
 		upperServerPanel = new JPanel();
@@ -321,10 +347,10 @@ public class MainGUI extends JFrame implements TripletListener,
 		westPanel.add(serverPanel, BorderLayout.SOUTH);
 	}
 
-	private void createMapAreaInBntPanel() {
+	private void createMapAreaInContentPanel() {
 		mapArea = new MapArea();
 		// mapArea.setBackground(Color.white);
-		bntPanel.add(mapArea, JTabbedPane.CENTER);
+		contentPanel.add(mapArea, BorderLayout.CENTER);
 	}
 
 	private void createStatusPanelInContentPanel() {
@@ -362,25 +388,10 @@ public class MainGUI extends JFrame implements TripletListener,
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		createWestPanelInContentPanel();
-		createTabbedCompetitionPane();
+		createMapAreaInContentPanel();
 		createStatusPanelInContentPanel();
 		createToolBarPanelInContentPanel();
 		this.add(contentPanel, BorderLayout.CENTER);
-	}
-
-	private void createTabbedCompetitionPane() {
-		tabbedPane = new JTabbedPane();
-		bntPanel = new JPanel();
-		bntPanel.setLayout(new BorderLayout());
-		createTripletTableScrollPaneInWestPanel();
-		createMapAreaInBntPanel();
-		tabbedPane.addTab("BNT", null, bntPanel,
-		                  "BNT Test");
-		JPanel second = new JPanel();
-		tabbedPane.addTab("xxx", null, second,
-                "BNT Test");
-		contentPanel.add(tabbedPane, BorderLayout.CENTER);
-		createBoxPanelInEditTripletPanel();
 	}
 
 	private void createFileMenu() {
@@ -574,61 +585,72 @@ public class MainGUI extends JFrame implements TripletListener,
 	/**
 	 * Connect Up Triplet button to the corresponding action.
 	 * 
-	 * @param upTriplet
+	 * @param competitionName 
+	 *            Name of the competition
+	 * @param up
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectUpTriplet(Action upTriplet) {
-		upTripletButton.setAction(upTriplet);
-		upMenuItem.setAction(upTriplet);
+	public void connectUp(String competitionName, Action up) {
+		competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].connectUp(up);
+		//upMenuItem.setAction(upTriplet);
 	}
 
 	/**
 	 * Connect Down Triplet button to the corresponding action.
 	 * 
-	 * @param downTriplet
+	 * @param competitionName 
+	 *            Name of the competition
+	 * @param down
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectDownTriplet(Action downTriplet) {
-		downTripletButton.setAction(downTriplet);
-		downMenuItem.setAction(downTriplet);
+	public void connectDown(String competitionName, Action down) {
+		competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].connectDown(down);
+		//downMenuItem.setAction(downTriplet);
 	}
 
 	/**
-	 * Connect Edit Triplet button to the corresponding action.
+	 * Connect Update Triplet button to the corresponding action.
 	 * 
-	 * @param editTriplet
+	 * @param competitionName 
+	 *            Name of the competition
+	 * @param update
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectEditTriplet(Action editTriplet) {
-		updateTripletButton.setAction(editTriplet);
-		updateMenuItem.setAction(editTriplet);
+	public void connectUpdate(String competitionName, Action update) {
+		competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].connectUpdate(update);
+		//updateMenuItem.setAction(editTriplet);
 	}
 
 	/**
 	 * Connect Add Triplet button to the corresponding action.
 	 * 
-	 * @param addTriplet
+	 * @param competitionName 
+	 *            Name of the competition
+	 * @param add
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectAddTriplet(Action addTriplet) {
-		addTripletButton.setAction(addTriplet);
-		addMenuItem.setAction(addTriplet);
-	}
+	public void connectAdd(String competitionName, Action add) {
+		competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].connectAdd(add);
+		//addMenuItem.setAction(addTriplet);
+		}
 
 	/**
 	 * Connect Delete Triplet button to the corresponding action.
 	 * 
-	 * @param deleteTriplet
+	 * @param competitionName 
+	 *            Name of the competition
+	 * @param delete
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectDeleteTriplet(Action deleteTriplet) {
-		deleteTripletButton.setAction(deleteTriplet);
-		deleteMenuItem.setAction(deleteTriplet);
+	public void connectDelete(String competitionName, Action delete) {
+		competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].connectDelete(delete);
+		//deleteTripletButton.setAction(deleteTriplet);
+		//deleteMenuItem.setAction(deleteTriplet);
 	}
 
 	/**
@@ -723,14 +745,17 @@ public class MainGUI extends JFrame implements TripletListener,
 		return placesBox;
 	}
 
+	public JComboBox<String> getComboBox(String competitionName, String boxName){
+		return competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].getComboBoxByName(boxName);
+	}
 	/**
 	 * Get the GUI component that displays the triplets in the task
 	 * specification.
 	 * 
 	 * @return A reference to the triplets table.
 	 */
-	public JTable getTripletsTable() {
-		return tripletTable;
+	public JTable getSequenceTable(String competitionName) {
+		return competitionPanel[CompetitionNames.valueOf(competitionName).ordinal()].getSequenceTable();
 	}
 
 	/**
@@ -751,12 +776,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            triplets.
 	 */
 	public void taskSpecChanged(TripletEvent evt) {
-		tripletTableM.clearColumn(0);
-		tripletTableM.setRowCount(evt.getTaskTripletList().size());
-		List<TaskTriplet> tTL = evt.getTaskTripletList();
-		for (int i = 0; i < tTL.size(); i++) {
-			tripletTableM.setValueAt(tTL.get(i).getTaskTripletString(), i, 0);
-		}
+        competitionPanel[CompetitionNames.valueOf("BNT").ordinal()].taskSpecChanged(evt);
 	}
 
 	/**
@@ -806,7 +826,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            String containing the place label to be selected.
 	 */
 	public void setPlacesBoxSelected(String place) {
-		placesBox.setSelectedItem(place);
+		competitionPanel[CompetitionNames.valueOf("BNT").ordinal()].setComboBoxSelected("place", place) ;
+		//placesBox.setSelectedItem(place);
 	}
 
 	/**
@@ -816,7 +837,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            String containing the orientation to be selected.
 	 */
 	public void setOrientationsBoxSelected(String orientation) {
-		orientationsBox.setSelectedItem(orientation);
+		competitionPanel[CompetitionNames.valueOf("BNT").ordinal()].setComboBoxSelected("orientation", orientation) ;
+		//orientationsBox.setSelectedItem(orientation);
 	}
 
 	/**
@@ -826,7 +848,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            Short integer containing the pause value to be selected.
 	 */
 	public void setPausesBoxSelected(Short pause) {
-		pausesBox.setSelectedItem(pause);
+		competitionPanel[CompetitionNames.valueOf("BNT").ordinal()].setComboBoxSelected("pause", pause.toString()) ;
+		//pausesBox.setSelectedItem(pause);
 	}
 
 	/**
@@ -853,17 +876,17 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	/** Set the dimensions of buttons on the GUI. */
-	public void setButtonDimension() {
+	public void setButtonDimension(int index) {
 		int width = 0;
-		Component[] comp = westPanel.getComponents();
+		Component[] comp = competitionPanel[index].getComponents();
 		// remember the widest Button
-		for (int i = 0; i < 11; i++) {
+		for (int i = 4; i < comp.length; i++) {
 			if (comp[i].getPreferredSize().width > width) {
 				width = comp[i].getPreferredSize().width;
 			}
 		}
 		// set all Button widths to the widest one
-		for (int i = 0; i < 11; i++) {
+		for (int i = 4; i < comp.length; i++) {
 			// don't change the glues!
 			if (comp[i].getPreferredSize().width != 0) {
 				Dimension dim = comp[i].getPreferredSize();
@@ -883,7 +906,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            A boolean value that is true if competition mode is enabled,
 	 *            and false if otherwise.
 	 */
-	public void setCompetitionMode(Boolean enable) {
+/*	public void setCompetitionMode(Boolean enable) {
 		if (enable) {
 			if (tripletTable.getColumnCount() == 1) {
 				tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -925,7 +948,7 @@ public class MainGUI extends JFrame implements TripletListener,
 		}
 		this.validate();
 	}
-
+*/
 	private Component competitionFinishedButton() {
 		// TODO Auto-generated method stub
 		return null;
@@ -938,8 +961,8 @@ public class MainGUI extends JFrame implements TripletListener,
 	 * @param mL
 	 *            An object of type MouseListener.
 	 */
-	public void addtripletTableListener(MouseListener mL) {
-		//tripletTable.addMouseListener(mL);
+/*	public void addtripletTableListener(MouseListener mL) {
+		tripletTable.addMouseListener(mL);
 	}
 
 	public void setTableCellCorrected(int row, int column) {
@@ -947,8 +970,8 @@ public class MainGUI extends JFrame implements TripletListener,
 			tripletTableM.setValueAt(Boolean.FALSE, row, 2);
 		if (column == 2)
 			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
-		//tripletTable.repaint();
-	}
+		tripletTable.repaint();
+	}*/
 
 	/**
 	 * Connect Competition Finished button to the corresponding action.
