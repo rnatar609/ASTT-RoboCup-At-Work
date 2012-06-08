@@ -303,7 +303,7 @@ public class MainController implements TimerListener {
 	};
 
 	public Action competitionFinished = new AbstractAction(
-			"competitionFinished") {
+			"Competition Finished") {
 		private static final long serialVersionUID = 1L;
 
 		@Override
