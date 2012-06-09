@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ItemListener;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -29,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -119,6 +122,9 @@ public class MainGUI extends JFrame implements TripletListener,
 	private TripletTableM tripletTableM;
 	private DefaultTableCellRenderer rendTriplets;
 	private JButton competitionFinishedButton;
+	private JTabbedPane tabbedPane;
+	private JPanel bntPanel;
+	private JLabel boxLeftPanel;
 
 	private class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
@@ -180,28 +186,38 @@ public class MainGUI extends JFrame implements TripletListener,
 		tripletTableScrollPane.setViewportView(tripletTable);
 		tripletTableScrollPane
 				.setPreferredSize(tripletTable.getPreferredSize());
-		westPanel.add(tripletTableScrollPane, BorderLayout.WEST);
+		bntPanel.add(tripletTableScrollPane, BorderLayout.WEST);
 	}
 
 	private void createWestPanelInContentPanel() {
 		westPanel = new JPanel();
-		westPanel.setLayout(new BorderLayout());
-		createTripletTableScrollPaneInWestPanel();
-		createEditTripletPanelInWestPanel();
-		createServerPanelInWestPanel();
+		westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
+		westPanel.add(Box.createVerticalStrut(GAP));
+		//createHeaderInEditTripletPanel();
+		//createBoxPanelInEditTripletPanel();
+		//westPanel.add(Box.createVerticalGlue());
+		createEditTripletButtons();
+		addEditTripletButtonsToEditTripletPanel();
 		contentPanel.add(westPanel, BorderLayout.WEST);
+		createServerPanelInWestPanel();
+		// contentPanel.add(westPanel, BorderLayout.WEST);
 	}
 
 	private void createBoxPanelInEditTripletPanel() {
-		boxPanel = new JPanel();
+		
+		boxPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		boxPanel.setRequestFocusEnabled(false);
+		JLabel place = new JLabel("Place");
+		boxPanel.add(place);
 		placesBox = new JComboBox<String>();
 		boxPanel.add(placesBox);
+		boxPanel.add(new JLabel("Orientation "));
 		orientationsBox = new JComboBox<String>();
 		boxPanel.add(orientationsBox);
+		boxPanel.add(new JLabel("Pause "));
 		pausesBox = new JComboBox<Short>();
 		boxPanel.add(pausesBox);
-		editTripletPanel.add(boxPanel);
+		bntPanel.add(boxPanel, BorderLayout.NORTH);
 	}
 
 	private void createEditTripletButtons() {
@@ -218,39 +234,17 @@ public class MainGUI extends JFrame implements TripletListener,
 	}
 
 	private void addEditTripletButtonsToEditTripletPanel() {
-		editTripletPanel.add(addTripletButton);
-		editTripletPanel.add(Box.createVerticalStrut(GAP));
-		editTripletPanel.add(updateTripletButton);
-		editTripletPanel.add(Box.createVerticalStrut(GAP));
-		editTripletPanel.add(deleteTripletButton);
-		editTripletPanel.add(Box.createVerticalStrut(GAP));
-		editTripletPanel.add(Box.createVerticalGlue());
-		editTripletPanel.add(upTripletButton);
-		editTripletPanel.add(Box.createVerticalStrut(GAP));
-		editTripletPanel.add(downTripletButton);
-		editTripletPanel.add(Box.createVerticalGlue());
-	}
-
-	private void createHeaderInEditTripletPanel() {
-		JLabel header = new JLabel("Place  Orientation  Pause");
-		header.setHorizontalAlignment(JLabel.CENTER);
-		header.setHorizontalTextPosition(SwingConstants.CENTER);
-		header.setIconTextGap(0);
-		header.setAlignmentX(CENTER_ALIGNMENT);
-		editTripletPanel.add(header);
-	}
-
-	private void createEditTripletPanelInWestPanel() {
-		editTripletPanel = new JPanel();
-		editTripletPanel.setLayout(new BoxLayout(editTripletPanel,
-				BoxLayout.Y_AXIS));
-		editTripletPanel.add(Box.createVerticalStrut(GAP));
-		createHeaderInEditTripletPanel();
-		createBoxPanelInEditTripletPanel();
-		editTripletPanel.add(Box.createVerticalGlue());
-		createEditTripletButtons();
-		addEditTripletButtonsToEditTripletPanel();
-		westPanel.add(editTripletPanel, BorderLayout.CENTER);
+		westPanel.add(addTripletButton);
+		westPanel.add(Box.createVerticalStrut(GAP));
+		westPanel.add(updateTripletButton);
+		westPanel.add(Box.createVerticalStrut(GAP));
+		westPanel.add(deleteTripletButton);
+		westPanel.add(Box.createVerticalStrut(GAP));
+		westPanel.add(Box.createVerticalGlue());
+		westPanel.add(upTripletButton);
+		westPanel.add(Box.createVerticalStrut(GAP));
+		westPanel.add(downTripletButton);
+		westPanel.add(Box.createVerticalGlue());
 	}
 
 	private void createUpperServerPanel() {
@@ -327,10 +321,10 @@ public class MainGUI extends JFrame implements TripletListener,
 		westPanel.add(serverPanel, BorderLayout.SOUTH);
 	}
 
-	private void createMapAreaInContentPanel() {
+	private void createMapAreaInBntPanel() {
 		mapArea = new MapArea();
 		// mapArea.setBackground(Color.white);
-		contentPanel.add(mapArea, BorderLayout.CENTER);
+		bntPanel.add(mapArea, JTabbedPane.CENTER);
 	}
 
 	private void createStatusPanelInContentPanel() {
@@ -368,10 +362,25 @@ public class MainGUI extends JFrame implements TripletListener,
 		contentPanel = new JPanel();
 		contentPanel.setLayout(new BorderLayout());
 		createWestPanelInContentPanel();
-		createMapAreaInContentPanel();
+		createTabbedCompetitionPane();
 		createStatusPanelInContentPanel();
 		createToolBarPanelInContentPanel();
 		this.add(contentPanel, BorderLayout.CENTER);
+	}
+
+	private void createTabbedCompetitionPane() {
+		tabbedPane = new JTabbedPane();
+		bntPanel = new JPanel();
+		bntPanel.setLayout(new BorderLayout());
+		createTripletTableScrollPaneInWestPanel();
+		createMapAreaInBntPanel();
+		tabbedPane.addTab("BNT", null, bntPanel,
+		                  "BNT Test");
+		JPanel second = new JPanel();
+		tabbedPane.addTab("xxx", null, second,
+                "BNT Test");
+		contentPanel.add(tabbedPane, BorderLayout.CENTER);
+		createBoxPanelInEditTripletPanel();
 	}
 
 	private void createFileMenu() {
@@ -630,17 +639,19 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            type.
 	 * 
 	 * @param diagType
-	 *  	 	  A DialogType enumerator constant indicating whether Open or Save dialog should be displayed.
+	 *            A DialogType enumerator constant indicating whether Open or
+	 *            Save dialog should be displayed.
 	 */
 	public File showFolderDialog(FileType fType, DialogType diagType) {
 		JFileChooser fc = new JFileChooser();
 		if (fType == FileType.FILETYPE_TSP)
 			fc.setFileFilter(new TspFilter());
-		if (diagType == DialogType.DIALOG_SAVE && fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
+		if (diagType == DialogType.DIALOG_SAVE
+				&& fc.showSaveDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}
-		if (diagType == DialogType.DIALOG_OPEN && fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION)
-		{
+		if (diagType == DialogType.DIALOG_OPEN
+				&& fc.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
 			return fc.getSelectedFile();
 		}
 		return null;
@@ -844,20 +855,22 @@ public class MainGUI extends JFrame implements TripletListener,
 	/** Set the dimensions of buttons on the GUI. */
 	public void setButtonDimension() {
 		int width = 0;
-		Component[] comp = editTripletPanel.getComponents();
+		Component[] comp = westPanel.getComponents();
 		// remember the widest Button
-		for (int i = 0; i < comp.length; i++) {
+		for (int i = 0; i < 11; i++) {
 			if (comp[i].getPreferredSize().width > width) {
 				width = comp[i].getPreferredSize().width;
 			}
 		}
 		// set all Button widths to the widest one
-		for (int i = 0; i < comp.length; i++) {
+		for (int i = 0; i < 11; i++) {
 			// don't change the glues!
 			if (comp[i].getPreferredSize().width != 0) {
 				Dimension dim = comp[i].getPreferredSize();
 				dim.width = width;
 				comp[i].setMaximumSize(dim);
+				comp[i].setPreferredSize(dim);
+				comp[i].setMinimumSize(dim);
 			}
 		}
 	}
@@ -926,7 +939,7 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            An object of type MouseListener.
 	 */
 	public void addtripletTableListener(MouseListener mL) {
-		tripletTable.addMouseListener(mL);
+		//tripletTable.addMouseListener(mL);
 	}
 
 	public void setTableCellCorrected(int row, int column) {
@@ -934,7 +947,7 @@ public class MainGUI extends JFrame implements TripletListener,
 			tripletTableM.setValueAt(Boolean.FALSE, row, 2);
 		if (column == 2)
 			tripletTableM.setValueAt(Boolean.FALSE, row, 1);
-		tripletTable.repaint();
+		//tripletTable.repaint();
 	}
 
 	/**

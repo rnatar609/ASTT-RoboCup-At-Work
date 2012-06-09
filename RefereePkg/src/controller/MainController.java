@@ -133,7 +133,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action upTriplet = new AbstractAction("Triplet up") {
+	private Action upTriplet = new AbstractAction("Up") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -156,7 +156,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action downTriplet = new AbstractAction("Triplet down") {
+	private Action downTriplet = new AbstractAction("Down") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -179,7 +179,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action updateTriplet = new AbstractAction("Update Triplet") {
+	private Action updateTriplet = new AbstractAction("Update") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -207,7 +207,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action addTriplet = new AbstractAction("Add Triplet") {
+	private Action addTriplet = new AbstractAction("Add") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -227,7 +227,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action deleteTriplet = new AbstractAction("Delete Triplet") {
+	private Action deleteTriplet = new AbstractAction("Delete") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -251,7 +251,7 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action sendTriplets = new AbstractAction("Send Triplets") {
+	private Action sendTriplets = new AbstractAction("Send Spec") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
@@ -288,7 +288,7 @@ public class MainController implements TimerListener {
 				long configTime = cfgFile.getConfigurationTime();
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
-				setEnteredCompetitionMode(true);
+				setCompetitionMode(true);
 				CompetitionLogging.setTaskTripletListLength(tS);
 				tS.addTripletListener(compLogging);
 			} else {
@@ -314,7 +314,7 @@ public class MainController implements TimerListener {
 				CompetitionLogging.resetParams();
 				mG.setCompetitionMode(false);
 				mG.getCompetitionFinishedButton().setEnabled(false);
-				setEnteredCompetitionMode(false);
+				setCompetitionMode(false);
 				taskTimer.resetTimer();
 				mG.getTimerStartStopButton().setEnabled(true);
 				tS.resetStates();
@@ -495,7 +495,7 @@ public class MainController implements TimerListener {
 		mG.getTimerStartStopButton().setEnabled(true);
 	}
 
-	private void setEnteredCompetitionMode(boolean mode) {
+	private void setCompetitionMode(boolean mode) {
 		competitionMode = mode;
 		mG.setCompetitionMode(mode);
 	}
