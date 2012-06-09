@@ -1,31 +1,30 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
-public class TripletEvent extends EventObject {
+public class TripletEvent {
 	private static final long serialVersionUID = 1L;
-	private TaskTriplet taskTriplet;
-	private int tripletNumber;
-	private List<TaskTriplet> taskTripletList;
+	private Task task;
+	private int number;
+	private ArrayList<BntTask> taskList;
 
-	TripletEvent(TaskTriplet taskTriplet, int tripletNum,
-			List<TaskTriplet> taskTripletList) {
-		super(taskTriplet);
-		this.taskTriplet = taskTriplet;
-		this.tripletNumber = tripletNum;
-		this.taskTripletList = taskTripletList;
+	TripletEvent(Object task, int num, ArrayList<BntTask> list) {
+		this.task = (BntTask) task;
+		this.number = num;
+		this.taskList = list;
 	}
 
-	public List<TaskTriplet> getTaskTripletList() {
-		return taskTripletList;
+	public List<BntTask> getTaskList() {
+		return taskList;
 	}
 
 	public int getTripletNumber() {
-		return tripletNumber;
+		return number;
 	}
 
-	public TaskTriplet getTaskTriplet() {
-		return taskTriplet;
+	public Task getTask() {
+		return task;
 	}
 }

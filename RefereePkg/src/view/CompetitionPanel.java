@@ -1,7 +1,10 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -34,29 +37,38 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import model.BntTask;
+import model.Task;
 import model.TaskTriplet;
 import model.TripletEvent;
 
-public class CompetitionPanel extends JPanel{
-	
-    private static final long serialVersionUID = 1L;
+public class CompetitionPanel extends JPanel {
+
+	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
-    private String competitionName;
-    private JButton addButton;
-    private JButton updateButton;
-    private JButton deleteButton;
-    private JButton upButton;
-    private JButton downButton;
-    private JScrollPane sequenceTableScrollPane;
+	private String competitionName;
+	private JButton addButton;
+	private JButton updateButton;
+	private JButton deleteButton;
+	private JButton upButton;
+	private JButton downButton;
+	private JScrollPane sequenceTableScrollPane;
 	private JTable sequenceTable;
-	private SequenceTableM sequenceTableM;
-	private DefaultTableCellRenderer rendEntries;
-    private JPanel eastPanel;
-    private JComboBox<String>[] dropDownLists;
-    private String[] dropDownListTitles;
-    private int numberOfDropDownLists;
-    
-	private class SequenceTableM extends DefaultTableModel {
+	private SequenceTableModel sequenceTableModel;
+	private DefaultTableCellRenderer tableCellRenderer;
+	protected JPanel eastPanel;
+
+	public CompetitionPanel(BorderLayout borderLayout) {
+		super(borderLayout);
+		init();
+	}
+
+	private void init() {
+		createTableScrollPaneInPanel();
+		createEastPanel();
+	}
+
+	private class SequenceTableModel extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
 
 		public Class getColumnClass(int column) {
@@ -80,141 +92,135 @@ public class CompetitionPanel extends JPanel{
 		}
 	}
 
-	
-	private void addButtonsToEastPanel() {
+	protected final void createButtons() {
+		addButton = new JButton();
+		addButton.setAlignmentX(CENTER_ALIGNMENT);
 		eastPanel.add(addButton);
 		eastPanel.add(Box.createVerticalStrut(GAP));
+		updateButton = new JButton();
+		updateButton.setAlignmentX(CENTER_ALIGNMENT);
 		eastPanel.add(updateButton);
 		eastPanel.add(Box.createVerticalStrut(GAP));
+		deleteButton = new JButton();
+		deleteButton.setAlignmentX(CENTER_ALIGNMENT);
 		eastPanel.add(deleteButton);
 		eastPanel.add(Box.createVerticalStrut(GAP));
+		upButton = new JButton();
+		upButton.setAlignmentX(CENTER_ALIGNMENT);
 		eastPanel.add(Box.createVerticalGlue());
 		eastPanel.add(upButton);
+		downButton = new JButton();
+		downButton.setAlignmentX(CENTER_ALIGNMENT);
 		eastPanel.add(Box.createVerticalStrut(GAP));
 		eastPanel.add(downButton);
 		eastPanel.add(Box.createVerticalGlue());
 	}
-	
-	private void createButtons(){
-		addButton = new JButton();
-	    addButton.setAlignmentX(CENTER_ALIGNMENT);
-	    updateButton = new JButton();
-	    updateButton.setAlignmentX(CENTER_ALIGNMENT);
-	    deleteButton = new JButton();
-	    deleteButton.setAlignmentX(CENTER_ALIGNMENT);
-	    upButton = new JButton();
-	    upButton.setAlignmentX(CENTER_ALIGNMENT);
-	    downButton = new JButton();
-	    downButton.setAlignmentX(CENTER_ALIGNMENT);
-	}
-	
-	public void createTableScrollPaneInPanel() {
+
+	private final void createTableScrollPaneInPanel() {
 		sequenceTableScrollPane = new JScrollPane(
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		sequenceTableM = new SequenceTableM();
-		sequenceTableM.addColumn("Subgoals");
-		sequenceTable = new JTable(sequenceTableM);
-		rendEntries = new DefaultTableCellRenderer();
-		sequenceTable.getColumn("Subgoals").setCellRenderer(rendEntries);
-		rendEntries.setHorizontalAlignment(JLabel.CENTER);
+		sequenceTableModel = new SequenceTableModel();
+		sequenceTableModel.addColumn("Subgoals");
+		sequenceTable = new JTable(sequenceTableModel);
+		tableCellRenderer = new DefaultTableCellRenderer();
+		sequenceTable.getColumn("Subgoals").setCellRenderer(tableCellRenderer);
+		tableCellRenderer.setHorizontalAlignment(JLabel.CENTER);
 		sequenceTableScrollPane.setViewportView(sequenceTable);
-		sequenceTableScrollPane
-				.setPreferredSize(sequenceTable.getPreferredSize());
-		this.add(sequenceTableScrollPane, BorderLayout.CENTER);
+		sequenceTableScrollPane.setPreferredSize(sequenceTable
+				.getPreferredSize());
+		this.add(sequenceTableScrollPane, BorderLayout.WEST);
 	}
-	
-	public void createEastPanel(String listNames){
-			eastPanel = new JPanel();
-			eastPanel.setLayout(new BoxLayout(eastPanel,
-					BoxLayout.Y_AXIS));
-			eastPanel.add(Box.createVerticalStrut(GAP));
-			createFlowPanelsInEastPanel(listNames);
-			eastPanel.add(Box.createVerticalGlue());
-	    	createButtons();
-		    addButtonsToEastPanel();
-			this.add(eastPanel, BorderLayout.EAST);
+
+	private final void createEastPanel() {
+		eastPanel = new JPanel();
+		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+		this.add(eastPanel, BorderLayout.CENTER);
 	}
-	
-	private void createFlowPanelsInEastPanel(String listNames) {
-		StringTokenizer strTokens = new StringTokenizer(listNames);
-		JPanel[] flowPanels = new JPanel[strTokens.countTokens()];
-		dropDownLists = new JComboBox[strTokens.countTokens()];
-		numberOfDropDownLists = strTokens.countTokens();
-		dropDownListTitles = new String[numberOfDropDownLists];
-		int i=0;
-		while (strTokens.hasMoreTokens()){
-			flowPanels[i] = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			dropDownListTitles[i]=strTokens.nextToken();
-			JLabel title = new JLabel(dropDownListTitles[i]);
-			title.setHorizontalAlignment(JLabel.LEFT);
-			title.setHorizontalTextPosition(SwingConstants.LEFT);
-			flowPanels[i].add(title);
-			dropDownLists[i] = new JComboBox<String>();
-			flowPanels[i].add(dropDownLists[i]);
-			eastPanel.add(flowPanels[i]);
-			i++;
+
+	private void createFlowPanelsInEastPanel() {
+		// this should be done in each of the children of this class
+	}
+
+	public String getCompetitionName() {
+		return competitionName;
+	}
+
+	public JTable getSequenceTable() {
+		return sequenceTable;
+	}
+
+	public void connectDelete(Action delete) {
+		deleteButton.setAction(delete);
+	}
+
+	public void connectAdd(Action add) {
+		addButton.setAction(add);
+	}
+
+	public void connectUpdate(Action update) {
+		updateButton.setAction(update);
+	}
+
+	public void connectUp(Action up) {
+		upButton.setAction(up);
+	}
+
+	public void connectDown(Action down) {
+		downButton.setAction(down);
+	}
+
+	// This will be invoked only for navigation test.
+	public void taskSpecChanged(TripletEvent evt) {
+		sequenceTableModel.clearColumn(0);
+		sequenceTableModel.setRowCount(evt.getTaskList().size());
+		List<BntTask> tTL = evt.getTaskList();
+		for (int i = 0; i < tTL.size(); i++) {
+			sequenceTableModel.setValueAt(((Task) tTL.get(i)).getString(), i,
+					0);
 		}
 	}
-	
-    public CompetitionPanel(String name){
-	    super();
-    	competitionName = name;
-   }
-    
-   public String getCompetitionName(){
-	   return competitionName;
-   }
-   
-   public JTable getSequenceTable(){
-	   return sequenceTable;
-   }
-   
-   public void connectDelete(Action delete) {
-	   deleteButton.setAction(delete);
-   }
 
-   public void connectAdd(Action add) {
-	   addButton.setAction(add);
-   }
-   
-   public void connectUpdate(Action update) {
-	   updateButton.setAction(update);
-   }
-   
-   public void connectUp(Action up) {
-	   upButton.setAction(up);
-   }
-   
-   public void connectDown(Action down) {
-	   downButton.setAction(down);
-   }
-   
-   //This will be invoked only for navigation test. 
-   public void taskSpecChanged(TripletEvent evt) {
-	  sequenceTableM.clearColumn(0);
-	  sequenceTableM.setRowCount(evt.getTaskTripletList().size());
-      List<TaskTriplet> tTL = evt.getTaskTripletList();
-      for (int i = 0; i < tTL.size(); i++) {
-	      sequenceTableM.setValueAt(tTL.get(i).getTaskTripletString(), i, 0);
-      }
-   }
-   
-   public void setComboBoxSelected(String listTitle, String selectedValue) {
-	   for (int i = 0; i < numberOfDropDownLists; i++){
-		   if(dropDownListTitles[i].equals(listTitle)){
-			   dropDownLists[i].setSelectedItem(selectedValue);
-			   break;
-		   }
-	   }
-   }
-   
-   public JComboBox<String> getComboBoxByName(String boxName){
-	   for (int i = 0; i < numberOfDropDownLists; i++){
-		   if(dropDownListTitles[i].equals(boxName)){
-			   return dropDownLists[i];
-		   }
-	   }
-	   return null;
-   }
+	public void setComboBoxSelected(String listTitle, String selectedValue) {
+		/*
+		 * for (int i = 0; i < numberOfDropDownLists; i++) { if
+		 * (dropDownListTitles[i].equals(listTitle)) {
+		 * dropDownLists[i].setSelectedItem(selectedValue); break; } }
+		 */
+	}
+
+	public JComboBox<String> getComboBoxByName(String boxName) {
+		/*
+		 * for (int i = 0; i < numberOfDropDownLists; i++) { if
+		 * (dropDownListTitles[i].equals(boxName)) { return dropDownLists[i]; }
+		 * }
+		 */
+		return null;
+	}
+
+	public void setButtonDimension() {
+		int width = 0;
+		Component[] comp = eastPanel.getComponents();
+		// remember the widest Button
+		for (int i = comp.length - 1; i >= comp.length - 11; i--) {
+			if (comp[i].getPreferredSize().width > width) {
+				width = comp[i].getPreferredSize().width;
+			}
+		}
+		// set all Button widths to the widest one
+		for (int i = comp.length - 1; i >= comp.length - 11; i--) {
+			// don't change the glues!
+			if (comp[i].getPreferredSize().width != 0) {
+				Dimension dim = comp[i].getPreferredSize();
+				dim.width = width;
+				comp[i].setMaximumSize(dim);
+				//comp[i].setPreferredSize(dim);
+				//comp[i].setMinimumSize(dim);
+			}
+		}
+	}
+
+	public Task getSelectedTask() {
+		return null;
+	}
 }
