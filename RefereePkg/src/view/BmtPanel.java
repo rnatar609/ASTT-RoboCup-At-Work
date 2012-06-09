@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import model.BmtTask;
+import model.Task;
 
 public class BmtPanel extends CompetitionPanel {
 
@@ -110,5 +114,14 @@ public class BmtPanel extends CompetitionPanel {
 		colorCbm = new DefaultComboBoxModel<String>(
 				color.toArray(new String[color.size()]));
 		colorBox.setModel(colorCbm);
+	}
+	
+	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {
+		sequenceTableModel.clearColumn(0);
+		sequenceTableModel.setRowCount(bmtTaskList.size());
+		for (int i = 0; i < bmtTaskList.size(); i++) {
+			sequenceTableModel.setValueAt(((Task) bmtTaskList.get(i)).getString(),
+					i, 0);
+		}
 	}
 }

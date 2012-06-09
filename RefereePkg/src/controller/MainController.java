@@ -28,7 +28,6 @@ import model.TaskServer;
 import model.TaskSpec;
 import model.TaskTimer;
 import model.TaskTriplet;
-import model.TripletEvent;
 import model.ValidTripletElements;
 import view.BntPanel;
 import view.DialogType;
@@ -151,19 +150,23 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-
-			/*
-			 * if (mG.getTripletsTable().getSelectedRowCount() > 0) { int pos =
-			 * mG.getTripletsTable().getSelectedRow(); TaskTriplet t =
-			 * tS.moveUpTriplet(pos); if (t != null) {
-			 * mG.getTripletsTable().changeSelection(pos - 1, -1, false, false);
-			 * mG.setStatusLine("Triplet (" + t.getPlace() + ", " +
-			 * t.getOrientation() + ", " + t.getPause() + ") moved up.");
-			 * unsavedChanges = true; } else
-			 * mG.setStatusLine("Triplet already at the beginning of the list."
-			 * ); } else {
-			 * mG.setStatusLine("No triplet selected for moving up."); }
-			 */
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = tS.moveUp(pos, compIdent);
+				if (t != null) {
+					mG.getCompetitionPanel(compIdent.ordinal())
+							.getSequenceTable()
+							.changeSelection(pos - 1, -1, false, false);
+					mG.setStatusLine("Triplet (" + t.getString()
+							+ ") moved up.");
+					unsavedChanges = true;
+				} else
+					mG.setStatusLine("Triplet already at the beginning of the list.");
+			} else {
+				mG.setStatusLine("No triplet selected for moving up.");
+			}
 		}
 	};
 
@@ -172,18 +175,25 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			/*
-			 * if (mG.getTripletsTable().getSelectedRowCount() > 0) { int pos =
-			 * mG.getTripletsTable().getSelectedRow(); TaskTriplet t =
-			 * tS.moveDownTriplet(pos); if (t != null) {
-			 * mG.getTripletsTable().changeSelection(pos + 1, -1, false, false);
-			 * mG.setStatusLine("Triplet (" + t.getPlace() + ", " +
-			 * t.getOrientation() + ", " + t.getPause() + ") moved down.");
-			 * unsavedChanges = true; } else
-			 * mG.setStatusLine("Triplet already at the end of the list."); }
-			 * else { mG.setStatusLine("No triplet selected for moving down.");
-			 * }
-			 */
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = tS.moveDown(pos, compIdent);
+				if (t != null) {
+					if (t != null) {
+						mG.getCompetitionPanel(compIdent.ordinal())
+								.getSequenceTable()
+								.changeSelection(pos + 1, -1, false, false);
+						mG.setStatusLine("Triplet (" + t.getString()
+								+ ") moved up.");
+						unsavedChanges = true;
+					} else
+						mG.setStatusLine("Triplet already at the beginning of the list.");
+				} else {
+					mG.setStatusLine("No triplet selected for moving down.");
+				}
+			}
 		}
 	};
 
@@ -214,18 +224,11 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			Task t = new BntTask((BntTask)mG.getCompetitionPanel(compIdent.ordinal()).getSelectedTask());
-			//t.setPlace((String) mG.getPlacesBox().getSelectedItem());
-			//t.setOrientation((String) mG.getOrientationsBox().getSelectedItem());
-			//if (t.setPause((String) mG.getPausesBox().getSelectedItem()
-					//.toString())) {
-				tS.addTask(compIdent, t);
-				mG.setStatusLine("added triplet (" + t.getString() + ")");
-				unsavedChanges = true;
-				
-			//} else {
-			//	mG.setStatusLine("error triplet");
-			//}
+			Task t = mG.getCompetitionPanel(compIdent.ordinal())
+					.getSelectedTask();
+			tS.addTask(compIdent, t);
+			mG.setStatusLine("added triplet (" + t.getString() + ")");
+			unsavedChanges = true;
 		}
 	};
 
@@ -234,19 +237,23 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			/*
-			 * if (mG.getTripletsTable().getSelectedRowCount() > 0) { int pos =
-			 * mG.getTripletsTable().getSelectedRow(); String msg =
-			 * "Do you want to delete the triplet " +
-			 * tS.getTaskTripletList().get(pos) .getTaskTripletString() + "?";
-			 * if (mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0)
-			 * { TaskTriplet t = tS.deleteTriplet(pos);
-			 * mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", " +
-			 * t.getOrientation() + ", " + t.getPause() + ")");
-			 * setUnsavedChanges(); } else {
-			 * mG.setStatusLine("Triplet not deleted."); } } else {
-			 * mG.setStatusLine("No triplet selected for deletion."); }
-			 */
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				String msg = "Do you want to delete the triplet "
+						+ mG.getCompetitionPanel(compIdent.ordinal())
+								.getSelectedTask().getString() + "?";
+				if (mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
+					Task t = tS.deleteTask(pos, compIdent);
+					mG.setStatusLine("Deleted triplet (" + t.getString() + ")");
+					setUnsavedChanges();
+				} else {
+					mG.setStatusLine("Triplet not deleted.");
+				}
+			} else {
+				mG.setStatusLine("No triplet selected for deletion.");
+			}
 		}
 	};
 
@@ -363,16 +370,18 @@ public class MainController implements TimerListener {
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			int selectedRow = mG.getSequenceTable(compIdent.ordinal()).getSelectedRow();
-			int selectedColumn = mG.getSequenceTable(compIdent.ordinal()).getSelectedColumn();
+			int selectedRow = mG.getSequenceTable(compIdent.ordinal())
+					.getSelectedRow();
+			int selectedColumn = mG.getSequenceTable(compIdent.ordinal())
+					.getSelectedColumn();
 			if (selectedColumn > 0) {
 				TaskTriplet tT = tS
 						.setTripletState(selectedRow, selectedColumn);
 				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
 						+ ", " + tT.getOrientation() + ", " + tT.getPause()
 						+ ")."); //
-				//mG.setTableCellCorrected(selectedRow, selectedColumn); //
-				//mG.getTripletsTable().clearSelection();
+				// mG.setTableCellCorrected(selectedRow, selectedColumn); //
+				// mG.getTripletsTable().clearSelection();
 			}
 
 		}

@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,14 +40,15 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import model.BmtTask;
 import model.BntTask;
+import model.BttTask;
 import model.CompetitionIdentifier;
 import model.Task;
 import model.TaskTriplet;
-import model.TripletEvent;
 import controller.ConnectionListener;
 import controller.TimerListener;
-import controller.TripletListener;
+import controller.TaskListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -67,7 +69,7 @@ import controller.TripletListener;
  * 
  * @author BRSU-MAS-ASTT-SoSe2012
  */
-public class MainGUI extends JFrame implements TripletListener,
+public class MainGUI extends JFrame implements TaskListener,
 		ConnectionListener, TimerListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
@@ -197,11 +199,14 @@ public class MainGUI extends JFrame implements TripletListener,
 		tabbedPane = new JTabbedPane();
 		competitionPanel = new CompetitionPanel[3];
 		competitionPanel[0] = new BntPanel(new BorderLayout());
-		tabbedPane.addTab(CompetitionIdentifier.values()[0].name(), competitionPanel[0]);
+		tabbedPane.addTab(CompetitionIdentifier.values()[0].name(),
+				competitionPanel[0]);
 		competitionPanel[1] = new BmtPanel(new BorderLayout());
-		tabbedPane.addTab(CompetitionIdentifier.values()[1].name(), competitionPanel[1]);
+		tabbedPane.addTab(CompetitionIdentifier.values()[1].name(),
+				competitionPanel[1]);
 		competitionPanel[2] = new BmtPanel(new BorderLayout());
-		tabbedPane.addTab(CompetitionIdentifier.values()[2].name(), competitionPanel[2]);
+		tabbedPane.addTab(CompetitionIdentifier.values()[2].name(),
+				competitionPanel[2]);
 		westPanel.add(tabbedPane, BorderLayout.CENTER);
 	}
 
@@ -271,8 +276,8 @@ public class MainGUI extends JFrame implements TripletListener,
 		serverPanel = new JPanel();
 		serverPanel.setLayout(new BoxLayout(serverPanel,
 				javax.swing.BoxLayout.PAGE_AXIS));
-		//serverPanel.add(Box.createVerticalStrut(GAP));
-		//serverPanel.add(new JSeparator());
+		// serverPanel.add(Box.createVerticalStrut(GAP));
+		// serverPanel.add(new JSeparator());
 		serverPanel.add(Box.createVerticalStrut(GAP));
 		createUpperServerPanel();
 		serverPanel.add(Box.createVerticalStrut(GAP));
@@ -486,9 +491,9 @@ public class MainGUI extends JFrame implements TripletListener,
 	 *            functionality.
 	 */
 	public void connectUp(Action up) {
-				for (int i = 0; i < competitionPanel.length; i++) {
-					competitionPanel[i].connectUp(up);
-				}
+		for (int i = 0; i < competitionPanel.length; i++) {
+			competitionPanel[i].connectUp(up);
+		}
 	}
 
 	/**
@@ -670,20 +675,6 @@ public class MainGUI extends JFrame implements TripletListener,
 	public String getConnectedLabel() {
 		return connectedLabel.getText();
 	}
-
-	/**
-	 * Update the view to reflect the changes in the task specification.
-	 * 
-	 * @param evt
-	 *            A TripletEvent object containing the new list of task
-	 *            triplets.
-	 */
-	public void taskSpecChanged(TripletEvent evt) {
-		if (evt.getTaskList().get(0) instanceof BntTask)
-			competitionPanel[CompetitionIdentifier.BNT.ordinal()].taskSpecChanged(evt);
-		else
-			  System.out.println("nein"); 
-		}
 
 	/**
 	 * Update the view after a team connected.
@@ -908,5 +899,32 @@ public class MainGUI extends JFrame implements TripletListener,
 	public Task getNewTask(CompetitionIdentifier compIdent) {
 		competitionPanel[compIdent.ordinal()].getSelectedTask();
 		return null;
+	}
+
+	/**
+	 * Update the view to reflect the changes in the task specification.
+	 * 
+	 * @param evt
+	 *            A TripletEvent object containing the new list of task
+	 *            triplets.
+	 */
+	@Override
+	public void bntTaskSpecChanged(BntTask bntTask, int pos,
+			ArrayList<BntTask> bntTaskList) {
+		((BntPanel)competitionPanel[CompetitionIdentifier.BNT.ordinal()])
+				.taskSpecChanged(bntTaskList);
+	}
+
+	@Override
+	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
+			ArrayList<BmtTask> bmtTaskList) {
+		((BmtPanel)competitionPanel[CompetitionIdentifier.BMT.ordinal()])
+				.taskSpecChanged(bmtTaskList);
+
+	}
+
+	@Override
+	public void bttTaskSpecChanged(BttTask bttTask, int pos,
+			ArrayList<BttTask> bttTaskList) {
 	}
 }

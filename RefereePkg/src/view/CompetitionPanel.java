@@ -3,44 +3,23 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.BntTask;
 import model.Task;
-import model.TaskTriplet;
-import model.TripletEvent;
 
 public class CompetitionPanel extends JPanel {
 
@@ -54,7 +33,7 @@ public class CompetitionPanel extends JPanel {
 	private JButton downButton;
 	private JScrollPane sequenceTableScrollPane;
 	private JTable sequenceTable;
-	private SequenceTableModel sequenceTableModel;
+	protected SequenceTableModel sequenceTableModel;
 	private DefaultTableCellRenderer tableCellRenderer;
 	protected JPanel eastPanel;
 
@@ -68,7 +47,7 @@ public class CompetitionPanel extends JPanel {
 		createEastPanel();
 	}
 
-	private class SequenceTableModel extends DefaultTableModel {
+	class SequenceTableModel extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
 
 		public Class getColumnClass(int column) {
@@ -170,17 +149,6 @@ public class CompetitionPanel extends JPanel {
 		downButton.setAction(down);
 	}
 
-	// This will be invoked only for navigation test.
-	public void taskSpecChanged(TripletEvent evt) {
-		sequenceTableModel.clearColumn(0);
-		sequenceTableModel.setRowCount(evt.getTaskList().size());
-		List<BntTask> tTL = evt.getTaskList();
-		for (int i = 0; i < tTL.size(); i++) {
-			sequenceTableModel.setValueAt(((Task) tTL.get(i)).getString(), i,
-					0);
-		}
-	}
-
 	public void setComboBoxSelected(String listTitle, String selectedValue) {
 		/*
 		 * for (int i = 0; i < numberOfDropDownLists; i++) { if
@@ -214,8 +182,8 @@ public class CompetitionPanel extends JPanel {
 				Dimension dim = comp[i].getPreferredSize();
 				dim.width = width;
 				comp[i].setMaximumSize(dim);
-				//comp[i].setPreferredSize(dim);
-				//comp[i].setMinimumSize(dim);
+				// comp[i].setPreferredSize(dim);
+				// comp[i].setMinimumSize(dim);
 			}
 		}
 	}

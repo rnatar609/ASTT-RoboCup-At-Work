@@ -19,14 +19,15 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import model.BmtTask;
 import model.BntTask;
+import model.BttTask;
 import model.StateOfTask;
 import model.Task;
 import model.TaskTriplet;
-import model.TripletEvent;
-import controller.TripletListener;
+import controller.TaskListener;
 
-public class MapArea extends JScrollPane implements TripletListener {
+public class MapArea extends JScrollPane implements TaskListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -133,17 +134,6 @@ public class MapArea extends JScrollPane implements TripletListener {
 		}
 	}
 
-	@Override
-	public void taskSpecChanged(TripletEvent evt) {
-		if (evt.getTaskList().get(0) instanceof BntTask)
-			this.taskList = evt.getTaskList();
-		else
-			  System.out.println("nein");  
-		
-		
-		mapPane.repaint();
-	}
-
 	public void setValidPositions(HashMap<String, Point> positions) {
 		this.validPositions = positions;
 	}
@@ -157,5 +147,26 @@ public class MapArea extends JScrollPane implements TripletListener {
 		mapPane.setPreferredSize(new Dimension(backgroundMap.getWidth(),
 				backgroundMap.getHeight()));
 		this.getViewport().add(mapPane, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void bntTaskSpecChanged(BntTask bntTask, int pos,
+			ArrayList<BntTask> bntTaskList) {
+		this.taskList = bntTaskList;
+		mapPane.repaint();
+	}
+
+	@Override
+	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
+			ArrayList<BmtTask> bmtTaskList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void bttTaskSpecChanged(BttTask bttTask, int pos,
+			ArrayList<BttTask> bttTaskList) {
+		// TODO Auto-generated method stub
+
 	}
 }

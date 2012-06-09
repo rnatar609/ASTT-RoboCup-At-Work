@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -104,5 +105,14 @@ public class BntPanel extends CompetitionPanel {
 		t.setPause((String) pauseBox.getSelectedItem());
 		System.out.println(t.getString());
 		return t;
+	}
+	
+	public void taskSpecChanged(ArrayList<BntTask> bntTaskList) {
+		sequenceTableModel.clearColumn(0);
+		sequenceTableModel.setRowCount(bntTaskList.size());
+		for (int i = 0; i < bntTaskList.size(); i++) {
+			sequenceTableModel.setValueAt(((Task) bntTaskList.get(i)).getString(),
+					i, 0);
+		}
 	}
 }
