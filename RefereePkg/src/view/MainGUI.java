@@ -894,7 +894,7 @@ public class MainGUI extends JFrame implements TripletListener,
 				rendTriplets.setHorizontalAlignment(JLabel.CENTER);
 				tripletTableScrollPane.setPreferredSize(tripletTable
 						.getPreferredSize());
-				Component[] comp = editTripletPanel.getComponents();
+				Component[] comp = bntPanel.getComponents();
 				for (int i = 0; i < comp.length; i++) {
 					// don't change the glues!
 					if (comp[i].getPreferredSize().width != 0) {
@@ -914,7 +914,7 @@ public class MainGUI extends JFrame implements TripletListener,
 			rendTriplets.setHorizontalAlignment(JLabel.CENTER);
 			tripletTableScrollPane.setPreferredSize(tripletTable
 					.getPreferredSize());
-			Component[] comp = editTripletPanel.getComponents();
+			Component[] comp = bntPanel.getComponents();
 			for (int i = 0; i < comp.length; i++) {
 				// don't change the glues!
 				if (comp[i].getPreferredSize().width != 0) {
