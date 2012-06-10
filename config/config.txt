@@ -1,8 +1,5 @@
-ServerIP: 127.0.1.1
-Port: 11111
 map: backgroundMap.png
 places: D0(50/200), D1(145/60), D2(145/340), O1(250/200), O2(440/200), O3(595/200), S1(870/60), S2(870/200), S3(870/340), T2(345/200), T4(530/60), T6(530/340)
 orientations: N, S, W, E
 pauses: 1, 2, 3, 4, 5
-configTime: 30
-runTime: 70
+
