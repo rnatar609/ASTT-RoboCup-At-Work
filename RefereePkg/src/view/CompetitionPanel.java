@@ -191,4 +191,8 @@ public class CompetitionPanel extends JPanel {
 	public Task getSelectedTask() {
 		return null;
 	}
+
+	public void setTaskBoxSected(Task task) {
+
+	}
 }

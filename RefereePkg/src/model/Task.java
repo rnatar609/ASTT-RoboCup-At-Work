@@ -25,6 +25,10 @@ public class Task {
 	public String getOrientation() {
 		return null;
 	}
+	
+	public String getPause() {
+		return null;
+	}
 
 	public StateOfTask getState() {
 		return null;

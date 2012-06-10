@@ -181,18 +181,16 @@ public class MainController implements TimerListener {
 						.getSequenceTable().getSelectedRow();
 				Task t = tS.moveDown(pos, compIdent);
 				if (t != null) {
-					if (t != null) {
-						mG.getCompetitionPanel(compIdent.ordinal())
-								.getSequenceTable()
-								.changeSelection(pos + 1, -1, false, false);
-						mG.setStatusLine("Triplet (" + t.getString()
-								+ ") moved up.");
-						unsavedChanges = true;
-					} else
-						mG.setStatusLine("Triplet already at the beginning of the list.");
-				} else {
-					mG.setStatusLine("No triplet selected for moving down.");
-				}
+					mG.getCompetitionPanel(compIdent.ordinal())
+							.getSequenceTable()
+							.changeSelection(pos + 1, -1, false, false);
+					mG.setStatusLine("Triplet (" + t.getString()
+							+ ") moved up.");
+					unsavedChanges = true;
+				} else
+					mG.setStatusLine("Task already at the beginning of the list.");
+			} else {
+				mG.setStatusLine("No task selected for moving down.");
 			}
 		}
 	};
@@ -202,20 +200,24 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			/*
-			 * if (mG.getTripletsTable().getSelectedRowCount() > 0) { int pos =
-			 * mG.getTripletsTable().getSelectedRow(); TaskTriplet tt = new
-			 * TaskTriplet(); tt.setPlace((String)
-			 * mG.getPlacesBox().getSelectedItem()); tt.setOrientation((String)
-			 * mG.getOrientationsBox() .getSelectedItem()); if
-			 * (tt.setPause((String) mG.getPausesBox().getSelectedItem()
-			 * .toString())) { TaskTriplet t = tS.editTriplet(pos, tt); if (t !=
-			 * null) { mG.setStatusLine("Updated Triplet (" + t.getPlace() +
-			 * ", " + t.getOrientation() + ", " + t.getPause() + ").");
-			 * setUnsavedChanges(); } else
-			 * mG.setStatusLine("Triplet could not be updated."); } } else {
-			 * mG.setStatusLine("No triplet selected for updating."); }
-			 */
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSelectedTask();
+				Task tUpdate = tS.updateTask(pos, t, compIdent);
+				if (tUpdate != null) {
+					mG.setStatusLine("Updated Task " + tUpdate.getString()
+							+ " to " + t.getString() + ".");
+					setUnsavedChanges();
+				} else {
+					mG.setStatusLine("Task could not be updated.");
+				}
+			} else {
+				mG.setStatusLine("No task selected for updating.");
+			}
+
 		}
 	};
 
@@ -320,7 +322,6 @@ public class MainController implements TimerListener {
 			CompetitionLogging.setTeamName(teamName);
 			CompetitionLogging.storeParams();
 			CompetitionLogging.resetParams();
-			// mG.setCompetitionMode(false);
 			mG.getCompetitionFinishedButton().setEnabled(false);
 			setCompetitionMode(false);
 			taskTimer.resetTimer();
@@ -334,19 +335,16 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	public MouseListener tripletTableListener = new MouseListener() {
+	public MouseListener taskTableListener = new MouseListener() {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			int selectedRow = mG.getSequenceTable(compIdent.ordinal())
 					.getSelectedRow();
 			if (selectedRow >= 0) {
-				TaskTriplet tT = tS.getTaskTripletAtIndex(selectedRow);
-				mG.setPlacesBoxSelected(tT.getPlace());
-				mG.setOrientationsBoxSelected(tT.getOrientation());
-				mG.setPausesBoxSelected(tT.getPause());
-				mG.setStatusLine("Selected triplet (" + tT.getPlace() + ", "
-						+ tT.getOrientation() + ", " + tT.getPause() + ").");
+				Task tT = tS.getTaskAtIndex(selectedRow, compIdent);
+				mG.setTaskBoxSected(tT, compIdent);
+				mG.setStatusLine("Selected task " + tT.getString() + ".");
 			}
 		}
 
@@ -471,7 +469,7 @@ public class MainController implements TimerListener {
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);
 		mG.addWindowListener(windowAdapter);
-		// mG.addtripletTableListener(tripletTableListener);
+		mG.addtaskTableListener(taskTableListener);
 		mG.addTimerListener(timerListener);
 		mG.setButtonDimension();
 		taskTimer.addTimerListener(mG);

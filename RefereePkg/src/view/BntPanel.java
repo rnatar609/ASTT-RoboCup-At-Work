@@ -106,13 +106,25 @@ public class BntPanel extends CompetitionPanel {
 		System.out.println(t.getString());
 		return t;
 	}
-	
+
 	public void taskSpecChanged(ArrayList<BntTask> bntTaskList) {
-		sequenceTableModel.clearColumn(0);
-		sequenceTableModel.setRowCount(bntTaskList.size());
-		for (int i = 0; i < bntTaskList.size(); i++) {
-			sequenceTableModel.setValueAt(((Task) bntTaskList.get(i)).getString(),
-					i, 0);
+		sequenceTableModel.getDataVector().removeAllElements();
+		sequenceTableModel.setRowCount(0);
+		sequenceTableModel.fireTableDataChanged();
+		while(sequenceTableModel.getRowCount() > 0)
+		{
+		    sequenceTableModel.removeRow(0);
 		}
+	 	sequenceTableModel.setRowCount(bntTaskList.size());
+		for (int i = 0; i < bntTaskList.size(); i++) {
+			sequenceTableModel.setValueAt(
+					((Task) bntTaskList.get(i)).getString(), i, 0);
+		}
+	}
+
+	public void setTaskBoxSected(Task task) {
+		placeCbm.setSelectedItem(task.getPlace());
+		orientationCbm.setSelectedItem(task.getOrientation());
+		pauseCbm.setSelectedItem(task.getPause());
 	}
 }

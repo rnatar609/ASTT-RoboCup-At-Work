@@ -717,39 +717,13 @@ public class MainGUI extends JFrame implements TaskListener,
 	}
 
 	/**
-	 * Select the entry in the places Combo Box.
+	 * Select the entry in the Combo Boxes.
 	 * 
-	 * @param place
-	 *            String containing the place label to be selected.
+	 * @param task
+	 *            Task containing the task to be selected.
 	 */
-	public void setPlacesBoxSelected(String place) {
-		competitionPanel[CompetitionIdentifier.valueOf("BNT").ordinal()]
-				.setComboBoxSelected("place", place);
-		// placesBox.setSelectedItem(place);
-	}
-
-	/**
-	 * Select the entry in the orientations Combo Box.
-	 * 
-	 * @param orientation
-	 *            String containing the orientation to be selected.
-	 */
-	public void setOrientationsBoxSelected(String orientation) {
-		competitionPanel[CompetitionIdentifier.valueOf("BNT").ordinal()]
-				.setComboBoxSelected("orientation", orientation);
-		// orientationsBox.setSelectedItem(orientation);
-	}
-
-	/**
-	 * Select the entry in the pauses Combo Box.
-	 * 
-	 * @param pause
-	 *            Short integer containing the pause value to be selected.
-	 */
-	public void setPausesBoxSelected(Short pause) {
-		competitionPanel[CompetitionIdentifier.valueOf("BNT").ordinal()]
-				.setComboBoxSelected("pause", pause.toString());
-		// pausesBox.setSelectedItem(pause);
+	public void setTaskBoxSected(Task task, CompetitionIdentifier compIdent) {
+		competitionPanel[compIdent.ordinal()].setTaskBoxSected(task);
 	}
 
 	/**
@@ -828,10 +802,14 @@ public class MainGUI extends JFrame implements TaskListener,
 	 * @param mL
 	 *            An object of type MouseListener.
 	 */
+
+	public void addtaskTableListener(MouseListener mL) {
+		for (int i = 0; i < competitionPanel.length; i++) {
+			competitionPanel[i].getSequenceTable().addMouseListener(mL);
+		}
+	}
+
 	/*
-	 * public void addtripletTableListener(MouseListener mL) {
-	 * tripletTable.addMouseListener(mL); }
-	 * 
 	 * public void setTableCellCorrected(int row, int column) { if (column == 1)
 	 * tripletTableM.setValueAt(Boolean.FALSE, row, 2); if (column == 2)
 	 * tripletTableM.setValueAt(Boolean.FALSE, row, 1); tripletTable.repaint();
@@ -911,14 +889,14 @@ public class MainGUI extends JFrame implements TaskListener,
 	@Override
 	public void bntTaskSpecChanged(BntTask bntTask, int pos,
 			ArrayList<BntTask> bntTaskList) {
-		((BntPanel)competitionPanel[CompetitionIdentifier.BNT.ordinal()])
+		((BntPanel) competitionPanel[CompetitionIdentifier.BNT.ordinal()])
 				.taskSpecChanged(bntTaskList);
 	}
 
 	@Override
 	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
 			ArrayList<BmtTask> bmtTaskList) {
-		((BmtPanel)competitionPanel[CompetitionIdentifier.BMT.ordinal()])
+		((BmtPanel) competitionPanel[CompetitionIdentifier.BMT.ordinal()])
 				.taskSpecChanged(bmtTaskList);
 
 	}

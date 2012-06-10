@@ -190,26 +190,53 @@ public class TaskSpec {
 		}
 	}
 
-	public TaskTriplet editTriplet(int tripletIndex, TaskTriplet updateTriplet) {
-
-		/*
-		 * try { TaskTriplet tt = taskTripletList.set(tripletIndex,
-		 * updateTriplet); notifyTaskSpecChanged(new TripletEvent(updateTriplet,
-		 * tripletIndex, taskTripletList)); logg.LoggingFile(taskListName,
-		 * tt.getTaskTripletString() + " no. " +
-		 * taskTripletList.indexOf(updateTriplet) + " updated to " +
-		 * updateTriplet.getTaskTripletString()); return tt; } catch (Exception
-		 * e) { return null; }
-		 */
-		return null;
+	public Task updateTask(int pos, Task task, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			BntTask bntTask = bntTaskList.set(pos, (BntTask) task);
+			logg.LoggingFile(taskListName,
+					bntTask.getString() + " no. " + bntTaskList.indexOf(task)
+							+ " updated to " + bntTask.getString());
+			notifyBntTaskSpecChanged(bntTask, bntTaskList.indexOf(bntTask),
+					bntTaskList);
+			return bntTask;
+		case BMT:
+			BmtTask bmtTask = bmtTaskList.set(pos, (BmtTask) task);
+			logg.LoggingFile(taskListName,
+					bmtTask.getString() + " no. " + bmtTaskList.indexOf(task)
+							+ " updated to " + bmtTask.getString());
+			notifyBmtTaskSpecChanged(bmtTask, bmtTaskList.indexOf(bmtTask),
+					bmtTaskList);
+			return bmtTask;
+		case BTT:
+			BttTask bttTask = bttTaskList.set(pos, (BttTask) task);
+			logg.LoggingFile(taskListName,
+					bttTask.getString() + " no. " + bttTaskList.indexOf(task)
+							+ " updated to " + bttTask.getString());
+			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
+					bttTaskList);
+			return bttTask;
+		default:
+			return null;
+		}
 	}
 
-	public List<TaskTriplet> getTaskTripletList() {
-		return null; // taskTripletList;
-	}
+	/*
+	 * public List<TaskTriplet> getTaskTripletList() { return null; //
+	 * taskTripletList; }
+	 */
 
-	public TaskTriplet getTaskTripletAtIndex(int index) {
-		return null; // taskTripletList.get(index);
+	public Task getTaskAtIndex(int index, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			return bntTaskList.get(index);
+		case BMT:
+			return bmtTaskList.get(index);
+		case BTT:
+			return bttTaskList.get(index);
+		default:
+			return null;
+		}
 	}
 
 	public void addTripletListener(TaskListener tL) {
@@ -261,31 +288,77 @@ public class TaskSpec {
 
 	public boolean saveTaskSpec(File file) {
 
-		/*
-		 * file = Utils.correctFile(file); try { FileWriter fstream = new
-		 * FileWriter(file); BufferedWriter out = new BufferedWriter(fstream);
-		 * out.write(getTaskSpecString()); out.close();
-		 * logg.LoggingFile(taskListName, "saved actual task specification in >"
-		 * + file.getName() + "<"); } catch (Exception e) {
-		 * System.err.println("Error: " + e.getMessage());
-		 * logg.LoggingFile(taskListName, "saving failed! >"); return false; }
-		 */
+		file = Utils.correctFile(file);
+		try {
+			FileWriter fstream = new FileWriter(file);
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(getTaskSpecString(CompetitionIdentifier.BNT));
+			out.write("\n");
+			out.write(getTaskSpecString(CompetitionIdentifier.BMT));
+			out.write("\n");
+			out.write(getTaskSpecString(CompetitionIdentifier.BTT));
+			out.write("\n");
+			out.close();
+			logg.LoggingFile(taskListName,
+					"saved actual task specification in >" + file.getName()
+							+ "<");
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+			logg.LoggingFile(taskListName, "saving failed! >");
+			return false;
+		}
+
 		return true;
 	}
 
 	public boolean openTaskSpec(File file) {
-		/*
-		 * try { FileInputStream fstream = new FileInputStream(file);
-		 * DataInputStream in = new DataInputStream(fstream); BufferedReader br
-		 * = new BufferedReader(new InputStreamReader(in)); String strLine;
-		 * while ((strLine = br.readLine()) != null) { taskTripletList = new
-		 * ArrayList<TaskTriplet>(); if (!parseTaskSpecString(strLine)) return
-		 * false; System.out.println("Found and parsed task spec string: " +
-		 * getTaskSpecString()); notifyTaskSpecChanged(new
-		 * TripletEvent(taskTripletList.get(0), taskTripletList.size(),
-		 * taskTripletList)); } in.close(); } catch (Exception e) {
-		 * System.err.println("Error: " + e.getMessage()); return false; }
-		 */
+
+		try {
+			FileInputStream fstream = new FileInputStream(file);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			while ((strLine = br.readLine()) != null) {
+				if (!parseTaskSpecString(strLine))
+					return false;
+			}
+			in.close();
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean parseTaskSpecString(String tSpecStr) {
+		tSpecStr = removeSpaces(tSpecStr);
+		// System.out.println("After removing spaces " + tSpecStr);
+		String competition = tSpecStr.substring(0, 2);
+		if (competition.equals(CompetitionIdentifier.BNT.name()))
+			bntTaskList = new ArrayList<BntTask>();
+		try {
+			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
+			Matcher m = pat.matcher(tSpecStr);
+			do {
+				BntTask nextTask = new BntTask();
+				if (m.find()) {
+					nextTask.setPlace(m.group(1));
+					nextTask.setOrientation(m.group(2));
+					nextTask.setPause(m.group(3));
+					bntTaskList.add(nextTask);
+					logg.LoggingFile(taskListName, nextTask.getString()
+							+ " no. " + bntTaskList.indexOf(nextTask)
+							+ " added");
+					notifyBntTaskSpecChanged(nextTask,
+							bntTaskList.indexOf(nextTask), bntTaskList);
+				}
+			} while (!m.hitEnd());
+		} catch (Exception e) {
+			System.out.println("Caught exception in parseTaskSpec. Error: "
+					+ e.getMessage());
+			return false;
+		}
 		return true;
 	}
 
@@ -308,5 +381,17 @@ public class TaskSpec {
 		 * logg.LoggingFile(taskListName, tT.getTaskTripletString() + " no. " +
 		 * taskTripletList.indexOf(tT) + " new state: INIT"); }
 		 */
+	}
+
+	public ArrayList<BntTask> getBntTaskList() {
+		return bntTaskList;
+	}
+
+	public ArrayList<BmtTask> getBmtTaskList() {
+		return bmtTaskList;
+	}
+
+	public ArrayList<BttTask> getBttTaskList() {
+		return bttTaskList;
 	}
 }

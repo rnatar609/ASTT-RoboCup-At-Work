@@ -57,8 +57,18 @@ public class CompetitionLogging implements TaskListener {
 		competitionNumber = i;
 	}
 
-	public static void setTaskTripletListLength(TaskSpec tS) {
-		taskTripletListLength = tS.getTaskTripletList().size();
+	public static void setTaskTripletListLength(TaskSpec tS,
+			CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		case BMT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		case BTT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		default:
+			taskTripletListLength = 0;
+		}
 		taskState = new StateOfTask[taskTripletListLength];
 		for (int i = 0; i < taskTripletListLength; i++) {
 			taskState[i] = StateOfTask.INIT;
@@ -142,13 +152,13 @@ public class CompetitionLogging implements TaskListener {
 	}
 
 	@Override
-	public void bmtTaskSpecChanged(BntTask bmtTask, int pos,
+	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
 			ArrayList<BmtTask> bmtTaskList) {
 		setTaskState(pos, bmtTask.getState());
 	}
 
 	@Override
-	public void bttTaskSpecChanged(BntTask bttTask, int pos,
+	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
 		setTaskState(pos, bttTask.getState());
 	}
