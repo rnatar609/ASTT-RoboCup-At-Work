@@ -58,9 +58,6 @@ Repeat the above for:
 6. Run the project. For Referee System drop the RefereePkg src right click on the RefereeSystem.java select Run As Java Application. For Robot System drop the RobotPkg src right click on the JavaClientGUI.java select Run As Java Application.
 ---------------------------------------------------------------------------------------------------------
 
-
-Usage
-------------
 =======
 # Usage
 A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
