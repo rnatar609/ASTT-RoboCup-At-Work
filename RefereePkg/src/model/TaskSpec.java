@@ -47,7 +47,7 @@ public class TaskSpec {
 		while (iterator.hasNext()) {
 			s = s.concat(iterator.next().getTaskTripletString());
 			if (iterator.hasNext()) {
-				s = s.concat(", ");
+				s = s.concat(",");
 			}
 		}
 		s = s.concat(">");
