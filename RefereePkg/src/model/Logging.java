@@ -16,7 +16,7 @@ import controller.TripletListener;
  * 
  *
  */
-public class Logging implements TripletListener{
+public class Logging{
 
 	private static Logging instance = null;
 	static String logFileName = new String("RefereeSystemDefaultLog.log"); //default file name
@@ -164,11 +164,4 @@ public class Logging implements TripletListener{
     	competitionLogFile.renameTo(new File(fileParent + File.separatorChar + teamName +"_Competition_" 
 		+ competitionNo + "_" + dateformat.format(date.getTime()) + ".log"));
     }
-
-	@Override
-	public void taskSpecChanged(TripletEvent evt) {
-		// TODO Auto-generated method stub
-		
-		LoggingFileAndCompetitionFile("", "Triplet no. " + evt.getTripletNumber() + ": " + evt.getTaskTriplet().getState(), true);
-	}
 }

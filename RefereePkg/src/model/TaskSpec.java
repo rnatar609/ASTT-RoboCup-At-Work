@@ -226,7 +226,7 @@ public class TaskSpec {
 				taskTripletListName,
 				tT.getTaskTripletString() + " no. "
 						+ taskTripletList.indexOf(tT) + " new state: "
-						+ tT.getState(), false);
+						+ tT.getState(), true);
 		notifyTaskSpecChanged(new TripletEvent(tT, taskTripletList.indexOf(tT),
 				taskTripletList));
 		return tT;
