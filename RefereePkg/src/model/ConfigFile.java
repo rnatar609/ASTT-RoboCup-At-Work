@@ -67,8 +67,10 @@ public class ConfigFile {
 		if (scnr.hasNext()) {
 			refIP = scnr.next();
 			System.out.println(refIP);
-		} else
+		} else  {
 			System.out.println("No ServerIP specified in the config file");
+			logg.LoggingFile(configLogID, "no ServerIP specified");
+		}
 		return refIP;
 	}
 	
@@ -79,8 +81,10 @@ public class ConfigFile {
 		if (scnr.hasNext()) {
 			refPort = scnr.next();
 			System.out.println(refPort);
-		} else
-			System.out.println("No ServerIP specified in the config file");
+		} else {
+			System.out.println("No Port specified in the config file");
+			logg.LoggingFile(configLogID, "no Port specified");
+		}
 		return refPort;
 	}
 	

@@ -62,6 +62,8 @@ public class Logging {
 			output.write("[" + dateformat.format(date.getTime()) + "] " + logIdentifier + ": " + args + "\n");
 			output.close();
 		}
-		catch(IOException e) {}
+		catch(IOException e) {
+			System.out.println("Exception caught in during File Logging: " + e);
+		}
     }
 }

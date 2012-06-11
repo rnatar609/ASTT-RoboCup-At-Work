@@ -1,11 +1,8 @@
 package model;
 
 import java.io.*;
-
 import javax.swing.event.EventListenerList;
-
 import org.zeromq.*;
-
 import controller.ConnectionListener;
 import model.CompetitionLogging;
 import model.Logging;
@@ -36,7 +33,6 @@ public class TaskServer implements Runnable{
 			if (!file.delete()) {
 				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
 			}
-			//System.exit(1);
 		} 
 		System.out.println("Server socket created: " + refereeSocket
 				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
@@ -70,7 +66,6 @@ public class TaskServer implements Runnable{
 	
 	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
-		//byte reply[] = tSpec.getTaskSpecString().getBytes();
 		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
 		refereeSocket.send(tSpec.getTaskSpecString().getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
@@ -96,9 +91,7 @@ public class TaskServer implements Runnable{
 			notifyTaskSpecSent();
 			return true;
 		}
-
 	}
-
 
 	public boolean disconnectClient() {
 		try{
@@ -155,9 +148,7 @@ public class TaskServer implements Runnable{
 		}
 	}
 	
-	
 	public String getTeamName() {
 		return teamName;
 	}
-	
 }
