@@ -14,7 +14,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-import model.CompetitionLogging;
+//import model.CompetitionLogging;
 import model.ConfigFile;
 import model.Logging;
 import model.Map;
@@ -41,7 +41,7 @@ public class MainController implements TimerListener {
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
 	private TaskTimer taskTimer;
-	private CompetitionLogging compLogging;
+	//private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
 
@@ -64,7 +64,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("saved actual task specification in >"
 							+ file.getName() + "<");
 					setSavedChanges();
-					CompetitionLogging.setFilePath(file);
+					logg.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No map saved </html>");
@@ -89,7 +89,7 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
 					setSavedChanges();
-					CompetitionLogging.setFilePath(file);
+					logg.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 							+ "</FONT> No task spec file opened </html>");
@@ -289,8 +289,9 @@ public class MainController implements TimerListener {
 				long runTime = cfgFile.getRunTime();
 				taskTimer.startNewTimer(configTime, runTime);
 				setCompetitionMode(true);
-				CompetitionLogging.setTaskTripletListLength(tS);
-				tS.addTripletListener(compLogging);
+				logg.setCompetitionLogging(true);
+				//CompetitionLogging.setTaskTripletListLength(tS);
+				//tS.addTripletListener(compLogging);
 			} else {
 				taskTimer.stopTimer();
 				tServer.disconnectClient();
@@ -309,10 +310,9 @@ public class MainController implements TimerListener {
 		@Override
 		public void actionPerformed(ActionEvent evt) {
 				String teamName = tServer.getTeamName();
-				CompetitionLogging.setTeamName(teamName);
-				CompetitionLogging.storeParams();
-				CompetitionLogging.resetParams();
+				logg.renameCompetitionFile();
 				mG.setCompetitionMode(false);
+				logg.setCompetitionLogging(false);
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				setCompetitionMode(false);
 				taskTimer.resetTimer();
@@ -386,7 +386,7 @@ public class MainController implements TimerListener {
 		unsavedChanges = false;
 		competitionMode = false;
 		logg = Logging.getInstance();
-		compLogging = new CompetitionLogging();
+		//compLogging = new CompetitionLogging();
 		init();
 		if (args.length > 0) {
 			File file = new File(System.getProperty("user.home")
@@ -517,8 +517,7 @@ public class MainController implements TimerListener {
 				mG.setStatusLine("Loaded configuration file >" + file.getName()
 						+ "<");
 				// not the right place
-				logg.LoggingFile(triplets,
-						"Loaded configuration file >" + file.getName() + "<");
+				logg.LoggingFileAndCompetitionFile(triplets,"Loaded configuration file >" + file.getName() + "<", false);
 			} else {
 				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 						+ "</FONT> No background file loaded. </html>");

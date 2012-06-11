@@ -21,7 +21,7 @@ public class RefereeSystem {
 		String fileName = new String("Tasklog" + "_" + dateformat.format(date.getTime()) +  ".log");
 		Logging.setFileName(fileName);
 		logg = Logging.getInstance();
-		logg.LoggingFile("Application", "started");
+		logg.LoggingFileAndCompetitionFile("Application", "started", false);
 		mC = new MainController(args);
 		mC.showView();
 

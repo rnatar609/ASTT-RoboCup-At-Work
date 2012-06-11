@@ -79,16 +79,16 @@ public class TaskSpec {
 
 	public void addTriplet(TaskTriplet triplet) {
 		taskTripletList.add(triplet);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-				+ " no. " + taskTripletList.indexOf(triplet) + " added");
+		logg.LoggingFileAndCompetitionFile(taskTripletListName, triplet.getTaskTripletString()
+				+ " no. " + taskTripletList.indexOf(triplet) + " added", false);
 		notifyTaskSpecChanged(new TripletEvent(triplet, taskTripletList.size(),
 				taskTripletList));
 	}
 
 	public TaskTriplet deleteTriplet(int tripletIndex) {
 		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-				+ " no. " + tripletIndex + " deleted");
+		logg.LoggingFileAndCompetitionFile(taskTripletListName, triplet.getTaskTripletString()
+				+ " no. " + tripletIndex + " deleted", false);
 		notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 				taskTripletList));
 		return triplet;
@@ -100,10 +100,10 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex - 1, triplet);
-			logg.LoggingFile(
+			logg.LoggingFileAndCompetitionFile(
 					taskTripletListName,
 					triplet.getTaskTripletString() + " no. "
-							+ taskTripletList.indexOf(triplet) + " moved up");
+							+ taskTripletList.indexOf(triplet) + " moved up", false);
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
@@ -116,10 +116,10 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex + 1, triplet);
-			logg.LoggingFile(
+			logg.LoggingFileAndCompetitionFile(
 					taskTripletListName,
 					triplet.getTaskTripletString() + " no. "
-							+ taskTripletList.indexOf(triplet) + " moved down");
+							+ taskTripletList.indexOf(triplet) + " moved down", false);
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 					taskTripletList));
 			return triplet;
@@ -132,9 +132,9 @@ public class TaskSpec {
 			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
 			notifyTaskSpecChanged(new TripletEvent(updateTriplet, tripletIndex,
 					taskTripletList));
-			logg.LoggingFile(taskTripletListName, tt.getTaskTripletString()
+			logg.LoggingFileAndCompetitionFile(taskTripletListName, tt.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(updateTriplet)
-					+ " updated to " + updateTriplet.getTaskTripletString());
+					+ " updated to " + updateTriplet.getTaskTripletString(), false);
 			return tt;
 		} catch (Exception e) {
 			return null;
@@ -176,12 +176,12 @@ public class TaskSpec {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(getTaskSpecString());
 			out.close();
-			logg.LoggingFile(taskTripletListName,
+			logg.LoggingFileAndCompetitionFile(taskTripletListName,
 					"saved actual task specification in >" + file.getName()
-							+ "<");
+							+ "<", false);
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-			logg.LoggingFile(taskTripletListName, "saving failed! >");
+			logg.LoggingFileAndCompetitionFile(taskTripletListName, "saving failed! >", false);
 			return false;
 		}
 		return true;
@@ -221,11 +221,11 @@ public class TaskSpec {
 			tT.setState(State.INIT);
 		else
 			tT.setState(newState);
-		logg.LoggingFile(
+		logg.LoggingFileAndCompetitionFile(
 				taskTripletListName,
 				tT.getTaskTripletString() + " no. "
 						+ taskTripletList.indexOf(tT) + " new state: "
-						+ tT.getState());
+						+ tT.getState(), false);
 		notifyTaskSpecChanged(new TripletEvent(tT, taskTripletList.indexOf(tT),
 				taskTripletList));
 		return tT;
@@ -234,9 +234,9 @@ public class TaskSpec {
 	public void resetStates() {
 		for (TaskTriplet tT : taskTripletList) {
 			tT.setState(State.INIT);
-			logg.LoggingFile(taskTripletListName, tT.getTaskTripletString()
+			logg.LoggingFileAndCompetitionFile(taskTripletListName, tT.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(tT)
-					+ " new state: INIT");
+					+ " new state: INIT", false);
 		}
 	}
 }

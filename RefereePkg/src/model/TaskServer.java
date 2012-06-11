@@ -7,7 +7,7 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import model.CompetitionLogging;
+//import model.CompetitionLogging;
 import model.Logging;
 
 public class TaskServer implements Runnable{
@@ -32,16 +32,16 @@ public class TaskServer implements Runnable{
 		}
 		catch(Exception e) {
 			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
-			File file = new File(Logging.filename);
+			File file = new File(Logging.logFileName);
 			if (!file.delete()) {
-				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
+				System.out.println("Deletion of file >" + Logging.logFileName + "< failed.");
 			}
 			//System.exit(1);
 		} 
 		System.out.println("Server socket created: " + refereeSocket
 				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
-		logg.LoggingFile(commLogID, "Server socket created: "
-				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
+		logg.LoggingFileAndCompetitionFile(commLogID, 
+				"Server socket created: " + " ipAddress: " + ServerIP + " port: " + ServerPort, false);
 	}
 	
 	public void listenForConnection() {
@@ -49,18 +49,19 @@ public class TaskServer implements Runnable{
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
 		System.out.println("Server thread started... ");
-		logg.LoggingFile(commLogID, "Server thread started... ");
+		logg.LoggingFileAndCompetitionFile(commLogID, "Server thread started... ", false);
 	}
 
 	public void run() {
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
-		logg.LoggingFile(commLogID, "Waiting for Client Requests on socket... ");
+		logg.LoggingFileAndCompetitionFile(commLogID, "Waiting for Client Requests on socket... ", false);
 		refereeSocket.setReceiveTimeOut(-1);
 		byte bytes[] = refereeSocket.recv(0);
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
-		logg.LoggingFile(commLogID, "Received message: " + teamName + " from client.");
+		logg.setTeamName(teamName);
+		logg.LoggingFileAndCompetitionFile(commLogID, "Received message: " + teamName + " from client.", false);
 		notifyTeamConnected();
 	}
 
@@ -71,11 +72,10 @@ public class TaskServer implements Runnable{
 	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		//byte reply[] = tSpec.getTaskSpecString().getBytes();
-		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
+		//CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
 		refereeSocket.send(tSpec.getTaskSpecString().getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
-		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
-		
+		logg.LoggingFileAndCompetitionFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(), true);
 		refereeSocket.setReceiveTimeOut(1000);
 		String tripletAcknowledge = "";
 		byte bytes[] = refereeSocket.recv(0);
@@ -86,13 +86,13 @@ public class TaskServer implements Runnable{
 
 		if(!tripletAcknowledge.equals("ACK")){
 			System.out.println("Could not send the task specification to the team: " + teamName);
-			logg.LoggingFile(commLogID, "Could not send the task specification to the team: " + teamName);
-			CompetitionLogging.setReceivedACK(false);
+			logg.LoggingFileAndCompetitionFile(commLogID, "Could not send the task specification to the team: " + teamName, true);
+			//CompetitionLogging.setReceivedACK(false);
 			return false;
 		}else{
 			System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
-			logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
-			CompetitionLogging.setReceivedACK(true);
+			logg.LoggingFileAndCompetitionFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge, true);
+			//CompetitionLogging.setReceivedACK(true);
 			notifyTaskSpecSent();
 			return true;
 		}
@@ -104,7 +104,7 @@ public class TaskServer implements Runnable{
 		try{
 			refereeSocket.close();	
 			System.out.println("Client Disconnected");
-			logg.LoggingFile(commLogID, "Client Disconnected");
+			logg.LoggingFileAndCompetitionFile(commLogID, "Client Disconnected", false);
 			notifyTeamDisconnected();
 		}
 		catch (Exception e) {
