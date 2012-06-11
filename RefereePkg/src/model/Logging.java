@@ -7,6 +7,8 @@ import java.io.*;
 import java.util.Date;
 import java.text.*;
 
+import controller.TripletListener;
+
 /**
  * @author Jeyaprakash Rajagopal, 
  * 		   Marc Wollenweber
@@ -14,7 +16,7 @@ import java.text.*;
  * 
  *
  */
-public class Logging {
+public class Logging implements TripletListener{
 
 	private static Logging instance = null;
 	static String logFileName = new String("RefereeSystemDefaultLog.log"); //default file name
@@ -162,4 +164,11 @@ public class Logging {
     	competitionLogFile.renameTo(new File(fileParent + File.separatorChar + teamName +"_Competition_" 
 		+ competitionNo + "_" + dateformat.format(date.getTime()) + ".log"));
     }
+
+	@Override
+	public void taskSpecChanged(TripletEvent evt) {
+		// TODO Auto-generated method stub
+		
+		LoggingFileAndCompetitionFile("", "Triplet no. " + evt.getTripletNumber() + ": " + evt.getTaskTriplet().getState(), true);
+	}
 }
