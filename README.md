@@ -1,16 +1,15 @@
-Installation
-------------
+# Installation
 
 The software should run under Linux, Windows and OS X.
 
-# Requirements: 
-## Java 1.7
+## Requirements: 
+### Java 1.7
 To run and contribute to the Referee Box you need to have Java 1.7. [Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
-### Linux
+#### Linux
 If your Linux does not provide a deb file for java 1.7 you can use these [instructions](http://askubuntu.com/questions/55848/how-do-i-install-oracle-java-jdk-7) to install it.
 
-## ZeroMQ 2.2 
+### ZeroMQ 2.2 
 The middle-ware ZeroMQ can be found here: [zeromq.org](http://www.zeromq.org)
 You first need to install the core ZeroMQ and afterwards the language bindings like java, python, C++.
 
@@ -20,6 +19,9 @@ For detailed installation instruction have a look into the Installation.pdf
 
 Usage
 ------------
+=======
+# Usage
+A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
 
 The Referee Box (server) can be found in the folder RefereePkg.
 The C++, Python, Java client can be found in the folder RobotPkg.
