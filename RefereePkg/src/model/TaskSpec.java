@@ -199,6 +199,7 @@ public class TaskSpec {
 					return false;
 				System.out.println("Found and parsed task spec string: "
 						+ getTaskSpecString());
+				logg.LoggingFile(taskTripletListName, "Found and parsed task spec string");
 				notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
 						taskTripletList.size(), taskTripletList));
 			}
