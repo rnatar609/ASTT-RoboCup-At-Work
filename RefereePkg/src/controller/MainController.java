@@ -291,7 +291,6 @@ public class MainController implements TimerListener {
 				setCompetitionMode(true);
 				logg.setCompetitionLogging(true);
 				//CompetitionLogging.setTaskTripletListLength(tS);
-				tS.addTripletListener(logg);
 			} else {
 				taskTimer.stopTimer();
 				tServer.disconnectClient();
