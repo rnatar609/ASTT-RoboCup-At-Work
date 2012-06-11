@@ -56,9 +56,8 @@ Repeat the above for:
 4. And from the same tab click on Add External Class Folder navigate to “jzmq/pre” and click OK.
 5. Active the JRE and zmq.jar under "Java Build Path" -> "Order and Export"
 6. Run the project. For Referee System drop the RefereePkg src right click on the RefereeSystem.java select Run As Java Application. For Robot System drop the RobotPkg src right click on the JavaClientGUI.java select Run As Java Application.
----------------------------------------------------------------------------------------------------------
 
-=======
+
 # Usage
 A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
 
