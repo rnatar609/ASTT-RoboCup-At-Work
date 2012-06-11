@@ -15,6 +15,9 @@ The middle-ware ZeroMQ can be found here: [zeromq.org](http://www.zeromq.org)
 You first need to install the core ZeroMQ and afterwards the language bindings like java, python, C++.
 
 
+For detailed installation instruction have a look into the Installation.pdf
+
+
 Usage
 ------------
 
