@@ -16,9 +16,6 @@ You first need to install the core ZeroMQ and afterwards the language bindings l
 
 For detailed installation instruction have a look into the Installation.pdf
 
-
-Usage
-------------
 =======
 # Usage
 A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
