@@ -1,6 +1,6 @@
 package model;
 
-public class BmtTask extends Task {
+public class CttTask extends Task {
 	private String place;
 	private String configuration;
 	private String object;
@@ -9,7 +9,7 @@ public class BmtTask extends Task {
 	private StateOfTask state;
 
 	// empty bmttask
-	public BmtTask() {
+	public CttTask() {
 		place = "";
 		configuration = "";
 		object = "";
@@ -18,7 +18,7 @@ public class BmtTask extends Task {
 	}
 
 	// copy bmttask
-	public BmtTask(BmtTask bmtTask) {
+	public CttTask(CttTask bmtTask) {
 		place = bmtTask.place;
 		configuration = bmtTask.configuration;
 		object = bmtTask.object;
@@ -27,7 +27,7 @@ public class BmtTask extends Task {
 	}
 
 	// init bmttask
-	public BmtTask(String place, String configuration, String object,
+	public CttTask(String place, String configuration, String object,
 			String color) {
 		this.place = place;
 		this.configuration = configuration;

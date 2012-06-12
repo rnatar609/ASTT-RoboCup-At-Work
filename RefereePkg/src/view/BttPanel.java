@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import model.BmtTask;
 import model.Task;
 
-public class BmtPanel extends CompetitionPanel {
+public class BttPanel extends CompetitionPanel {
 
 	/**
 	 * 
@@ -34,7 +34,7 @@ public class BmtPanel extends CompetitionPanel {
 	private DefaultComboBoxModel<String> colorCbm;
 	private DefaultComboBoxModel<String> sizeCbm;
 
-	BmtPanel(BorderLayout borderLayout) {
+	BttPanel(BorderLayout borderLayout) {
 		super(borderLayout);
 		createFlowPanelsInEastPanel();
 		eastPanel.add(Box.createVerticalGlue());
