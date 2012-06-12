@@ -85,7 +85,6 @@ public class BmtPanel extends CompetitionPanel {
 		for (String pos : positions.keySet()) {
 			posString[i] = pos;
 			i++;
-			System.out.println("Entered bmt panel set positions: " + posString[i-1]);
 		}
 		placeCbm = new DefaultComboBoxModel<String>(posString);
 		placeInitialBox.setModel(placeCbm);

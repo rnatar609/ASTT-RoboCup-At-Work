@@ -1,37 +1,36 @@
 package model;
 
 public class BttTask extends Task {
+	private String situation;
 	private String place;
 	private String configuration;
 	private String object;
-	private String color;
-	private StateOfTask state;
 
-	// empty bmttask
+	// empty btttask
 	public BttTask() {
+		situation = "";
 		place = "";
 		configuration = "";
 		object = "";
-		color = "";
 		state = StateOfTask.INIT;
 	}
 
 	// copy bmttask
-	public BttTask(BttTask bmtTask) {
-		place = bmtTask.place;
-		configuration = bmtTask.configuration;
-		object = bmtTask.object;
-		color = bmtTask.color;
-		state = bmtTask.state;
+	public BttTask(BttTask bttTask) {
+		situation = bttTask.situation;
+		place = bttTask.place;
+		configuration = bttTask.configuration;
+		object = bttTask.object;
+		state = bttTask.state;
 	}
 
 	// init bmttask
 	public BttTask(String place, String configuration, String object,
 			String color) {
+		this.situation = situation;
 		this.place = place;
 		this.configuration = configuration;
 		this.object = object;
-		this.color = color;
 		state = StateOfTask.INIT;
 	}
 
@@ -47,10 +46,6 @@ public class BttTask extends Task {
 		return object;
 	}
 
-	public String getColor() {
-		return color;
-	}
-
 	public StateOfTask getState() {
 		return state;
 	}
@@ -63,23 +58,20 @@ public class BttTask extends Task {
 		this.object = object;
 	}
 
-	public void setColor(String color) {
-		this.color = color;
-	}
-
 	public void setState(StateOfTask state) {
 		this.state = state;
 	}
 
 	public String getString() {
-		if (!place.equals(""))
-			return place;
-		if (!configuration.equals(""))
-			return configuration;
-		if (!object.equals("") && !color.equals(""))
-			return (new String(object + "(" + color + ")"));
-		if (!object.equals(""))
-			return object;
-		return null;
+		return (new String("(" + situation + "," + place + "," + configuration + "," + configuration + ")"));
+	}
+
+	public void setSituation(String selectedItem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getSituation() {
+		return situation;
 	}
 }

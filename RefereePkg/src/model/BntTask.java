@@ -4,7 +4,6 @@ public class BntTask extends Task {
 	private String place;
 	private String orientation;
 	private String pause;
-	private StateOfTask state;
 
 	// empty bnttask
 	public BntTask() {

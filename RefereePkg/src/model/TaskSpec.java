@@ -58,10 +58,6 @@ public class TaskSpec {
 			}
 			break;
 		case BMT:
-			// test
-			bmtTaskList
-			.add(new BmtTask("D0", "S0", "T2", "F0", "Line", "hexagone"));
-	bmtTaskList.add(new BmtTask("D0", "S0", "T2", "F0", "Line", "test"));
 			Iterator<BmtTask> itBmt = bmtTaskList.iterator();
 			BmtTask first = new BmtTask();
 			if (itBmt.hasNext()) {
@@ -80,7 +76,7 @@ public class TaskSpec {
 			while (itBmt.hasNext()) {
 				last = itBmt.next();
 				s = s.concat(",");
-				s = s.concat(last.getObject());		
+				s = s.concat(last.getObject());
 			}
 			s = s.concat(")");
 			if (!BmtTask.getPlaceFinal().equals("")) {
@@ -89,6 +85,20 @@ public class TaskSpec {
 			}
 			break;
 		case BTT:
+			Iterator<BttTask> itBtt = bttTaskList.iterator();
+			ArrayList<BttTask> initialList = new ArrayList<BttTask>();
+			ArrayList<BttTask> goalList = new ArrayList<BttTask>();
+			while (itBtt.hasNext()) {
+				BttTask btt = itBtt.next();
+				if (btt.getSituation().equals("initial"))
+					initialList.add(btt);
+				else
+					goalList.add(btt);
+			}
+			Iterator<BttTask> itInitial = initialList.iterator();
+			while (itInitial.hasNext()) {
+				
+			}
 			break;
 		default:
 		}
