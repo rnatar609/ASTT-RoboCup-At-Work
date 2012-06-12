@@ -16,28 +16,25 @@ import javax.swing.JPanel;
 import model.BmtTask;
 import model.Task;
 
-public class BmtPanel extends CompetitionPanel {
+public class BttPanel extends CompetitionPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
-	private JComboBox<String> placeInitialBox;
-	private JComboBox<String> placeSourceBox;
-	private JComboBox<String> placeDestinationBox;
+	private JComboBox<String> placeBox;
 	private JComboBox<String> configurationBox;
 	private JComboBox<String> objectBox;
-	public DefaultComboBoxModel<String> placeInitialCbm;
-	public DefaultComboBoxModel<String> placeSourceCbm;
-	public DefaultComboBoxModel<String> placeDestinationCbm;
+	private JComboBox<String> colorBox;
+	private JComboBox<String> sizeBox;	
 	public DefaultComboBoxModel<String> placeCbm;
 	private DefaultComboBoxModel<String> configurationCbm;
 	private DefaultComboBoxModel<String> objectCbm;
-	private JComboBox<String> placeFinalBox;
-	public DefaultComboBoxModel<String> placeFinalCbm;
-	
-	BmtPanel(BorderLayout borderLayout) {
+	private DefaultComboBoxModel<String> colorCbm;
+	private DefaultComboBoxModel<String> sizeCbm;
+
+	BttPanel(BorderLayout borderLayout) {
 		super(borderLayout);
 		createFlowPanelsInEastPanel();
 		eastPanel.add(Box.createVerticalGlue());
@@ -45,35 +42,31 @@ public class BmtPanel extends CompetitionPanel {
 	}
 
 	private void createFlowPanelsInEastPanel() {
-		JPanel[] flowPanels = new JPanel[6];
+		JPanel[] flowPanels = new JPanel[5];
 		for (int i = 0; i < flowPanels.length; i++) {
 			flowPanels[i] = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		}
-		placeInitialBox = new JComboBox<String>();
-		flowPanels[0].add(new JLabel("Initial Place"));
-		flowPanels[0].add(placeInitialBox);
+		placeBox = new JComboBox<String>();
+		flowPanels[0].add(new JLabel("Place"));
+		flowPanels[0].add(placeBox);
 		eastPanel.add(flowPanels[0]);
-		placeSourceBox = new JComboBox<String>();
-		flowPanels[1].add(new JLabel("Source Place"));
-		flowPanels[1].add(placeSourceBox);
-		eastPanel.add(flowPanels[1]);
-		placeDestinationBox = new JComboBox<String>();
-		flowPanels[2].add(new JLabel("Destination Place"));
-		flowPanels[2].add(placeDestinationBox);
-		eastPanel.add(flowPanels[2]);
 		configurationBox = new JComboBox<String>();
-		flowPanels[3].add(new JLabel("Configuration"));
-		flowPanels[3].add(configurationBox);
-		eastPanel.add(flowPanels[3]);
+		flowPanels[1].add(new JLabel("Configuration"));
+		flowPanels[1].add(configurationBox);
+		eastPanel.add(flowPanels[1]);
 		objectBox = new JComboBox<String>();
-		flowPanels[4].add(new JLabel("Object"));
-		flowPanels[4].add(objectBox);
+		flowPanels[2].add(new JLabel("Object"));
+		flowPanels[2].add(objectBox);
+		eastPanel.add(flowPanels[2]);
+		colorBox = new JComboBox<String>();
+		flowPanels[3].add(new JLabel("Color"));
+		flowPanels[3].add(colorBox);
+		eastPanel.add(flowPanels[3]);
+		sizeBox = new JComboBox<String>();
+		flowPanels[4].add(new JLabel("Size"));
+		flowPanels[4].add(sizeBox);
 		eastPanel.add(flowPanels[4]);
-		placeFinalBox = new JComboBox<String>();
-		flowPanels[5].add(new JLabel("Final Place"));
-		flowPanels[5].add(placeFinalBox);
-		eastPanel.add(flowPanels[5]);
-		}
+	}
 
 	/**
 	 * Update appropriate GUI components with the provided valid positions.
@@ -89,13 +82,7 @@ public class BmtPanel extends CompetitionPanel {
 			i++;
 		}
 		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeInitialBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeSourceBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeDestinationBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeFinalBox.setModel(placeCbm);
+		placeBox.setModel(placeCbm);
 	}
 
 	/**
@@ -120,6 +107,25 @@ public class BmtPanel extends CompetitionPanel {
 		objectCbm = new DefaultComboBoxModel<String>(
 				object.toArray(new String[object.size()]));
 		objectBox.setModel(objectCbm);
+	}
+
+	/**
+	 * Update appropriate GUI components with the provided valid pause
+	 * durations.
+	 * 
+	 * @param pauses
+	 *            A list of short integers representing valid pauses.
+	 */
+	public void setValidColor(List<String> color) {
+		colorCbm = new DefaultComboBoxModel<String>(
+				color.toArray(new String[color.size()]));
+		colorBox.setModel(colorCbm);
+	}
+	
+	public void setValidSize(List<String> size) {
+		sizeCbm = new DefaultComboBoxModel<String>(
+				size.toArray(new String[size.size()]));
+		sizeBox.setModel(sizeCbm);
 	}
 	
 	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {

@@ -5,18 +5,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
-import java.awt.Point;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -45,10 +41,9 @@ import model.BntTask;
 import model.BttTask;
 import model.CompetitionIdentifier;
 import model.Task;
-import model.TaskTriplet;
 import controller.ConnectionListener;
-import controller.TimerListener;
 import controller.TaskListener;
+import controller.TimerListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo
@@ -123,7 +118,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	private JButton competitionFinishedButton;
 	private CompetitionPanel[] competitionPanel;
 	private JTabbedPane tabbedPane;
-	private int NUMBEROFCOMPETITIONS;
+	private final int NUMBEROFCOMPETITIONS;
 
 	private class TripletTableM extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
@@ -197,16 +192,19 @@ public class MainGUI extends JFrame implements TaskListener,
 
 	private void createTabbedPanelInWestPanel() {
 		tabbedPane = new JTabbedPane();
-		competitionPanel = new CompetitionPanel[3];
+		competitionPanel = new CompetitionPanel[NUMBEROFCOMPETITIONS];
 		competitionPanel[0] = new BntPanel(new BorderLayout());
 		tabbedPane.addTab(CompetitionIdentifier.values()[0].name(),
 				competitionPanel[0]);
 		competitionPanel[1] = new BmtPanel(new BorderLayout());
 		tabbedPane.addTab(CompetitionIdentifier.values()[1].name(),
 				competitionPanel[1]);
-		competitionPanel[2] = new BmtPanel(new BorderLayout());
+		competitionPanel[2] = new BttPanel(new BorderLayout());
 		tabbedPane.addTab(CompetitionIdentifier.values()[2].name(),
 				competitionPanel[2]);
+		competitionPanel[3] = new CttPanel(new BorderLayout());
+		tabbedPane.addTab(CompetitionIdentifier.values()[3].name(),
+				competitionPanel[3]);
 		westPanel.add(tabbedPane, BorderLayout.CENTER);
 	}
 
@@ -764,32 +762,54 @@ public class MainGUI extends JFrame implements TaskListener,
 	 *            A boolean value that is true if competition mode is enabled,
 	 *            and false if otherwise.
 	 */
-	/*
-	 * public void setCompetitionMode(Boolean enable) { if (enable) { if
-	 * (tripletTable.getColumnCount() == 1) {
-	 * tripletTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-	 * tripletTableM.addColumn("Passed"); tripletTableM.addColumn("Failed");
-	 * tripletTable.getColumn("Triplets") .setCellRenderer(rendTriplets);
-	 * rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-	 * tripletTableScrollPane.setPreferredSize(tripletTable
-	 * .getPreferredSize()); Component[] comp =
-	 * editTripletPanel.getComponents(); for (int i = 0; i < comp.length; i++) {
-	 * // don't change the glues! if (comp[i].getPreferredSize().width != 0) {
-	 * comp[i].setEnabled(false); } } }
-	 * timerStartStopButton.setText("Timer Stop");
-	 * competitionFinishedButton.setEnabled(false); if
-	 * (disconnectButton.isEnabled()) { sendTripletsButton.setEnabled(true); }
-	 * 
-	 * } else { tripletTableM.setColumnCount(1);
-	 * tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
-	 * rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-	 * tripletTableScrollPane.setPreferredSize(tripletTable
-	 * .getPreferredSize()); Component[] comp =
-	 * editTripletPanel.getComponents(); for (int i = 0; i < comp.length; i++) {
-	 * // don't change the glues! if (comp[i].getPreferredSize().width != 0) {
-	 * comp[i].setEnabled(true); } }
-	 * competitionFinishedButton.setEnabled(false); } this.validate(); }
-	 */
+
+	public void setCompetitionMode(Boolean enable,
+			CompetitionIdentifier compIdent) {
+		JTable compTable = competitionPanel[compIdent.ordinal()]
+				.getSequenceTable();
+		DefaultTableModel compTableModel = competitionPanel[compIdent.ordinal()]
+				.getSequenceTableModel();
+		DefaultTableCellRenderer compTableRend = competitionPanel[compIdent
+				.ordinal()].getTableCellRenderer();
+		if (enable) {
+			if (compTable.getColumnCount() == 1) {
+				compTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				compTableModel.addColumn("Passed");
+				compTableModel.addColumn("Failed");
+				compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
+				compTableRend.setHorizontalAlignment(JLabel.CENTER);
+				// tripletTableScrollPane
+				// .setPreferredSize(comptTableRend.getPreferredSize());
+				Component[] comp = competitionPanel[compIdent.ordinal()]
+						.getEastPanel().getComponents();
+				for (int i = comp.length - 1; i >= comp.length - 11; i--) {
+					// don't change the glues! if
+					comp[i].setEnabled(false);
+				}
+			}
+			timerStartStopButton.setText("Timer Stop");
+			competitionFinishedButton.setEnabled(false);
+			if (disconnectButton.isEnabled()) {
+				sendTripletsButton.setEnabled(true);
+			}
+		} else {
+			compTableModel.setColumnCount(1);
+			compTable.getColumn("Triplets").setCellRenderer(compTableRend);
+			competitionPanel[compIdent.ordinal()].getTableCellRenderer()
+					.setHorizontalAlignment(JLabel.CENTER);
+			// tripletTableScrollPane.setPreferredSize(competitionPanel[compIdent
+			// .ordinal()].getSequenceTable().getPreferredSize());
+			Component[] comp = editTripletPanel.getComponents();
+			for (int i = comp.length - 1; i >= comp.length - 11; i--) {
+				// don't change the glues!
+				if (comp[i].getPreferredSize().width != 0) {
+					comp[i].setEnabled(true);
+				}
+			}
+			competitionFinishedButton.setEnabled(false);
+		}
+		this.validate();
+	}
 
 	private Component competitionFinishedButton() {
 		// TODO Auto-generated method stub

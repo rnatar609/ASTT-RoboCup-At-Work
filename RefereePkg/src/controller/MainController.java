@@ -51,7 +51,7 @@ public class MainController implements TimerListener {
 	private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
-	private final int NUMBEROFCOMPETITIONS = 3;
+	private final int NUMBEROFCOMPETITIONS = 4;
 	protected CompetitionIdentifier compIdent = CompetitionIdentifier.BNT;
 
 	private WindowAdapter windowAdapter = new WindowAdapter() {
@@ -526,7 +526,7 @@ public class MainController implements TimerListener {
 
 	private void setCompetitionMode(boolean mode) {
 		competitionMode = mode;
-		// mG.setCompetitionMode(mode);
+		mG.setCompetitionMode(mode, compIdent);
 	}
 
 	private void loadConfigurationFile(File file) {
