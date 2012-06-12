@@ -67,24 +67,24 @@ public class TaskSpec {
 			if (itBmt.hasNext()) {
 				first = itBmt.next();
 				s = s.concat(BmtTask.getPlaceInitial());
-				s = s.concat(", ");
+				s = s.concat(",");
 				s = s.concat(BmtTask.getPlaceSource());
-				s = s.concat(", ");
+				s = s.concat(",");
 				s = s.concat(BmtTask.getPlaceDestination());
-				s = s.concat(", ");
+				s = s.concat(",");
 				s = s.concat(first.getConfiguration());
-				s = s.concat(" (");
+				s = s.concat("(");
 				s = s.concat(first.getObject());
 			}
 			BmtTask last = first;
 			while (itBmt.hasNext()) {
 				last = itBmt.next();
-				s = s.concat(", ");
+				s = s.concat(",");
 				s = s.concat(last.getObject());		
 			}
 			s = s.concat(")");
 			if (!BmtTask.getPlaceFinal().equals("")) {
-				s = s.concat(", ");
+				s = s.concat(",");
 				s = s.concat(BmtTask.getPlaceFinal());
 			}
 			break;

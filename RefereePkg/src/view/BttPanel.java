@@ -18,13 +18,10 @@ import model.Task;
 
 public class BttPanel extends CompetitionPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
+	private JComboBox<String> situationBox;
 	private JComboBox<String> placeBox;
-	private JComboBox<String> configurationBox;
 	private JComboBox<String> objectBox;
 	private JComboBox<String> colorBox;
 	private JComboBox<String> sizeBox;	
