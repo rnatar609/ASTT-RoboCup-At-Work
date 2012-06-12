@@ -111,7 +111,7 @@ public class TaskSpec {
 		case BNT:
 			BntTask bntTask = (BntTask) task;
 			bntTaskList.add(bntTask);
-			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+			logg.globalLogging(taskListName, bntTask.getString() + " no. "
 					+ bntTaskList.indexOf(bntTask) + " added");
 			notifyBntTaskSpecChanged(bntTask, bntTaskList.indexOf(bntTask),
 					bntTaskList);
@@ -119,7 +119,7 @@ public class TaskSpec {
 		case BMT:
 			BmtTask bmtTask = (BmtTask) task;
 			bmtTaskList.add(bmtTask);
-			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+			logg.globalLogging(taskListName, bmtTask.getString() + " no. "
 					+ bmtTaskList.indexOf(bmtTask) + " added");
 			notifyBmtTaskSpecChanged(bmtTask, bmtTaskList.indexOf(bmtTask),
 					bmtTaskList);
@@ -127,7 +127,7 @@ public class TaskSpec {
 		case BTT:
 			BttTask bttTask = (BttTask) task;
 			bttTaskList.add(bttTask);
-			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+			logg.globalLogging(taskListName, bttTask.getString() + " no. "
 					+ bttTaskList.indexOf(bttTask) + " added");
 			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
 					bttTaskList);
@@ -141,19 +141,19 @@ public class TaskSpec {
 		switch (compIdent) {
 		case BNT:
 			BntTask bntTask = bntTaskList.remove(pos);
-			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+			logg.globalLogging(taskListName, bntTask.getString() + " no. "
 					+ bntTaskList.indexOf(bntTask) + " deleted");
 			notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
 			return bntTask;
 		case BMT:
 			BmtTask bmtTask = bmtTaskList.remove(pos);
-			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+			logg.globalLogging(taskListName, bmtTask.getString() + " no. "
 					+ bmtTaskList.indexOf(bmtTask) + " deleted");
 			notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
 			return bmtTask;
 		case BTT:
 			BttTask bttTask = bttTaskList.remove(pos);
-			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+			logg.globalLogging(taskListName, bttTask.getString() + " no. "
 					+ bttTaskList.indexOf(bttTask) + " deleted");
 			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
 			return bttTask;
@@ -171,21 +171,21 @@ public class TaskSpec {
 			case BNT:
 				BntTask bntTask = bntTaskList.remove(pos);
 				bntTaskList.add(pos - 1, bntTask);
-				logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+				logg.globalLogging(taskListName, bntTask.getString() + " no. "
 						+ bntTaskList.indexOf(bntTask) + " moved up");
 				notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
 				return bntTask;
 			case BMT:
 				BmtTask bmtTask = bmtTaskList.remove(pos);
 				bmtTaskList.add(pos - 1, bmtTask);
-				logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+				logg.globalLogging(taskListName, bmtTask.getString() + " no. "
 						+ bmtTaskList.indexOf(bmtTask) + " moved up");
 				notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
 				return bmtTask;
 			case BTT:
 				BttTask bttTask = bttTaskList.remove(pos);
 				bttTaskList.add(pos - 1, bttTask);
-				logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+				logg.globalLogging(taskListName, bttTask.getString() + " no. "
 						+ bttTaskList.indexOf(bttTask) + " moved up");
 				notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
 				return bttTask;
@@ -202,7 +202,7 @@ public class TaskSpec {
 				return null;
 			BntTask bntTask = bntTaskList.remove(pos);
 			bntTaskList.add(pos + 1, bntTask);
-			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+			logg.globalLogging(taskListName, bntTask.getString() + " no. "
 					+ bntTaskList.indexOf(bntTask) + " moved down");
 			notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
 			return bntTask;
@@ -211,7 +211,7 @@ public class TaskSpec {
 				return null;
 			BmtTask bmtTask = bmtTaskList.remove(pos);
 			bmtTaskList.add(pos + 1, bmtTask);
-			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+			logg.globalLogging(taskListName, bmtTask.getString() + " no. "
 					+ bmtTaskList.indexOf(bmtTask) + " moved down");
 			notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
 			return bmtTask;
@@ -220,7 +220,7 @@ public class TaskSpec {
 				return null;
 			BttTask bttTask = bttTaskList.remove(pos);
 			bttTaskList.add(pos + 1, bttTask);
-			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+			logg.globalLogging(taskListName, bttTask.getString() + " no. "
 					+ bttTaskList.indexOf(bttTask) + " moved down");
 			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
 			return bttTask;
@@ -233,7 +233,7 @@ public class TaskSpec {
 		switch (compIdent) {
 		case BNT:
 			BntTask bntTask = bntTaskList.set(pos, (BntTask) task);
-			logg.LoggingFile(taskListName,
+			logg.globalLogging(taskListName,
 					bntTask.getString() + " no. " + bntTaskList.indexOf(task)
 							+ " updated to " + bntTask.getString());
 			notifyBntTaskSpecChanged(bntTask, bntTaskList.indexOf(bntTask),
@@ -241,7 +241,7 @@ public class TaskSpec {
 			return bntTask;
 		case BMT:
 			BmtTask bmtTask = bmtTaskList.set(pos, (BmtTask) task);
-			logg.LoggingFile(taskListName,
+			logg.globalLogging(taskListName,
 					bmtTask.getString() + " no. " + bmtTaskList.indexOf(task)
 							+ " updated to " + bmtTask.getString());
 			notifyBmtTaskSpecChanged(bmtTask, bmtTaskList.indexOf(bmtTask),
@@ -249,7 +249,7 @@ public class TaskSpec {
 			return bmtTask;
 		case BTT:
 			BttTask bttTask = bttTaskList.set(pos, (BttTask) task);
-			logg.LoggingFile(taskListName,
+			logg.globalLogging(taskListName,
 					bttTask.getString() + " no. " + bttTaskList.indexOf(task)
 							+ " updated to " + bttTask.getString());
 			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
@@ -338,12 +338,12 @@ public class TaskSpec {
 			out.write(getTaskSpecString(CompetitionIdentifier.BTT));
 			out.write("\n");
 			out.close();
-			logg.LoggingFile(taskListName,
+			logg.globalLogging("TODO",
 					"saved actual task specification in >" + file.getName()
 							+ "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-			logg.LoggingFile(taskListName, "saving failed! >");
+			logg.globalLogging("TODO", "saving failed! >");
 			return false;
 		}
 
@@ -386,7 +386,7 @@ public class TaskSpec {
 					nextTask.setOrientation(m.group(2));
 					nextTask.setPause(m.group(3));
 					bntTaskList.add(nextTask);
-					logg.LoggingFile(taskListName, nextTask.getString()
+					logg.globalLogging(taskListName, nextTask.getString()
 							+ " no. " + bntTaskList.indexOf(nextTask)
 							+ " added");
 					notifyBntTaskSpecChanged(nextTask,

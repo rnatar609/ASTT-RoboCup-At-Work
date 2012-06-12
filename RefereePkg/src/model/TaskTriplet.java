@@ -53,7 +53,7 @@ public class TaskTriplet {
 	}
 
 	public String getTaskTripletString() {
-		return (new String("(" + place + ", " + orientation + ", " + pause
+		return (new String("(" + place + "," + orientation + "," + pause
 				+ ")"));
 	}
 

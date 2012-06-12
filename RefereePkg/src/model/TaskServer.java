@@ -7,7 +7,7 @@ import javax.swing.event.EventListenerList;
 import org.zeromq.*;
 
 import controller.ConnectionListener;
-import model.CompetitionLogging;
+//import model.CompetitionLogging;
 import model.Logging;
 
 public class TaskServer implements Runnable{
@@ -32,16 +32,16 @@ public class TaskServer implements Runnable{
 		}
 		catch(Exception e) {
 			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
-			File file = new File(Logging.filename);
+			File file = new File(Logging.logFileName);
 			if (!file.delete()) {
-				System.out.println("Deletion of file >" + Logging.filename + "< failed.");
+				System.out.println("Deletion of file >" + Logging.logFileName + "< failed.");
 			}
 			//System.exit(1);
 		} 
 		System.out.println("Server socket created: " + refereeSocket
 				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
-		logg.LoggingFile(commLogID, "Server socket created: "
-				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
+		logg.globalLogging(commLogID, 
+				"Server socket created: " + " ipAddress: " + ServerIP + " port: " + ServerPort);
 	}
 	
 	public void listenForConnection() {
@@ -49,18 +49,19 @@ public class TaskServer implements Runnable{
 		serverThread = new Thread(this, "Task Server Thread");
 		serverThread.start();
 		System.out.println("Server thread started... ");
-		logg.LoggingFile(commLogID, "Server thread started... ");
+		logg.globalLogging(commLogID, "Server thread started... ");
 	}
 
 	public void run() {
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
-		logg.LoggingFile(commLogID, "Waiting for Client Requests on socket... ");
+		logg.globalLogging(commLogID, "Waiting for Client Requests on socket... ");
 		refereeSocket.setReceiveTimeOut(-1);
 		byte bytes[] = refereeSocket.recv(0);
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
-		logg.LoggingFile(commLogID, "Received message: " + teamName + " from client.");
+		logg.setTeamName(teamName);
+		logg.globalLogging(commLogID, "Received message: " + teamName + " from client.");
 		notifyTeamConnected();
 	}
 
@@ -71,11 +72,11 @@ public class TaskServer implements Runnable{
 	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		//byte reply[] = tSpec.getTaskSpecString().getBytes();
-		CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
+		//CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
 		refereeSocket.send(tSpec.getTaskSpecString(CompetitionIdentifier.BNT).getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
-		logg.LoggingFile(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
-		
+		logg.globalLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
+		logg.competitionLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
 		refereeSocket.setReceiveTimeOut(1000);
 		String tripletAcknowledge = "";
 		byte bytes[] = refereeSocket.recv(0);
@@ -86,13 +87,13 @@ public class TaskServer implements Runnable{
 
 		if(!tripletAcknowledge.equals("ACK")){
 			System.out.println("Could not send the task specification to the team: " + teamName);
-			logg.LoggingFile(commLogID, "Could not send the task specification to the team: " + teamName);
-			CompetitionLogging.setReceivedACK(false);
+			logg.globalLogging(commLogID, "Could not send the task specification to the team: " + teamName);
+			logg.competitionLogging(commLogID, "Could not send the task specification to the team: " + teamName);
 			return false;
 		}else{
 			System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
-			logg.LoggingFile(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
-			CompetitionLogging.setReceivedACK(true);
+			logg.globalLogging(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
+			logg.competitionLogging(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
 			notifyTaskSpecSent();
 			return true;
 		}
@@ -104,7 +105,7 @@ public class TaskServer implements Runnable{
 		try{
 			refereeSocket.close();	
 			System.out.println("Client Disconnected");
-			logg.LoggingFile(commLogID, "Client Disconnected");
+			logg.globalLogging(commLogID, "Client Disconnected");
 			notifyTeamDisconnected();
 		}
 		catch (Exception e) {

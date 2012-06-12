@@ -76,12 +76,9 @@ public class TaskTimer implements ConnectionListener {
 			timerStop = false;
 			startTime = System.currentTimeMillis();
 			timer.scheduleAtFixedRate(new Task(), 1000, 1000);
-			logg.LoggingFile(logId, "new config time  "
-					+ millisecToString(this.configTime));
-			logg.LoggingFile(logId, "new run time "
-					+ millisecToString(this.runTime));
-			logg.LoggingFile(logId, "Setup time startet at "
-					+ millisecToString(currentSec));
+			logg.globalLogging(logId, "new config time  " + millisecToString(this.configTime));
+			logg.globalLogging(logId, "new run time " + millisecToString(this.runTime));
+			logg.globalLogging(logId, "Setup time startet at " + millisecToString(currentSec));
 			notifyTimerReset(secToString(currentSec));
 			notifyTimerSetMaximumTime(("setup time: ")
 					.concat(millisecToString(this.configTime)));
@@ -94,8 +91,8 @@ public class TaskTimer implements ConnectionListener {
 
 	public void stopTimer() {
 		timerStop = true;
-		logg.LoggingFile(logId, "stopped at " + secToString(currentSec));
-		CompetitionLogging.setStopTime(secToString(currentSec));
+		logg.globalLogging(logId, "stopped at " + secToString(currentSec));
+		logg.competitionLogging(logId, "stopped at " + secToString(currentSec));
 	}
 
 	public void resetTimer() {
@@ -115,9 +112,8 @@ public class TaskTimer implements ConnectionListener {
 		runTimeRunning = true;
 		notifyTimerSetMaximumTime(("run time: ")
 				.concat(millisecToString(runTime)));
-		logg.LoggingFile(logId, "Run time started at "
-				+ secToString(currentSec));
-		CompetitionLogging.setRunTimeStart(secToString(currentSec));
+		logg.globalLogging(logId, "Run time started at " + secToString(currentSec));
+		logg.competitionLogging(logId, "Run time started at " + secToString(currentSec));
 	}
 
 	private void notifyTimerTick(String currentTime, boolean inTime) {
