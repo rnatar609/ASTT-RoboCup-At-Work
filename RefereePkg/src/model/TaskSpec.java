@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.*;
 import java.util.StringTokenizer;
 
@@ -18,13 +19,15 @@ import javax.swing.event.EventListenerList;
 import model.TaskTriplet.State;
 
 import view.Utils;
-import controller.TripletListener;
+import controller.TaskListener;
 
 public class TaskSpec {
-	private List<TaskTriplet> taskTripletList;
-	private EventListenerList listOfTripletListeners = new EventListenerList();
+	private ArrayList<BntTask> bntTaskList;
+	private ArrayList<BmtTask> bmtTaskList;
+	private ArrayList<BttTask> bttTaskList;
+	private EventListenerList listOfTaskListeners = new EventListenerList();
 	private Logging logg;
-	private String taskTripletListName = "TaskTripletList";
+	private String taskListName = "TaskList";
 
 	private String removeSpaces(String str) {
 		StringTokenizer tokens = new StringTokenizer(str, " ", false);
@@ -35,135 +38,250 @@ public class TaskSpec {
 		return newStr;
 	}
 
-	public TaskSpec() {
-		taskTripletList = new ArrayList<TaskTriplet>();
+	public TaskSpec(int num) {
+		bntTaskList = new ArrayList<BntTask>();
+		bmtTaskList = new ArrayList<BmtTask>();
+		bttTaskList = new ArrayList<BttTask>();
 		logg = Logging.getInstance();
 	}
 
-	public String getTaskSpecString() {
+	public String getTaskSpecString(CompetitionIdentifier compIdent) {
 		String s = new String();
+		s = s.concat(compIdent.name());
 		s = s.concat("<");
-		Iterator<TaskTriplet> iterator = taskTripletList.iterator();
-		while (iterator.hasNext()) {
-			s = s.concat(iterator.next().getTaskTripletString());
-			if (iterator.hasNext()) {
-				s = s.concat(", ");
+		switch (compIdent) {
+		case BNT:
+			Iterator<BntTask> itBnt = bntTaskList.iterator();
+			while (itBnt.hasNext()) {
+				s = s.concat(((Task) itBnt.next()).getString());
 			}
+		case BMT:
+			Iterator<BmtTask> itBmt = bmtTaskList.iterator();
+			while (itBmt.hasNext()) {
+				s = s.concat(((Task) itBmt.next()).getString());
+			}
+		case BTT:
+		default:
 		}
 		s = s.concat(">");
 		return s;
 	}
 
-	public boolean parseTaskSpecString(String tSpecStr) {
-		tSpecStr = removeSpaces(tSpecStr);
-		System.out.println("After removing spaces " + tSpecStr);
-		try {
-			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
-			Matcher m = pat.matcher(tSpecStr);
-			do {
-				TaskTriplet nextTaskTriplet = new TaskTriplet();
-				if (m.find()) {
-					nextTaskTriplet.setPlace(m.group(1));
-					nextTaskTriplet.setOrientation(m.group(2));
-					nextTaskTriplet.setPause(m.group(3));
-					addTriplet(nextTaskTriplet);
-				}
-			} while (!m.hitEnd());
-		} catch (Exception e) {
-			System.out.println("Caught exception in parseTaskSpec. Error: "
-					+ e.getMessage());
-			return false;
+	public void addTask(CompetitionIdentifier compIdent, Object task) {
+		switch (compIdent) {
+		case BNT:
+			BntTask bntTask = (BntTask) task;
+			bntTaskList.add(bntTask);
+			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+					+ bntTaskList.indexOf(bntTask) + " added");
+			notifyBntTaskSpecChanged(bntTask, bntTaskList.indexOf(bntTask),
+					bntTaskList);
+			break;
+		case BMT:
+			BmtTask bmtTask = (BmtTask) task;
+			bmtTaskList.add(bmtTask);
+			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+					+ bmtTaskList.indexOf(bmtTask) + " added");
+			notifyBmtTaskSpecChanged(bmtTask, bmtTaskList.indexOf(bmtTask),
+					bmtTaskList);
+			break;
+		case BTT:
+			BttTask bttTask = (BttTask) task;
+			bttTaskList.add(bttTask);
+			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+					+ bttTaskList.indexOf(bttTask) + " added");
+			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
+					bttTaskList);
+			break;
+		default:
+			return;
 		}
-		return true;
 	}
 
-	public void addTriplet(TaskTriplet triplet) {
-		taskTripletList.add(triplet);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-				+ " no. " + taskTripletList.indexOf(triplet) + " added");
-		notifyTaskSpecChanged(new TripletEvent(triplet, taskTripletList.size(),
-				taskTripletList));
+	public Task deleteTask(int pos, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			BntTask bntTask = bntTaskList.remove(pos);
+			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+					+ bntTaskList.indexOf(bntTask) + " deleted");
+			notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
+			return bntTask;
+		case BMT:
+			BmtTask bmtTask = bmtTaskList.remove(pos);
+			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+					+ bmtTaskList.indexOf(bmtTask) + " deleted");
+			notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
+			return bmtTask;
+		case BTT:
+			BttTask bttTask = bttTaskList.remove(pos);
+			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+					+ bttTaskList.indexOf(bttTask) + " deleted");
+			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
+			return bttTask;
+		default:
+			return null;
+		}
 	}
 
-	public TaskTriplet deleteTriplet(int tripletIndex) {
-		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
-				+ " no. " + tripletIndex + " deleted");
-		notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
-				taskTripletList));
-		return triplet;
-	}
+	public Task moveUp(int pos, CompetitionIdentifier compIdent) {
 
-	public TaskTriplet moveUpTriplet(int tripletIndex) {
-		if (tripletIndex == 0) {
+		if (pos == 0) {
 			return null;
 		} else {
-			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-			taskTripletList.add(tripletIndex - 1, triplet);
-			logg.LoggingFile(
-					taskTripletListName,
-					triplet.getTaskTripletString() + " no. "
-							+ taskTripletList.indexOf(triplet) + " moved up");
-			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
-					taskTripletList));
-			return triplet;
+			switch (compIdent) {
+			case BNT:
+				BntTask bntTask = bntTaskList.remove(pos);
+				bntTaskList.add(pos - 1, bntTask);
+				logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+						+ bntTaskList.indexOf(bntTask) + " moved up");
+				notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
+				return bntTask;
+			case BMT:
+				BmtTask bmtTask = bmtTaskList.remove(pos);
+				bmtTaskList.add(pos - 1, bmtTask);
+				logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+						+ bmtTaskList.indexOf(bmtTask) + " moved up");
+				notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
+				return bmtTask;
+			case BTT:
+				BttTask bttTask = bttTaskList.remove(pos);
+				bttTaskList.add(pos - 1, bttTask);
+				logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+						+ bttTaskList.indexOf(bttTask) + " moved up");
+				notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
+				return bttTask;
+			default:
+				return null;
+			}
 		}
 	}
 
-	public TaskTriplet moveDownTriplet(int tripletIndex) {
-		if (taskTripletList.size() == tripletIndex + 1) {
+	public Task moveDown(int pos, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			if (bntTaskList.size() == pos + 1)
+				return null;
+			BntTask bntTask = bntTaskList.remove(pos);
+			bntTaskList.add(pos + 1, bntTask);
+			logg.LoggingFile(taskListName, bntTask.getString() + " no. "
+					+ bntTaskList.indexOf(bntTask) + " moved down");
+			notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
+			return bntTask;
+		case BMT:
+			if (bmtTaskList.size() == pos + 1)
+				return null;
+			BmtTask bmtTask = bmtTaskList.remove(pos);
+			bmtTaskList.add(pos + 1, bmtTask);
+			logg.LoggingFile(taskListName, bmtTask.getString() + " no. "
+					+ bmtTaskList.indexOf(bmtTask) + " moved down");
+			notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
+			return bmtTask;
+		case BTT:
+			if (bttTaskList.size() == pos + 1)
+				return null;
+			BttTask bttTask = bttTaskList.remove(pos);
+			bttTaskList.add(pos + 1, bttTask);
+			logg.LoggingFile(taskListName, bttTask.getString() + " no. "
+					+ bttTaskList.indexOf(bttTask) + " moved down");
+			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
+			return bttTask;
+		default:
 			return null;
-		} else {
-			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-			taskTripletList.add(tripletIndex + 1, triplet);
-			logg.LoggingFile(
-					taskTripletListName,
-					triplet.getTaskTripletString() + " no. "
-							+ taskTripletList.indexOf(triplet) + " moved down");
-			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
-					taskTripletList));
-			return triplet;
 		}
 	}
 
-	public TaskTriplet editTriplet(int tripletIndex, TaskTriplet updateTriplet) {
-
-		try {
-			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
-			notifyTaskSpecChanged(new TripletEvent(updateTriplet, tripletIndex,
-					taskTripletList));
-			logg.LoggingFile(taskTripletListName, tt.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(updateTriplet)
-					+ " updated to " + updateTriplet.getTaskTripletString());
-			return tt;
-		} catch (Exception e) {
+	public Task updateTask(int pos, Task task, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			BntTask bntTask = bntTaskList.set(pos, (BntTask) task);
+			logg.LoggingFile(taskListName,
+					bntTask.getString() + " no. " + bntTaskList.indexOf(task)
+							+ " updated to " + bntTask.getString());
+			notifyBntTaskSpecChanged(bntTask, bntTaskList.indexOf(bntTask),
+					bntTaskList);
+			return bntTask;
+		case BMT:
+			BmtTask bmtTask = bmtTaskList.set(pos, (BmtTask) task);
+			logg.LoggingFile(taskListName,
+					bmtTask.getString() + " no. " + bmtTaskList.indexOf(task)
+							+ " updated to " + bmtTask.getString());
+			notifyBmtTaskSpecChanged(bmtTask, bmtTaskList.indexOf(bmtTask),
+					bmtTaskList);
+			return bmtTask;
+		case BTT:
+			BttTask bttTask = bttTaskList.set(pos, (BttTask) task);
+			logg.LoggingFile(taskListName,
+					bttTask.getString() + " no. " + bttTaskList.indexOf(task)
+							+ " updated to " + bttTask.getString());
+			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
+					bttTaskList);
+			return bttTask;
+		default:
 			return null;
 		}
 	}
 
-	public List<TaskTriplet> getTaskTripletList() {
-		return taskTripletList;
+	/*
+	 * public List<TaskTriplet> getTaskTripletList() { return null; //
+	 * taskTripletList; }
+	 */
+
+	public Task getTaskAtIndex(int index, CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			return bntTaskList.get(index);
+		case BMT:
+			return bmtTaskList.get(index);
+		case BTT:
+			return bttTaskList.get(index);
+		default:
+			return null;
+		}
 	}
 
-	public TaskTriplet getTaskTripletAtIndex(int index) {
-		return taskTripletList.get(index);
+	public void addTripletListener(TaskListener tL) {
+		listOfTaskListeners.add(TaskListener.class, tL);
 	}
 
-	public void addTripletListener(TripletListener tL) {
-		listOfTripletListeners.add(TripletListener.class, tL);
+	public void removeTripletListener(TaskListener tL) {
+		listOfTaskListeners.remove(TaskListener.class, tL);
 	}
 
-	public void removeTripletListener(TripletListener tL) {
-		listOfTripletListeners.remove(TripletListener.class, tL);
-	}
-
-	private void notifyTaskSpecChanged(TripletEvent evt) {
-		Object[] listeners = listOfTripletListeners.getListenerList();
+	private void notifyBntTaskSpecChanged(BntTask bntTask, int pos,
+			ArrayList<BntTask> bntTaskList2) {
+		Object[] listeners = listOfTaskListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
 		// and the second is the listener instance
 		for (int i = 0; i < listeners.length; i += 2) {
-			if (listeners[i] == TripletListener.class) {
-				((TripletListener) listeners[i + 1]).taskSpecChanged(evt);
+			if (listeners[i] == TaskListener.class) {
+				((TaskListener) listeners[i + 1]).bntTaskSpecChanged(bntTask,
+						pos, bntTaskList);
+			}
+		}
+	}
+
+	private void notifyBmtTaskSpecChanged(BmtTask bmtTask, int pos,
+			ArrayList<BmtTask> bntTaskList2) {
+		Object[] listeners = listOfTaskListeners.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TaskListener.class) {
+				((TaskListener) listeners[i + 1]).bmtTaskSpecChanged(bmtTask,
+						pos, bmtTaskList);
+			}
+		}
+	}
+
+	private void notifyBttTaskSpecChanged(BttTask bttTask, int pos,
+			ArrayList<BttTask> bttTaskList) {
+		Object[] listeners = listOfTaskListeners.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2) {
+			if (listeners[i] == TaskListener.class) {
+				((TaskListener) listeners[i + 1]).bttTaskSpecChanged(bttTask,
+						pos, bttTaskList);
 			}
 		}
 	}
@@ -174,69 +292,106 @@ public class TaskSpec {
 		try {
 			FileWriter fstream = new FileWriter(file);
 			BufferedWriter out = new BufferedWriter(fstream);
-			out.write(getTaskSpecString());
+			out.write(getTaskSpecString(CompetitionIdentifier.BNT));
+			out.write("\n");
+			out.write(getTaskSpecString(CompetitionIdentifier.BMT));
+			out.write("\n");
+			out.write(getTaskSpecString(CompetitionIdentifier.BTT));
+			out.write("\n");
 			out.close();
-			logg.LoggingFile(taskTripletListName,
+			logg.LoggingFile(taskListName,
 					"saved actual task specification in >" + file.getName()
 							+ "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-			logg.LoggingFile(taskTripletListName, "saving failed! >");
+			logg.LoggingFile(taskListName, "saving failed! >");
 			return false;
 		}
+
 		return true;
 	}
 
 	public boolean openTaskSpec(File file) {
+
 		try {
 			FileInputStream fstream = new FileInputStream(file);
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				taskTripletList = new ArrayList<TaskTriplet>();
 				if (!parseTaskSpecString(strLine))
 					return false;
-				System.out.println("Found and parsed task spec string: "
-						+ getTaskSpecString());
-				notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
-						taskTripletList.size(), taskTripletList));
 			}
 			in.close();
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			return false;
 		}
+
+		return true;
+	}
+
+	public boolean parseTaskSpecString(String tSpecStr) {
+		tSpecStr = removeSpaces(tSpecStr);
+		// System.out.println("After removing spaces " + tSpecStr);
+		String competition = tSpecStr.substring(0, 2);
+		if (competition.equals(CompetitionIdentifier.BNT.name()))
+			bntTaskList = new ArrayList<BntTask>();
+		try {
+			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
+			Matcher m = pat.matcher(tSpecStr);
+			do {
+				BntTask nextTask = new BntTask();
+				if (m.find()) {
+					nextTask.setPlace(m.group(1));
+					nextTask.setOrientation(m.group(2));
+					nextTask.setPause(m.group(3));
+					bntTaskList.add(nextTask);
+					logg.LoggingFile(taskListName, nextTask.getString()
+							+ " no. " + bntTaskList.indexOf(nextTask)
+							+ " added");
+					notifyBntTaskSpecChanged(nextTask,
+							bntTaskList.indexOf(nextTask), bntTaskList);
+				}
+			} while (!m.hitEnd());
+		} catch (Exception e) {
+			System.out.println("Caught exception in parseTaskSpec. Error: "
+					+ e.getMessage());
+			return false;
+		}
 		return true;
 	}
 
 	public TaskTriplet setTripletState(int tripletIndex, int column) {
-		TaskTriplet tT = taskTripletList.get(tripletIndex);
-		State newState;
-		if (column == 1)
-			newState = State.PASSED;
-		else
-			newState = State.FAILED;
-		if (tT.getState() == newState)
-			tT.setState(State.INIT);
-		else
-			tT.setState(newState);
-		logg.LoggingFile(
-				taskTripletListName,
-				tT.getTaskTripletString() + " no. "
-						+ taskTripletList.indexOf(tT) + " new state: "
-						+ tT.getState());
-		notifyTaskSpecChanged(new TripletEvent(tT, taskTripletList.indexOf(tT),
-				taskTripletList));
-		return tT;
+		/*
+		 * TaskTriplet tT = taskTripletList.get(tripletIndex); State newState;
+		 * if (column == 1) newState = State.PASSED; else newState =
+		 * State.FAILED; if (tT.getState() == newState) tT.setState(State.INIT);
+		 * else tT.setState(newState); logg.LoggingFile(taskListName,
+		 * tT.getTaskTripletString() + " no. " + taskTripletList.indexOf(tT) +
+		 * " new state: " + tT.getState()); notifyTaskSpecChanged(new
+		 * TripletEvent(tT, taskTripletList.indexOf(tT), taskTripletList));
+		 */
+		return null; // tT;
 	}
 
 	public void resetStates() {
-		for (TaskTriplet tT : taskTripletList) {
-			tT.setState(State.INIT);
-			logg.LoggingFile(taskTripletListName, tT.getTaskTripletString()
-					+ " no. " + taskTripletList.indexOf(tT)
-					+ " new state: INIT");
-		}
+		/*
+		 * for (TaskTriplet tT : taskTripletList) { tT.setState(State.INIT);
+		 * logg.LoggingFile(taskListName, tT.getTaskTripletString() + " no. " +
+		 * taskTripletList.indexOf(tT) + " new state: INIT"); }
+		 */
+	}
+
+	public ArrayList<BntTask> getBntTaskList() {
+		return bntTaskList;
+	}
+
+	public ArrayList<BmtTask> getBmtTaskList() {
+		return bmtTaskList;
+	}
+
+	public ArrayList<BttTask> getBttTaskList() {
+		return bttTaskList;
 	}
 }

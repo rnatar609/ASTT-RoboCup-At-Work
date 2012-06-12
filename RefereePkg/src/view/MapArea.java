@@ -10,6 +10,8 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,24 +19,27 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import model.BmtTask;
+import model.BntTask;
+import model.BttTask;
+import model.StateOfTask;
+import model.Task;
 import model.TaskTriplet;
-import model.TaskTriplet.State;
-import model.TripletEvent;
-import controller.TripletListener;
+import controller.TaskListener;
 
-public class MapArea extends JScrollPane implements TripletListener {
+public class MapArea extends JScrollPane implements TaskListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private BufferedImage backgroundMap;
 	private MapPane mapPane;
 	private HashMap<String, Point> validPositions;
-	private List<TaskTriplet> taskTripletList;
+	private List<BntTask> taskList;
 
 	public MapArea() {
 		super();
 		mapPane = new MapPane();
-		taskTripletList = new ArrayList<TaskTriplet>();
+		taskList = new ArrayList<BntTask>();
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		// this.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
@@ -54,8 +59,8 @@ public class MapArea extends JScrollPane implements TripletListener {
 					backgroundMap.getHeight(), this);
 			int i = 0;
 			Point pPrev = new Point(0, 0);
-			for (TaskTriplet tT : taskTripletList) {
-				Point p = validPositions.get(tT.getPlace());
+			for (Object tT : taskList) {
+				Point p = validPositions.get(((Task) tT).getPlace());
 				if (i == 0) {
 					pPrev = p;
 				} else {
@@ -71,35 +76,35 @@ public class MapArea extends JScrollPane implements TripletListener {
 				pPrev = p;
 			}
 			g2.setStroke(new BasicStroke(2.0f));
-			for (TaskTriplet tT : taskTripletList) {
+			for (Object tT : taskList) {
 				int theta = 0;
-				if (tT.getOrientation().equals("N")) {
+				if (((BntTask) tT).getOrientation().equals("N")) {
 					theta = 90;
-				} else if (tT.getOrientation().equals("S")) {
+				} else if (((Task) tT).getOrientation().equals("S")) {
 					theta = -90;
-				} else if (tT.getOrientation().equals("W")) {
+				} else if (((Task) tT).getOrientation().equals("W")) {
 					theta = 180;
-				} else if (tT.getOrientation().equals("E")) {
+				} else if (((Task) tT).getOrientation().equals("E")) {
 					theta = 0;
-				} else if (tT.getOrientation().equals("NE")) {
+				} else if (((Task) tT).getOrientation().equals("NE")) {
 					theta = 45;
-				} else if (tT.getOrientation().equals("SE")) {
+				} else if (((Task) tT).getOrientation().equals("SE")) {
 					theta = -45;
-				} else if (tT.getOrientation().equals("SW")) {
+				} else if (((Task) tT).getOrientation().equals("SW")) {
 					theta = -135;
-				} else if (tT.getOrientation().equals("NW")) {
+				} else if (((Task) tT).getOrientation().equals("NW")) {
 					theta = 135;
 				}
-				if (tT.getState() == State.INIT)
+				if (((Task) tT).getState() == StateOfTask.INIT)
 					g.setColor(Color.cyan);
-				if (tT.getState() == State.PASSED)
+				if (((Task) tT).getState() == StateOfTask.PASSED)
 					g.setColor(Color.green);
-				if (tT.getState() == State.FAILED)
+				if (((Task) tT).getState() == StateOfTask.FAILED)
 					g.setColor(Color.red);
-				Point p = validPositions.get(tT.getPlace());
+				Point p = validPositions.get(((Task) tT).getPlace());
 				drawArrow(g, p, theta * Math.PI / 180.0);
 				g2.setColor(Color.black);
-				g2.drawString(tT.getPlace(), p.x - 5, p.y + 4);
+				g2.drawString(((Task) tT).getPlace(), p.x - 5, p.y + 4);
 			}
 		}
 
@@ -129,12 +134,6 @@ public class MapArea extends JScrollPane implements TripletListener {
 		}
 	}
 
-	@Override
-	public void taskSpecChanged(TripletEvent evt) {
-		this.taskTripletList = evt.getTaskTripletList();
-		mapPane.repaint();
-	}
-
 	public void setValidPositions(HashMap<String, Point> positions) {
 		this.validPositions = positions;
 	}
@@ -148,5 +147,26 @@ public class MapArea extends JScrollPane implements TripletListener {
 		mapPane.setPreferredSize(new Dimension(backgroundMap.getWidth(),
 				backgroundMap.getHeight()));
 		this.getViewport().add(mapPane, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void bntTaskSpecChanged(BntTask bntTask, int pos,
+			ArrayList<BntTask> bntTaskList) {
+		this.taskList = bntTaskList;
+		mapPane.repaint();
+	}
+
+	@Override
+	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
+			ArrayList<BmtTask> bmtTaskList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void bttTaskSpecChanged(BttTask bttTask, int pos,
+			ArrayList<BttTask> bttTaskList) {
+		// TODO Auto-generated method stub
+
 	}
 }

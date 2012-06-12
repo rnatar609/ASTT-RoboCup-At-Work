@@ -17,12 +17,12 @@ public class ValidTripletElements {
 	static private ValidTripletElements instance;
 	private LinkedHashMap<String, Point> validPositions;
 	private List<String> validOrientations;
-	private List<Short> validPauses;
+	private List<String> validPauses;
 
 	private ValidTripletElements() {
 		validPositions = new LinkedHashMap<String, Point>();
 		validOrientations = new ArrayList<String>();
-		validPauses = new ArrayList<Short>();
+		validPauses = new ArrayList<String>();
 	}
 
 	private boolean populateLists(ConfigFile cfg) throws Exception {
@@ -110,16 +110,8 @@ public class ValidTripletElements {
 		String str = props.getProperty("pauses");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
 		while (scnr.hasNextShort()) {
-			short i = scnr.nextShort();
-			if (i > 0 && i < 10) {
+			String i = new String(scnr.next());
 				validPauses.add(i);
-			} else {
-				System.out
-						.println("Invalid pause duration "
-								+ i
-								+ " in Config File. Pause should be an integer between 1 and 9 (both inclusive).");
-				allValid = false;
-			}
 		}
 		return allValid;
 	}
@@ -168,7 +160,7 @@ public class ValidTripletElements {
 
 	private String constructPausePattern() {
 		String str = new String("(");
-		Iterator<Short> iterator = validPauses.iterator();
+		Iterator<String> iterator = validPauses.iterator();
 		while (iterator.hasNext()) {
 			str = str.concat(iterator.next().toString());
 			if (iterator.hasNext()) {
@@ -209,10 +201,10 @@ public class ValidTripletElements {
 
 	boolean isPauseValid(String s) {
 		// System.out.println( "User-given Pause " + s );
-		short in = Short.parseShort(s);
-		Iterator<Short> iterator = validPauses.iterator();
+		String in = s;
+		Iterator<String> iterator = validPauses.iterator();
 		while (iterator.hasNext()) {
-			if (iterator.next() == in) {
+			if (iterator.next().equals(in)) {
 				return true;
 			}
 		}
@@ -243,7 +235,7 @@ public class ValidTripletElements {
 		return validOrientations;
 	}
 
-	public List<Short> getValidPauses() {
+	public List<String> getValidPauses() {
 		return validPauses;
 	}
 }
