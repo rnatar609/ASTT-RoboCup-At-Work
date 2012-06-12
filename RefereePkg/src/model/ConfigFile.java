@@ -35,8 +35,8 @@ public class ConfigFile {
 			FileInputStream in = new FileInputStream(
 					ConfigFile.configFileFullName);
 			properties.load(in);
-			logg.LoggingFile(configLogID, "Properties loaded from "
-					+ configFileFullName);
+			logg.LoggingFileAndCompetitionFile(configLogID, "Properties loaded from "
+					+ configFileFullName, false);
 			in.close();
 		} catch (Exception e) {
 			System.out.println("Exception in ConfigFile loadProperties: "
@@ -56,7 +56,7 @@ public class ConfigFile {
 		if (scnr.hasNextLong()) {
 			configTime = scnr.nextLong();
 		} else
-			logg.LoggingFile(configLogID, "no configuration time");
+			logg.LoggingFileAndCompetitionFile(configLogID, "no configuration time", false);
 		return configTime;
 	}
 
@@ -95,7 +95,7 @@ public class ConfigFile {
 		if (scnr.hasNextLong()) {
 			runTime = scnr.nextLong();
 		} else
-			logg.LoggingFile(configLogID, "no configuration time");
+			logg.LoggingFileAndCompetitionFile(configLogID, "no configuration time", true);
 		return runTime;
 	}
 }

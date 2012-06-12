@@ -12,9 +12,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.*;
 import java.util.StringTokenizer;
+
 import javax.swing.event.EventListenerList;
 
 import model.TaskTriplet.State;
+
 import view.Utils;
 import controller.TripletListener;
 
@@ -167,6 +169,7 @@ public class TaskSpec {
 	}
 
 	public boolean saveTaskSpec(File file) {
+
 		file = Utils.correctFile(file);
 		try {
 			FileWriter fstream = new FileWriter(file);
@@ -196,7 +199,7 @@ public class TaskSpec {
 					return false;
 				System.out.println("Found and parsed task spec string: "
 						+ getTaskSpecString());
-				logg.LoggingFile(taskTripletListName, "Found Testspec and parsed task spec string");
+				logg.LoggingFile(taskTripletListName, "Found and parsed task spec string");
 				notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
 						taskTripletList.size(), taskTripletList));
 			}
