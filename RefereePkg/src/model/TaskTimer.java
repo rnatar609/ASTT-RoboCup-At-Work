@@ -76,12 +76,9 @@ public class TaskTimer implements ConnectionListener {
 			timerStop = false;
 			startTime = System.currentTimeMillis();
 			timer.scheduleAtFixedRate(new Task(), 1000, 1000);
-			logg.LoggingFile(logId, "new config time  "
-					+ millisecToString(this.configTime));
-			logg.LoggingFile(logId, "new run time "
-					+ millisecToString(this.runTime));
-			logg.LoggingFile(logId, "Setup time startet at "
-					+ millisecToString(currentSec));
+			logg.LoggingFileAndCompetitionFile(logId, "new config time  " + millisecToString(this.configTime), false);
+			logg.LoggingFileAndCompetitionFile(logId, "new run time " + millisecToString(this.runTime), false);
+			logg.LoggingFileAndCompetitionFile(logId, "Setup time startet at " + millisecToString(currentSec), false);
 			notifyTimerReset(secToString(currentSec));
 			notifyTimerSetMaximumTime(("setup time: ")
 					.concat(millisecToString(this.configTime)));
@@ -94,8 +91,9 @@ public class TaskTimer implements ConnectionListener {
 
 	public void stopTimer() {
 		timerStop = true;
-		logg.LoggingFile(logId, "stopped at " + secToString(currentSec));
-		CompetitionLogging.setStopTime(secToString(currentSec));
+		//logg.LoggingFile(logId, "stopped at " + secToString(currentSec));
+		logg.LoggingFileAndCompetitionFile(logId, "stopped at " + secToString(currentSec) ,true);
+		//CompetitionLogging.setStopTime(secToString(currentSec));
 	}
 
 	public void resetTimer() {
@@ -115,9 +113,10 @@ public class TaskTimer implements ConnectionListener {
 		runTimeRunning = true;
 		notifyTimerSetMaximumTime(("run time: ")
 				.concat(millisecToString(runTime)));
-		logg.LoggingFile(logId, "Run time started at "
-				+ secToString(currentSec));
-		CompetitionLogging.setRunTimeStart(secToString(currentSec));
+		//logg.LoggingFile(logId, "Run time started at "
+		//		+ secToString(currentSec));
+		logg.LoggingFileAndCompetitionFile(logId, "Run time started at " + secToString(currentSec), true);
+		//CompetitionLogging.setRunTimeStart(secToString(currentSec));
 	}
 
 	private void notifyTimerTick(String currentTime, boolean inTime) {
