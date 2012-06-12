@@ -29,7 +29,7 @@ public class BttPanel extends CompetitionPanel {
 	public DefaultComboBoxModel<String> placeCbm;
 	private DefaultComboBoxModel<String> configurationCbm;
 	private DefaultComboBoxModel<String> objectCbm;
-	
+
 	BttPanel(BorderLayout borderLayout) {
 		super(borderLayout);
 		createFlowPanelsInEastPanel();
@@ -52,17 +52,20 @@ public class BttPanel extends CompetitionPanel {
 		eastPanel.add(flowPanels[1]);
 		configurationBox = new JComboBox<String>();
 		flowPanels[2].add(new JLabel("Configuration"));
-	    flowPanels[2].add(configurationBox);
+		flowPanels[2].add(configurationBox);
 		eastPanel.add(flowPanels[2]);
 		objectBox = new JComboBox<String>();
 		flowPanels[3].add(new JLabel("Object"));
 		flowPanels[3].add(objectBox);
 		eastPanel.add(flowPanels[3]);
 	}
-	
+
 	public void setValidSituations(List<String> situations) {
-		configurationCbm = new DefaultComboBoxModel<String>(
-				situations.toArray(new String[situations.size()]));	}
+		situationCbm = new DefaultComboBoxModel<String>(
+				situations.toArray(new String[situations.size()]));
+		situationBox.setModel(situationCbm);
+	}
+
 	/**
 	 * Update appropriate GUI components with the provided valid positions.
 	 * 
@@ -77,7 +80,7 @@ public class BttPanel extends CompetitionPanel {
 			i++;
 		}
 		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeBox.setModel(placeCbm);	
+		placeBox.setModel(placeCbm);
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class BttPanel extends CompetitionPanel {
 	public void setValidConfigurations(List<String> configuration) {
 		configurationCbm = new DefaultComboBoxModel<String>(
 				configuration.toArray(new String[configuration.size()]));
-		//configurationBox.setModel(configurationCbm);
+		configurationBox.setModel(configurationCbm);
 	}
 
 	/**
@@ -103,16 +106,16 @@ public class BttPanel extends CompetitionPanel {
 				object.toArray(new String[object.size()]));
 		objectBox.setModel(objectCbm);
 	}
-	
+
 	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {
 		sequenceTableModel.clearColumn(0);
 		sequenceTableModel.setRowCount(bmtTaskList.size());
 		for (int i = 0; i < bmtTaskList.size(); i++) {
-			sequenceTableModel.setValueAt(((Task) bmtTaskList.get(i)).getString(),
-					i, 0);
+			sequenceTableModel.setValueAt(
+					((Task) bmtTaskList.get(i)).getString(), i, 0);
 		}
 	}
-	
+
 	public BttTask getSelectedTask() {
 		BttTask t = new BttTask();
 		t.setSituation((String) situationBox.getSelectedItem());

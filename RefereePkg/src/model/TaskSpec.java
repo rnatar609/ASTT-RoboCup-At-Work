@@ -43,6 +43,7 @@ public class TaskSpec {
 		bntTaskList = new ArrayList<BntTask>();
 		bmtTaskList = new ArrayList<BmtTask>();
 		bttTaskList = new ArrayList<BttTask>();
+		cttTaskList = new ArrayList<CttTask>();
 		logg = Logging.getInstance();
 	}
 
@@ -52,53 +53,52 @@ public class TaskSpec {
 		s = s.concat("<");
 		switch (compIdent) {
 		case BNT:
-			Iterator<BntTask> itBnt = bntTaskList.iterator();
-			while (itBnt.hasNext()) {
-				s = s.concat(((Task) itBnt.next()).getString());
+			if (bntTaskList.size() > 0) {
+				Iterator<BntTask> itBnt = bntTaskList.iterator();
+				while (itBnt.hasNext()) {
+					s = s.concat(((Task) itBnt.next()).getString());
+				}
 			}
 			break;
 		case BMT:
-			Iterator<BmtTask> itBmt = bmtTaskList.iterator();
-			BmtTask first = new BmtTask();
-			if (itBmt.hasNext()) {
-				first = itBmt.next();
-				s = s.concat(BmtTask.getPlaceInitial());
-				s = s.concat(",");
-				s = s.concat(BmtTask.getPlaceSource());
-				s = s.concat(",");
-				s = s.concat(BmtTask.getPlaceDestination());
-				s = s.concat(",");
-				s = s.concat(first.getConfiguration());
-				s = s.concat("(");
-				s = s.concat(first.getObject());
-			}
-			BmtTask last = first;
-			while (itBmt.hasNext()) {
-				last = itBmt.next();
-				s = s.concat(",");
-				s = s.concat(last.getObject());
-			}
-			s = s.concat(")");
-			if (!BmtTask.getPlaceFinal().equals("")) {
-				s = s.concat(",");
-				s = s.concat(BmtTask.getPlaceFinal());
+			if (bmtTaskList.size() > 0) {
+				Iterator<BmtTask> itBmt = bmtTaskList.iterator();
+				BmtTask first = new BmtTask();
+				if (itBmt.hasNext()) {
+					first = itBmt.next();
+					s = s.concat(BmtTask.getPlaceInitial());
+					s = s.concat(",");
+					s = s.concat(BmtTask.getPlaceSource());
+					s = s.concat(",");
+					s = s.concat(BmtTask.getPlaceDestination());
+					s = s.concat(",");
+					s = s.concat(first.getConfiguration());
+					s = s.concat("(");
+					s = s.concat(first.getObject());
+				}
+				BmtTask last = first;
+				while (itBmt.hasNext()) {
+					last = itBmt.next();
+					s = s.concat(",");
+					s = s.concat(last.getObject());
+				}
+				s = s.concat(")");
+				if (last.getPlaceInitial().equals("")) {
+					s = s.concat(",");
+					s = s.concat(BmtTask.getPlaceFinal());
+				}
 			}
 			break;
 		case BTT:
-			Iterator<BttTask> itBtt = bttTaskList.iterator();
-			ArrayList<BttTask> initialList = new ArrayList<BttTask>();
-			ArrayList<BttTask> goalList = new ArrayList<BttTask>();
-			while (itBtt.hasNext()) {
-				BttTask btt = itBtt.next();
-				if (btt.getSituation().equals("initial"))
-					initialList.add(btt);
-				else
-					goalList.add(btt);
-			}
-			Iterator<BttTask> itInitial = initialList.iterator();
-			while (itInitial.hasNext()) {
-				
-			}
+			/*
+			 * Iterator<BttTask> itBtt = bttTaskList.iterator();
+			 * ArrayList<BttTask> initialList = new ArrayList<BttTask>();
+			 * ArrayList<BttTask> goalList = new ArrayList<BttTask>(); while
+			 * (itBtt.hasNext()) { BttTask btt = itBtt.next(); if
+			 * (btt.getSituation().equals("initial")) initialList.add(btt); else
+			 * goalList.add(btt); } Iterator<BttTask> itInitial =
+			 * initialList.iterator(); while (itInitial.hasNext()) { ; }
+			 */
 			break;
 		default:
 		}
