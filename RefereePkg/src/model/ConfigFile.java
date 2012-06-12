@@ -94,4 +94,9 @@ public class ConfigFile {
 			logg.LoggingFile(configLogID, "no configuration time");
 		return runTime;
 	}
+	
+	public String getPropertyByName(String key)
+	{
+		return properties.getProperty(key);
+	}
 }
