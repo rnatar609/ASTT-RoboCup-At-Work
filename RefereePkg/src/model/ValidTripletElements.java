@@ -21,6 +21,14 @@ public class ValidTripletElements {
 	private LinkedHashMap<String, Point> validBMTPositions;
 	private List<String> validBMTConfigurations;
 	private List<String> validBMTObjects;
+	private LinkedHashMap<String, Point> validBTTPositions;
+	private List<String> validBTTConfigurations;
+	private List<String> validBTTObjects;
+	private List<String> validBTTSituations;
+	private LinkedHashMap<String, Point> validCTTPositions;
+	private List<String> validCTTConfigurations;
+	private List<String> validCTTObjects;
+	private List<String> validCTTSituations;
     ConfigFile cfgFile;
     
 	private ValidTripletElements() {
@@ -30,6 +38,14 @@ public class ValidTripletElements {
 		validBMTPositions = new LinkedHashMap<String, Point>(); 
 		validBMTConfigurations = new ArrayList<String>();
 		validBMTObjects = new ArrayList<String>();
+		validBTTPositions = new LinkedHashMap<String, Point>(); 
+		validBTTConfigurations = new ArrayList<String>();
+		validBTTObjects = new ArrayList<String>();
+		validBTTSituations = new ArrayList<String>();
+		validCTTPositions = new LinkedHashMap<String, Point>(); 
+		validCTTConfigurations = new ArrayList<String>();
+		validCTTObjects = new ArrayList<String>();
+		validCTTSituations = new ArrayList<String>();
 	}
 
 	private boolean populateLists(ConfigFile cfg) throws Exception {
@@ -49,6 +65,10 @@ public class ValidTripletElements {
 			hashMap = validBNTPositions;
 		else if (competitionID == CompetitionIdentifier.BMT)
 			hashMap = validBMTPositions;
+		else if (competitionID == CompetitionIdentifier.BTT)
+			hashMap = validBTTPositions;
+		else if (competitionID == CompetitionIdentifier.CTT)
+			hashMap = validCTTPositions;
 		// Scanner scnr = new Scanner( str ).useDelimiter( "(\\s*,\\,\\s*)" );
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
 		while (scnr.hasNext()) {
@@ -280,5 +300,75 @@ public class ValidTripletElements {
 			validBMTObjects.add(i);
 		}
 		return validBMTObjects;
+	}
+	
+	public LinkedHashMap<String, Point> getValidBTTPositions() {
+		parsePositions(cfgFile.getPropertyByName("btt.places"), CompetitionIdentifier.BTT);		
+		return validBTTPositions;
+	}
+	
+	public List<String> getValidBTTConfigurations() {
+		String str = cfgFile.getPropertyByName("btt.configurations");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validBTTConfigurations.add(i);
+		}
+		return validBTTConfigurations;
+	}
+
+	public List<String> getValidBTTObjects() {
+		String str = cfgFile.getPropertyByName("btt.objects");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validBTTObjects.add(i);
+		}
+		return validBTTObjects;
+	}
+	
+	public List<String> getValidBTTSituations() {
+		String str = cfgFile.getPropertyByName("btt.situations");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validBTTSituations.add(i);
+		}
+		return validBTTSituations;
+	}
+	
+	public LinkedHashMap<String, Point> getValidCTTPositions() {
+		parsePositions(cfgFile.getPropertyByName("ctt.places"), CompetitionIdentifier.CTT);		
+		return validCTTPositions;
+	}
+	
+	public List<String> getValidCTTConfigurations() {
+		String str = cfgFile.getPropertyByName("ctt.configurations");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validCTTConfigurations.add(i);
+		}
+		return validCTTConfigurations;
+	}
+
+	public List<String> getValidCTTObjects() {
+		String str = cfgFile.getPropertyByName("ctt.objects");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validCTTObjects.add(i);
+		}
+		return validCTTObjects;
+	}
+	
+	public List<String> getValidCTTSituations() {
+		String str = cfgFile.getPropertyByName("ctt.situations");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validCTTSituations.add(i);
+		}
+		return validCTTSituations;
 	}
 }
