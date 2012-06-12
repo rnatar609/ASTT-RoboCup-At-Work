@@ -1,6 +1,9 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.EventListener;
+
+import model.BntTask;
 
 public interface ConnectionListener extends EventListener{
 	public void teamConnected(String teamName);

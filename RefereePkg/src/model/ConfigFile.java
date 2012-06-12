@@ -98,4 +98,9 @@ public class ConfigFile {
 			logg.globalLogging(configLogID, "no configuration time");
 		return runTime;
 	}
+	
+	public String getPropertyByName(String key)
+	{
+		return properties.getProperty(key);
+	}
 }

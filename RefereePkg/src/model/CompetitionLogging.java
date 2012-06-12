@@ -1,14 +1,15 @@
 package model;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.*;
 
-import controller.TripletListener;
+import controller.TaskListener;
 
 import model.TaskTriplet.State;
 
-public class CompetitionLogging implements TripletListener {
+public class CompetitionLogging implements TaskListener {
 	static String fileParent = "";
 	static String teamName = "";
 	static String taskSpecString = "Triplets not sent";
@@ -22,7 +23,7 @@ public class CompetitionLogging implements TripletListener {
 	static int competitionTimeInSeconds = 0;
 	static int taskTripletListLength = 0;
 	static boolean lengthAlreadySet = false;
-	static TaskTriplet.State taskTripletState[];
+	static StateOfTask taskState[];
 
 	public static void setTeamName(String s) {
 		teamName = s;
@@ -48,19 +49,29 @@ public class CompetitionLogging implements TripletListener {
 		stopTime = s;
 	}
 
-	public static void setTripletState(int index, TaskTriplet.State tState) {
-		taskTripletState[index] = tState;
+	public static void setTaskState(int index, StateOfTask stateOfTask) {
+		taskState[index] = stateOfTask;
 	}
 
 	public static void setCompetitionNumber(int i) {
 		competitionNumber = i;
 	}
 
-	public static void setTaskTripletListLength(TaskSpec tS) {
-		taskTripletListLength = tS.getTaskTripletList().size();
-		taskTripletState = new TaskTriplet.State[taskTripletListLength];
+	public static void setTaskTripletListLength(TaskSpec tS,
+			CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		case BMT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		case BTT:
+			taskTripletListLength = tS.getBntTaskList().size();
+		default:
+			taskTripletListLength = 0;
+		}
+		taskState = new StateOfTask[taskTripletListLength];
 		for (int i = 0; i < taskTripletListLength; i++) {
-			taskTripletState[i] = State.INIT;
+			taskState[i] = StateOfTask.INIT;
 		}
 	}
 
@@ -107,8 +118,7 @@ public class CompetitionLogging implements TripletListener {
 			output.write("Stop time: " + stopTime + "\n");
 			output.write("The first triplet number is 0 (because of consistency to the general logger)\n");
 			for (int i = 0; i < taskTripletListLength; i++) {
-				output.write("Triplet no. " + i + ": " + taskTripletState[i]
-						+ "\n");
+				output.write("Triplet no. " + i + ": " + taskState[i] + "\n");
 			}
 			output.close();
 		} catch (IOException e) {
@@ -131,12 +141,25 @@ public class CompetitionLogging implements TripletListener {
 		runTimeInSeconds = 0;
 		competitionTimeInSeconds = 0;
 		taskTripletListLength = 0;
-		taskTripletState = new TaskTriplet.State[taskTripletListLength];
+		taskState = new StateOfTask[taskTripletListLength];
 		lengthAlreadySet = false;
 	}
 
 	@Override
-	public void taskSpecChanged(TripletEvent evt) {
-		setTripletState(evt.getTripletNumber(), evt.getTaskTriplet().getState());
+	public void bntTaskSpecChanged(BntTask bntTask, int pos,
+			ArrayList<BntTask> bntTaskList) {
+		setTaskState(pos, bntTask.getState());
+	}
+
+	@Override
+	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
+			ArrayList<BmtTask> bmtTaskList) {
+		setTaskState(pos, bmtTask.getState());
+	}
+
+	@Override
+	public void bttTaskSpecChanged(BttTask bttTask, int pos,
+			ArrayList<BttTask> bttTaskList) {
+		setTaskState(pos, bttTask.getState());
 	}
 }

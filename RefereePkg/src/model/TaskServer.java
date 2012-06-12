@@ -72,11 +72,11 @@ public class TaskServer implements Runnable{
 	public boolean sendTaskSpecToClient(TaskSpec tSpec) {
 		// Send task specification
 		//byte reply[] = tSpec.getTaskSpecString().getBytes();
-		//CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString());
-		refereeSocket.send(tSpec.getTaskSpecString().getBytes(), 0);
-		System.out.println("String sent to client: "+ tSpec.getTaskSpecString());
-		logg.globalLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
-		logg.competitionLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString());
+		//CompetitionLogging.setTaskSpecString(tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
+		refereeSocket.send(tSpec.getTaskSpecString(CompetitionIdentifier.BNT).getBytes(), 0);
+		System.out.println("String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
+		logg.globalLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
+		logg.competitionLogging(commLogID, "String sent to client: "+ tSpec.getTaskSpecString(CompetitionIdentifier.BNT));
 		refereeSocket.setReceiveTimeOut(1000);
 		String tripletAcknowledge = "";
 		byte bytes[] = refereeSocket.recv(0);

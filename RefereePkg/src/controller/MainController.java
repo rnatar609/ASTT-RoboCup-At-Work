@@ -9,20 +9,31 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-//import model.CompetitionLogging;
+import model.BntTask;
+import model.CompetitionIdentifier;
+import model.CompetitionLogging;
 import model.ConfigFile;
 import model.Logging;
 import model.Map;
+import model.Task;
 import model.TaskServer;
 import model.TaskSpec;
 import model.TaskTimer;
 import model.TaskTriplet;
 import model.ValidTripletElements;
+import view.BntPanel;
+import view.BmtPanel;
+import view.BttPanel;
+import view.CttPanel;
 import view.DialogType;
 import view.FileType;
 import view.MainGUI;
@@ -44,6 +55,8 @@ public class MainController implements TimerListener {
 	//private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
+	private final int NUMBEROFCOMPETITIONS = 4;
+	protected CompetitionIdentifier compIdent = CompetitionIdentifier.BNT;
 
 	private WindowAdapter windowAdapter = new WindowAdapter() {
 		public void windowClosing(WindowEvent evt) {
@@ -57,7 +70,8 @@ public class MainController implements TimerListener {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_SAVE);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP,
+					DialogType.DIALOG_SAVE);
 			if (file != null) {
 				if (tS.saveTaskSpec(file)
 						&& Map.saveTaskSpecMap(file, mG.getMapArea())) {
@@ -82,7 +96,8 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Open")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_TSP, DialogType.DIALOG_OPEN);
+			File file = mG.showFolderDialog(FileType.FILETYPE_TSP,
+					DialogType.DIALOG_OPEN);
 			if (file != null) {
 
 				if (tS.openTaskSpec(file)) {
@@ -107,10 +122,12 @@ public class MainController implements TimerListener {
 			if (unsavedChanges && warningIgnored("Load Config")) {
 				return;
 			}
-			File file = mG.showFolderDialog(FileType.FILETYPE_ALL,  DialogType.DIALOG_OPEN);
+			File file = mG.showFolderDialog(FileType.FILETYPE_ALL,
+					DialogType.DIALOG_OPEN);
 			if (file != null) {
 				loadConfigurationFile(file);
-				tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+				tServer.createServerSocket(cfgFile.getServerIP(),
+						cfgFile.getPortaddr());
 				tServer.listenForConnection();
 			} else {
 				mG.setStatusLine("Load Config command cancelled by user.");
@@ -133,19 +150,20 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action upTriplet = new AbstractAction("Up") {
+	private Action up = new AbstractAction("Up") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-
-			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
-				int pos = mG.getTripletsTable().getSelectedRow();
-				TaskTriplet t = tS.moveUpTriplet(pos);
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = tS.moveUp(pos, compIdent);
 				if (t != null) {
-					mG.getTripletsTable().changeSelection(pos - 1, -1, false,
-							false);
-					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause()
+					mG.getCompetitionPanel(compIdent.ordinal())
+							.getSequenceTable()
+							.changeSelection(pos - 1, -1, false, false);
+					mG.setStatusLine("Triplet (" + t.getString()
 							+ ") moved up.");
 					unsavedChanges = true;
 				} else
@@ -156,91 +174,85 @@ public class MainController implements TimerListener {
 		}
 	};
 
-	private Action downTriplet = new AbstractAction("Down") {
+	private Action down = new AbstractAction("Down") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
-				int pos = mG.getTripletsTable().getSelectedRow();
-				TaskTriplet t = tS.moveDownTriplet(pos);
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = tS.moveDown(pos, compIdent);
 				if (t != null) {
-					mG.getTripletsTable().changeSelection(pos + 1, -1, false,
-							false);
-					mG.setStatusLine("Triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause()
-							+ ") moved down.");
+					mG.getCompetitionPanel(compIdent.ordinal())
+							.getSequenceTable()
+							.changeSelection(pos + 1, -1, false, false);
+					mG.setStatusLine("Triplet (" + t.getString()
+							+ ") moved up.");
 					unsavedChanges = true;
 				} else
-					mG.setStatusLine("Triplet already at the end of the list.");
+					mG.setStatusLine("Task already at the beginning of the list.");
 			} else {
-				mG.setStatusLine("No triplet selected for moving down.");
+				mG.setStatusLine("No task selected for moving down.");
 			}
 		}
 	};
 
-	private Action updateTriplet = new AbstractAction("Update") {
+	private Action update = new AbstractAction("Update") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
-				int pos = mG.getTripletsTable().getSelectedRow();
-				TaskTriplet tt = new TaskTriplet();
-				tt.setPlace((String) mG.getPlacesBox().getSelectedItem());
-				tt.setOrientation((String) mG.getOrientationsBox()
-						.getSelectedItem());
-				if (tt.setPause((String) mG.getPausesBox().getSelectedItem()
-						.toString())) {
-					TaskTriplet t = tS.editTriplet(pos, tt);
-					if (t != null) {
-						mG.setStatusLine("Updated Triplet (" + t.getPlace()
-								+ ", " + t.getOrientation() + ", "
-								+ t.getPause() + ").");
-						setUnsavedChanges();
-					} else
-						mG.setStatusLine("Triplet could not be updated.");
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
+				Task t = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSelectedTask();
+				Task tUpdate = tS.updateTask(pos, t, compIdent);
+				if (tUpdate != null) {
+					mG.setStatusLine("Updated Task " + tUpdate.getString()
+							+ " to " + t.getString() + ".");
+					setUnsavedChanges();
+				} else {
+					mG.setStatusLine("Task could not be updated.");
 				}
 			} else {
-				mG.setStatusLine("No triplet selected for updating.");
+				mG.setStatusLine("No task selected for updating.");
 			}
+
 		}
 	};
 
-	private Action addTriplet = new AbstractAction("Add") {
+	private Action add = new AbstractAction("Add") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			TaskTriplet t = new TaskTriplet();
-			t.setPlace((String) mG.getPlacesBox().getSelectedItem());
-			t.setOrientation((String) mG.getOrientationsBox().getSelectedItem());
-			if (t.setPause((String) mG.getPausesBox().getSelectedItem()
-					.toString())) {
-				tS.addTriplet(t);
-				mG.setStatusLine("added triplet (" + t.getPlace() + ", "
-						+ t.getOrientation() + ", " + t.getPause() + ")");
-				unsavedChanges = true;
-			} else {
-				mG.setStatusLine("error triplet");
-			}
+			Task t = mG.getCompetitionPanel(compIdent.ordinal())
+					.getSelectedTask();
+			tS.addTask(compIdent, t);
+			mG.setStatusLine("added triplet (" + t.getString() + ")");
+			unsavedChanges = true;
 		}
 	};
 
-	private Action deleteTriplet = new AbstractAction("Delete") {
+	private Action delete = new AbstractAction("Delete") {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			if (mG.getTripletsTable().getSelectedRowCount() > 0) {
-				int pos = mG.getTripletsTable().getSelectedRow();
+			if (mG.getCompetitionPanel(compIdent.ordinal()).getSequenceTable()
+					.getSelectedRowCount() > 0) {
+				int pos = mG.getCompetitionPanel(compIdent.ordinal())
+						.getSequenceTable().getSelectedRow();
 				String msg = "Do you want to delete the triplet "
-						+ tS.getTaskTripletList().get(pos)
-								.getTaskTripletString() + "?";
+						+ mG.getCompetitionPanel(compIdent.ordinal())
+								.getSelectedTask().getString() + "?";
 				if (mG.getUserConfirmation(msg, "Confirm Triplet Deletion") == 0) {
-					TaskTriplet t = tS.deleteTriplet(pos);
-					mG.setStatusLine("Deleted triplet (" + t.getPlace() + ", "
-							+ t.getOrientation() + ", " + t.getPause() + ")");
+					Task t = tS.deleteTask(pos, compIdent);
+					mG.setStatusLine("Deleted triplet (" + t.getString() + ")");
 					setUnsavedChanges();
 				} else {
 					mG.setStatusLine("Triplet not deleted.");
@@ -255,7 +267,7 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			if(tServer.sendTaskSpecToClient(tS))
+			if (tServer.sendTaskSpecToClient(tS))
 				mG.setStatusLine("Task specification sent to the team.");
 			else
 				mG.setStatusLine("<html><FONT COLOR=RED>Task specification could not be send to the team!</FONT>  </html>");
@@ -268,9 +280,11 @@ public class MainController implements TimerListener {
 		public void actionPerformed(ActionEvent arg0) {
 			String teamName = tServer.getTeamName();
 			tServer.disconnectClient();
-			tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+			tServer.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortaddr());
 			tServer.listenForConnection();
-			mG.setStatusLine("Team " + teamName + " disconnected. Listening for new connection.....");
+			mG.setStatusLine("Team " + teamName
+					+ " disconnected. Listening for new connection.....");
 		}
 	};
 
@@ -310,7 +324,6 @@ public class MainController implements TimerListener {
 		public void actionPerformed(ActionEvent evt) {
 				String teamName = tServer.getTeamName();
 				logg.renameCompetitionFile();
-				mG.setCompetitionMode(false);
 				logg.setCompetitionLogging(false);
 				mG.getCompetitionFinishedButton().setEnabled(false);
 				setCompetitionMode(false);
@@ -324,21 +337,17 @@ public class MainController implements TimerListener {
 			}
 	};
 
-	public MouseListener tripletTableListener = new MouseListener() {
+	public MouseListener taskTableListener = new MouseListener() {
 
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
-			// TODO Auto-generated method stub
-			int selectedRow = mG.getTripletsTable().getSelectedRow();
+			int selectedRow = mG.getSequenceTable(compIdent.ordinal())
+					.getSelectedRow();
 			if (selectedRow >= 0) {
-				TaskTriplet tT = tS.getTaskTripletAtIndex(selectedRow);
-				mG.setPlacesBoxSelected(tT.getPlace());
-				mG.setOrientationsBoxSelected(tT.getOrientation());
-				mG.setPausesBoxSelected(tT.getPause());
-				mG.setStatusLine("Selected triplet (" + tT.getPlace() + ", "
-						+ tT.getOrientation() + ", " + tT.getPause() + ").");
+				Task tT = tS.getTaskAtIndex(selectedRow, compIdent);
+				mG.setTaskBoxSected(tT, compIdent);
+				mG.setStatusLine("Selected task " + tT.getString() + ".");
 			}
-
 		}
 
 		@Override
@@ -361,23 +370,33 @@ public class MainController implements TimerListener {
 
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
-			int selectedRow = mG.getTripletsTable().getSelectedRow();
-			int selectedColumn = mG.getTripletsTable().getSelectedColumn();
+			int selectedRow = mG.getSequenceTable(compIdent.ordinal())
+					.getSelectedRow();
+			int selectedColumn = mG.getSequenceTable(compIdent.ordinal())
+					.getSelectedColumn();
 			if (selectedColumn > 0) {
 				TaskTriplet tT = tS
 						.setTripletState(selectedRow, selectedColumn);
 				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
 						+ ", " + tT.getOrientation() + ", " + tT.getPause()
-						+ ").");
-				mG.setTableCellCorrected(selectedRow, selectedColumn);
-				mG.getTripletsTable().clearSelection();
+						+ ")."); //
+				// mG.setTableCellCorrected(selectedRow, selectedColumn); //
+				// mG.getTripletsTable().clearSelection();
 			}
+
+		}
+	};
+
+	public ChangeListener tabbChangeListener = new ChangeListener() {
+		public void stateChanged(ChangeEvent evt) {
+			JTabbedPane pane = (JTabbedPane) evt.getSource();
+			compIdent = CompetitionIdentifier.values()[pane.getSelectedIndex()];
 		}
 	};
 
 	public MainController(String[] args) {
-		tS = new TaskSpec();
-		mG = new MainGUI();
+		tS = new TaskSpec(compIdent.ordinal());
+		mG = new MainGUI(NUMBEROFCOMPETITIONS);
 		cfgFile = new ConfigFile();
 		tServer = new TaskServer();
 		taskTimer = new TaskTimer();
@@ -391,7 +410,8 @@ public class MainController implements TimerListener {
 			File file = new File(System.getProperty("user.home")
 					+ System.getProperty("file.separator") + args[0]);
 			loadConfigurationFile(file);
-			tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
+			tServer.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortaddr());
 			tServer.listenForConnection();
 		}
 	}
@@ -415,15 +435,21 @@ public class MainController implements TimerListener {
 				Action.SMALL_ICON,
 				new ImageIcon(getClass().getResource(
 						"/view/resources/icons/Help16.gif")));
-		upTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/Up16.gif")));
-		downTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/Down16.gif")));
-		updateTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+		up.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/Up16.gif")));
+		down.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/Down16.gif")));
+		update.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
 				.getResource("/view/resources/icons/Edit16.gif")));
-		addTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
-				.getResource("/view/resources/icons/Back16.gif")));
-		deleteTriplet.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
+		add.putValue(
+				Action.SMALL_ICON,
+				new ImageIcon(getClass().getResource(
+						"/view/resources/icons/Back16.gif")));
+		delete.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
 				.getResource("/view/resources/icons/Delete16.gif")));
 		sendTriplets.putValue(Action.SMALL_ICON, new ImageIcon(getClass()
 				.getResource("/view/resources/icons/Export16.gif")));
@@ -433,33 +459,75 @@ public class MainController implements TimerListener {
 		mG.connectExitAction(exit);
 		mG.connectHelpAction(help);
 		mG.connectSendTriplets(sendTriplets);
-		mG.connectAddTriplet(addTriplet);
-		mG.connectDownTriplet(downTriplet);
-		mG.connectUpTriplet(upTriplet);
-		mG.connectEditTriplet(updateTriplet);
-		mG.connectDeleteTriplet(deleteTriplet);
+		mG.connectAdd(add);
+		mG.connectDown(down);
+		mG.connectUp(up);
+		mG.connectUpdate(update);
+		mG.connectDelete(delete);
 		mG.connectDisconnet(disconnect);
 		mG.connectCompetitionFinished(competitionFinished);
-		mG.setButtonDimension();
+		mG.addTabbChangedListener(tabbChangeListener);
 		tS.addTripletListener(mG);
 		tS.addTripletListener(mG.getMapArea());
 		tServer.addConnectionListener(mG);
 		mG.addWindowListener(windowAdapter);
-		mG.addtripletTableListener(tripletTableListener);
+		mG.addtaskTableListener(taskTableListener);
 		mG.addTimerListener(timerListener);
+		mG.setButtonDimension();
 		taskTimer.addTimerListener(mG);
 		taskTimer.addTimerListener(this);
 		tServer.addConnectionListener(taskTimer);
 		mG.pack();
 	}
 
-	private void initializeValidTriplets() {
+	private void populateValidItems() {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		try {
 			if (vte.readFromConfigFile(cfgFile)) {
-				mG.setValidPositions(vte.getValidPositions());
-				mG.setValidOrientations(vte.getValidOrientations());
-				mG.setValidPauses(vte.getValidPauses());
+				mG.getMapArea().setValidPositions(vte.getValidBNTPositions());
+
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT
+						.ordinal())).setValidPositions(vte
+						.getValidBNTPositions());
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT
+						.ordinal())).setValidOrientations(vte
+						.getValidBNTOrientations());
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT
+						.ordinal())).setValidPauses(vte.getValidBNTPauses());
+
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT
+						.ordinal())).setValidPositions(vte
+						.getValidBMTPositions());
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT
+						.ordinal())).setValidConfigurations(vte
+						.getValidBMTConfigurations());
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT
+						.ordinal())).setValidObjects(vte.getValidBMTObjects());
+
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT
+						.ordinal())).setValidPositions(vte
+						.getValidBTTPositions());
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT
+						.ordinal())).setValidConfigurations(vte
+						.getValidBTTConfigurations());
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT
+						.ordinal())).setValidObjects(vte.getValidBTTObjects());
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT
+						.ordinal())).setValidSituations(vte
+						.getValidBTTSituations());
+
+			/*	((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidPositions(vte
+						.getValidCTTPositions());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidConfigurations(vte
+						.getValidCTTConfigurations());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidObjects(vte.getValidCTTObjects());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidSituations(vte
+						.getValidCTTSituations());*/
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -496,7 +564,7 @@ public class MainController implements TimerListener {
 
 	private void setCompetitionMode(boolean mode) {
 		competitionMode = mode;
-		mG.setCompetitionMode(mode);
+		mG.setCompetitionMode(mode, compIdent);
 	}
 
 	private void loadConfigurationFile(File file) {
@@ -509,7 +577,7 @@ public class MainController implements TimerListener {
 								+ e);
 			}
 
-			initializeValidTriplets();
+			populateValidItems();
 			if (initializeBackgroundMap(file.getParent())) {
 				mG.pack();
 				mG.configFileLoaded();
@@ -553,4 +621,5 @@ public class MainController implements TimerListener {
 		tServer.disconnectClient();
 		mG.setStatusLine("Timeout. Team disconnected");
 	}
+
 }
