@@ -32,6 +32,8 @@ import model.TaskTriplet;
 import model.ValidTripletElements;
 import view.BntPanel;
 import view.BmtPanel;
+import view.BttPanel;
+import view.CttPanel;
 import view.DialogType;
 import view.FileType;
 import view.MainGUI;
@@ -486,19 +488,38 @@ public class MainController implements TimerListener {
 			if (vte.readFromConfigFile(cfgFile)) {
 				mG.getMapArea().setValidPositions(vte.getValidBNTPositions());
 
-				((BntPanel) mG.getCompetitionPanel(0)).setValidPositions(vte
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT.ordinal())).setValidPositions(vte
 						.getValidBNTPositions());
-				((BntPanel) mG.getCompetitionPanel(0)).setValidOrientations(vte
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT.ordinal())).setValidOrientations(vte
 						.getValidBNTOrientations());
-				((BntPanel) mG.getCompetitionPanel(0)).setValidPauses(vte
+				((BntPanel) mG.getCompetitionPanel(CompetitionIdentifier.BNT.ordinal())).setValidPauses(vte
 						.getValidBNTPauses());
 				
-				((BmtPanel) mG.getCompetitionPanel(1)).setValidPositions(vte
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal())).setValidPositions(vte
 						.getValidBMTPositions());
-				((BmtPanel) mG.getCompetitionPanel(1)).setValidConfigurations(vte
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal())).setValidConfigurations(vte
 						.getValidBMTConfigurations());
-				((BmtPanel) mG.getCompetitionPanel(1)).setValidObjects(vte
+				((BmtPanel) mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal())).setValidObjects(vte
 						.getValidBMTObjects());
+				
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT.ordinal())).setValidPositions(vte
+						.getValidBTTPositions());
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT.ordinal())).setValidConfigurations(vte
+						.getValidBTTConfigurations());
+				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT.ordinal())).setValidObjects(vte
+						.getValidBTTObjects());
+			//	((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT.ordinal())).setValidSituations(vte
+			//			.getValidBTTSituations());
+				
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT.ordinal())).setValidPositions(vte
+						.getValidCTTPositions());
+		//		((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT.ordinal())).setValidConfigurations(vte
+		//				.getValidCTTConfigurations());
+		//		((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT.ordinal())).setValidObjects(vte
+		//				.getValidCTTObjects());
+			//	((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT.ordinal())).setValidSituations(vte
+			//			.getValidCTTSituations());
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
