@@ -68,7 +68,7 @@ public class ConfigFile {
 			System.out.println(refIP);
 		} else  {
 			System.out.println("No ServerIP specified in the config file");
-			logg.LoggingFile(configLogID, "no ServerIP specified");
+			logg.globalLogging(configLogID, "no ServerIP specified");
 		}
 		return refIP;
 	}
