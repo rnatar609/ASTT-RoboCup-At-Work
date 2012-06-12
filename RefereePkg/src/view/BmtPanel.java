@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.BmtTask;
+import model.BntTask;
 import model.Task;
 
 public class BmtPanel extends CompetitionPanel {
@@ -132,5 +133,17 @@ public class BmtPanel extends CompetitionPanel {
 			sequenceTableModel.setValueAt(((Task) bmtTaskList.get(i)).getString(),
 					i, 0);
 		}
+	}
+	
+	public BmtTask getSelectedTask() {
+		BmtTask t = new BmtTask();
+		BmtTask.setPlaceInitial((String) placeInitialBox.getSelectedItem());
+		BmtTask.setPlaceSource((String) placeSourceBox.getSelectedItem());
+		BmtTask.setPlaceDestination((String) placeDestinationBox.getSelectedItem());
+		BmtTask.setPlaceFinal((String) placeFinalBox.getSelectedItem());
+		t.setConfiguration((String) configurationBox.getSelectedItem());
+		t.setObject((String) objectBox.getSelectedItem());
+		System.out.println(t.getString());
+		return t;
 	}
 }

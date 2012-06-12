@@ -56,12 +56,40 @@ public class TaskSpec {
 			while (itBnt.hasNext()) {
 				s = s.concat(((Task) itBnt.next()).getString());
 			}
+			break;
 		case BMT:
+			// test
+			bmtTaskList
+			.add(new BmtTask("D0", "S0", "T2", "F0", "Line", "hexagone"));
+	bmtTaskList.add(new BmtTask("D0", "S0", "T2", "F0", "Line", "test"));
 			Iterator<BmtTask> itBmt = bmtTaskList.iterator();
-			while (itBmt.hasNext()) {
-				s = s.concat(((Task) itBmt.next()).getString());
+			BmtTask first = new BmtTask();
+			if (itBmt.hasNext()) {
+				first = itBmt.next();
+				s = s.concat(BmtTask.getPlaceInitial());
+				s = s.concat(", ");
+				s = s.concat(BmtTask.getPlaceSource());
+				s = s.concat(", ");
+				s = s.concat(BmtTask.getPlaceDestination());
+				s = s.concat(", ");
+				s = s.concat(first.getConfiguration());
+				s = s.concat(" (");
+				s = s.concat(first.getObject());
 			}
+			BmtTask last = first;
+			while (itBmt.hasNext()) {
+				last = itBmt.next();
+				s = s.concat(", ");
+				s = s.concat(last.getObject());		
+			}
+			s = s.concat(")");
+			if (!BmtTask.getPlaceFinal().equals("")) {
+				s = s.concat(", ");
+				s = s.concat(BmtTask.getPlaceFinal());
+			}
+			break;
 		case BTT:
+			break;
 		default:
 		}
 		s = s.concat(">");
