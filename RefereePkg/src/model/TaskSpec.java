@@ -25,6 +25,7 @@ public class TaskSpec {
 	private ArrayList<BntTask> bntTaskList;
 	private ArrayList<BmtTask> bmtTaskList;
 	private ArrayList<BttTask> bttTaskList;
+	private ArrayList<CttTask> cttTaskList;
 	private EventListenerList listOfTaskListeners = new EventListenerList();
 	private Logging logg;
 	private String taskListName = "TaskList";

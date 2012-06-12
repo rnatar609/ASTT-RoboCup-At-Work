@@ -2,7 +2,7 @@ package model;
 
 public class Task {
 
-	private StateOfTask state;
+	protected StateOfTask state;
 
 	// empty bmttask
 	public Task() {

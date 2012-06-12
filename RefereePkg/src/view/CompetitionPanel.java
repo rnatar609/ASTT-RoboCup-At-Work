@@ -195,4 +195,16 @@ public class CompetitionPanel extends JPanel {
 	public void setTaskBoxSected(Task task) {
 
 	}
+
+	public SequenceTableModel getSequenceTableModel() {
+		return sequenceTableModel;
+	}
+
+	public DefaultTableCellRenderer getTableCellRenderer() {
+		return tableCellRenderer;
+	}
+
+	public JPanel getEastPanel() {
+		return eastPanel;
+	}
 }

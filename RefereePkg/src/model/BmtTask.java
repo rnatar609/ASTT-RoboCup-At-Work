@@ -1,42 +1,42 @@
 package model;
 
 public class BmtTask extends Task {
-	private String place;
-	private String configuration;
+	static String placeInitial;
+	static String placeSource;
+	static String placeDestination;
+	static String placeFinal;
+	static String configuration;
 	private String object;
-	private String color;
-	private StateOfTask state;
+
+	// private StateOfTask state;
 
 	// empty bmttask
 	public BmtTask() {
-		place = "";
-		configuration = "";
 		object = "";
-		color = "";
 		state = StateOfTask.INIT;
 	}
 
 	// copy bmttask
 	public BmtTask(BmtTask bmtTask) {
-		place = bmtTask.place;
+		placeInitial = bmtTask.placeInitial;
+		placeSource = bmtTask.placeSource;
+		placeDestination = bmtTask.placeDestination;
 		configuration = bmtTask.configuration;
 		object = bmtTask.object;
-		color = bmtTask.color;
 		state = bmtTask.state;
 	}
 
 	// init bmttask
-	public BmtTask(String place, String configuration, String object,
-			String color) {
-		this.place = place;
+	public BmtTask(String placeInit, String placeSource,
+			String placeDestination, String placeFinal, String configuration,
+			String object, String color) {
+		this.placeInitial = placeInit;
+		this.placeSource = placeSource;
+		this.placeDestination = placeDestination;
+		this.placeFinal = placeFinal;
 		this.configuration = configuration;
 		this.object = object;
-		this.color = color;
 		state = StateOfTask.INIT;
-	}
-
-	public void setPlace(String place) {
-		this.place = place;
 	}
 
 	public String getConfiguration() {
@@ -45,10 +45,6 @@ public class BmtTask extends Task {
 
 	public String getObject() {
 		return object;
-	}
-
-	public String getColor() {
-		return color;
 	}
 
 	public StateOfTask getState() {
@@ -63,23 +59,11 @@ public class BmtTask extends Task {
 		this.object = object;
 	}
 
-	public void setColor(String color) {
-		this.color = color;
-	}
-
 	public void setState(StateOfTask state) {
 		this.state = state;
 	}
 
 	public String getString() {
-		if (!place.equals(""))
-			return place;
-		if (!configuration.equals(""))
-			return configuration;
-		if (!object.equals("") && !color.equals(""))
-			return (new String(object + "(" + color + ")"));
-		if (!object.equals(""))
-			return object;
-		return null;
+		return (new String(object));
 	}
 }
