@@ -7,15 +7,7 @@ import java.io.*;
 import java.util.Date;
 import java.text.*;
 
-import controller.TripletListener;
 
-/**
- * @author Jeyaprakash Rajagopal, 
- * 		   Marc Wollenweber
- * 
- * 
- *
- */
 public class Logging{
 
 	private static Logging instance = null;
@@ -61,7 +53,7 @@ public class Logging{
 		return instance;
 	}
 	
-    private void LoggingFile(String logIdentifier, String args) {
+    public void globalLogging(String logIdentifier, String args) {
     	dateformat = new SimpleDateFormat("HH:mm:ss");
 		try {
 			Date date = new Date();
@@ -73,9 +65,10 @@ public class Logging{
 		catch(IOException e) {}
     }
     
-    public void LoggingFileAndCompetitionFile(String logIdentifier, String args, boolean logToCompetitionFile) {
-    	LoggingFile(logIdentifier, args);
-    	if(logToCompetitionFile) {
+    //public void LoggingFileAndCompetitionFile(String logIdentifier, String args, boolean logToCompetitionFile) {
+    public void competitionLogging(String logIdentifier, String args) {
+    	//LoggingFile(logIdentifier, args);
+    	//if(logToCompetitionFile) {
     		if(competitionLoggingIsActivated) {
     			try {
     				BufferedWriter output;
@@ -85,7 +78,7 @@ public class Logging{
     			}
     			catch(IOException e) {}
     		}
-    	}
+    	//}
     }
     
     public void setCompetitionLogging(boolean b) {

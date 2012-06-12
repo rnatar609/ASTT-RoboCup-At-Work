@@ -35,8 +35,7 @@ public class ConfigFile {
 			FileInputStream in = new FileInputStream(
 					ConfigFile.configFileFullName);
 			properties.load(in);
-			logg.LoggingFileAndCompetitionFile(configLogID, "Properties loaded from "
-					+ configFileFullName, false);
+			logg.globalLogging(configLogID, "Properties loaded from " + configFileFullName);
 			in.close();
 		} catch (Exception e) {
 			System.out.println("Exception in ConfigFile loadProperties: "
@@ -56,7 +55,7 @@ public class ConfigFile {
 		if (scnr.hasNextLong()) {
 			configTime = scnr.nextLong();
 		} else
-			logg.LoggingFileAndCompetitionFile(configLogID, "no configuration time", false);
+			logg.globalLogging(configLogID, "no configuration time");
 		return configTime;
 	}
 
@@ -80,7 +79,7 @@ public class ConfigFile {
 			refPort = scnr.next();
 			System.out.println(refPort);
 		} else
-			System.out.println("No ServerIP specified in the config file");
+			System.out.println("No ServerPort specified in the config file");
 		return refPort;
 	}
 	
@@ -91,7 +90,7 @@ public class ConfigFile {
 		if (scnr.hasNextLong()) {
 			runTime = scnr.nextLong();
 		} else
-			logg.LoggingFileAndCompetitionFile(configLogID, "no configuration time", true);
+			logg.globalLogging(configLogID, "no configuration time");
 		return runTime;
 	}
 }
