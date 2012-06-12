@@ -497,6 +497,8 @@ public class MainController implements TimerListener {
 						.getValidBMTPositions());
 				((BmtPanel) mG.getCompetitionPanel(1)).setValidConfigurations(vte
 						.getValidBMTConfigurations());
+				((BmtPanel) mG.getCompetitionPanel(1)).setValidObjects(vte
+						.getValidBMTObjects());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -20,6 +20,7 @@ public class ValidTripletElements {
 	private List<String> validBNTPauses;
 	private LinkedHashMap<String, Point> validBMTPositions;
 	private List<String> validBMTConfigurations;
+	private List<String> validBMTObjects;
     ConfigFile cfgFile;
     
 	private ValidTripletElements() {
@@ -28,6 +29,7 @@ public class ValidTripletElements {
 		validBNTPauses = new ArrayList<String>();
 		validBMTPositions = new LinkedHashMap<String, Point>(); 
 		validBMTConfigurations = new ArrayList<String>();
+		validBMTObjects = new ArrayList<String>();
 	}
 
 	private boolean populateLists(ConfigFile cfg) throws Exception {
@@ -268,5 +270,15 @@ public class ValidTripletElements {
 			validBMTConfigurations.add(i);
 		}
 		return validBMTConfigurations;
+	}
+
+	public List<String> getValidBMTObjects() {
+		String str = cfgFile.getPropertyByName("bmt.objects");
+		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		while (scnr.hasNext()) {
+			String i = new String(scnr.next());
+			validBMTObjects.add(i);
+		}
+		return validBMTObjects;
 	}
 }
