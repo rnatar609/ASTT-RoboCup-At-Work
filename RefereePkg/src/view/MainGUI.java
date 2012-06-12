@@ -762,6 +762,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	 *            A boolean value that is true if competition mode is enabled,
 	 *            and false if otherwise.
 	 */
+
 	public void setCompetitionMode(Boolean enable,
 			CompetitionIdentifier compIdent) {
 		JTable compTable = competitionPanel[compIdent.ordinal()]

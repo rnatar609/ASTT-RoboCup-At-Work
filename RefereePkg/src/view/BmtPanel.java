@@ -85,6 +85,7 @@ public class BmtPanel extends CompetitionPanel {
 		for (String pos : positions.keySet()) {
 			posString[i] = pos;
 			i++;
+			System.out.println("Entered bmt panel set positions: " + posString[i-1]);
 		}
 		placeCbm = new DefaultComboBoxModel<String>(posString);
 		placeInitialBox.setModel(placeCbm);
@@ -94,6 +95,7 @@ public class BmtPanel extends CompetitionPanel {
 		placeDestinationBox.setModel(placeCbm);
 		placeCbm = new DefaultComboBoxModel<String>(posString);
 		placeFinalBox.setModel(placeCbm);
+		
 	}
 
 	/**
@@ -106,6 +108,7 @@ public class BmtPanel extends CompetitionPanel {
 		configurationCbm = new DefaultComboBoxModel<String>(
 				configuration.toArray(new String[configuration.size()]));
 		configurationBox.setModel(configurationCbm);
+		System.out.println("Inside BMT configuration set: " + configuration.toString());
 	}
 
 	/**

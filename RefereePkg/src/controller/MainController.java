@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -30,6 +31,7 @@ import model.TaskTimer;
 import model.TaskTriplet;
 import model.ValidTripletElements;
 import view.BntPanel;
+import view.BmtPanel;
 import view.DialogType;
 import view.FileType;
 import view.MainGUI;
@@ -482,14 +484,21 @@ public class MainController implements TimerListener {
 		ValidTripletElements vte = ValidTripletElements.getInstance();
 		try {
 			if (vte.readFromConfigFile(cfgFile)) {
-				mG.getMapArea().setValidPositions(vte.getValidPositions());
+				mG.getMapArea().setValidPositions(vte.getValidBNTPositions());
 
 				((BntPanel) mG.getCompetitionPanel(0)).setValidPositions(vte
-						.getValidPositions());
+						.getValidBNTPositions());
 				((BntPanel) mG.getCompetitionPanel(0)).setValidOrientations(vte
-						.getValidOrientations());
+						.getValidBNTOrientations());
 				((BntPanel) mG.getCompetitionPanel(0)).setValidPauses(vte
-						.getValidPauses());
+						.getValidBNTPauses());
+				
+				((BmtPanel) mG.getCompetitionPanel(1)).setValidPositions(vte
+						.getValidBMTPositions());
+				((BmtPanel) mG.getCompetitionPanel(1)).setValidConfigurations(vte
+						.getValidBMTConfigurations());
+				((BmtPanel) mG.getCompetitionPanel(1)).setValidObjects(vte
+						.getValidBMTObjects());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
