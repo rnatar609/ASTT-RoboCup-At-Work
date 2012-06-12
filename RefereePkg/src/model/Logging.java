@@ -7,14 +7,8 @@ import java.io.*;
 import java.util.Date;
 import java.text.*;
 
-/**
- * @author Jeyaprakash Rajagopal, 
- * 		   Marc Wollenweber
- * 
- * 
- *
- */
-public class Logging {
+
+public class Logging{
 
 	private static Logging instance = null;
 	static String logFileName = new String("RefereeSystemDefaultLog.log"); //default file name
@@ -59,7 +53,7 @@ public class Logging {
 		return instance;
 	}
 	
-    private void LoggingFile(String logIdentifier, String args) {
+    public void globalLogging(String logIdentifier, String args) {
     	dateformat = new SimpleDateFormat("HH:mm:ss");
 		try {
 			Date date = new Date();
@@ -73,9 +67,10 @@ public class Logging {
 		}
     }
     
-    public void LoggingFileAndCompetitionFile(String logIdentifier, String args, boolean logToCompetitionFile) {
-    	LoggingFile(logIdentifier, args);
-    	if(logToCompetitionFile) {
+    //public void LoggingFileAndCompetitionFile(String logIdentifier, String args, boolean logToCompetitionFile) {
+    public void competitionLogging(String logIdentifier, String args) {
+    	//LoggingFile(logIdentifier, args);
+    	//if(logToCompetitionFile) {
     		if(competitionLoggingIsActivated) {
     			try {
     				BufferedWriter output;
@@ -85,13 +80,13 @@ public class Logging {
     			}
     			catch(IOException e) {}
     		}
-    	}
+    	//}
     }
     
     public void setCompetitionLogging(boolean b) {
     	if (competitionLoggingIsActivated != b) {
     		if(b) {
-    			DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+    			DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     			Date date = new Date();
     			System.out.println(fileParent + File.separatorChar + competitionFileName 
     					+ "_" + dateformat.format(date.getTime()) + ".log");
@@ -157,7 +152,7 @@ public class Logging {
     }
     
     public void renameCompetitionFile() {
-    	DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+    	DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date();
 		System.out.println("Rename file to: " + fileParent + File.separatorChar + teamName +"_Competition_" 
 				+ competitionNo + "_" + dateformat.format(date.getTime()) + ".log");

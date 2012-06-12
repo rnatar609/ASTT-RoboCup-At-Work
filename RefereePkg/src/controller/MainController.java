@@ -291,7 +291,6 @@ public class MainController implements TimerListener {
 				setCompetitionMode(true);
 				logg.setCompetitionLogging(true);
 				//CompetitionLogging.setTaskTripletListLength(tS);
-				//tS.addTripletListener(compLogging);
 			} else {
 				taskTimer.stopTimer();
 				tServer.disconnectClient();
@@ -517,7 +516,7 @@ public class MainController implements TimerListener {
 				mG.setStatusLine("Loaded configuration file >" + file.getName()
 						+ "<");
 				// not the right place
-				logg.LoggingFileAndCompetitionFile(triplets,"Loaded configuration file >" + file.getName() + "<", false);
+				logg.globalLogging(triplets,"Loaded configuration file >" + file.getName() + "<");
 			} else {
 				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 						+ "</FONT> No background file loaded. </html>");

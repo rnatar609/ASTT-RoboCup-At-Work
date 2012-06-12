@@ -79,7 +79,7 @@ public class TaskSpec {
 
 	public void addTriplet(TaskTriplet triplet) {
 		taskTripletList.add(triplet);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
+		logg.globalLogging(taskTripletListName, triplet.getTaskTripletString()
 				+ " no. " + taskTripletList.indexOf(triplet) + " added");
 		notifyTaskSpecChanged(new TripletEvent(triplet, taskTripletList.size(),
 				taskTripletList));
@@ -87,7 +87,7 @@ public class TaskSpec {
 
 	public TaskTriplet deleteTriplet(int tripletIndex) {
 		TaskTriplet triplet = taskTripletList.remove(tripletIndex);
-		logg.LoggingFile(taskTripletListName, triplet.getTaskTripletString()
+		logg.globalLogging(taskTripletListName, triplet.getTaskTripletString()
 				+ " no. " + tripletIndex + " deleted");
 		notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
 				taskTripletList));
@@ -100,8 +100,7 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex - 1, triplet);
-			logg.LoggingFile(
-					taskTripletListName,
+			logg.globalLogging( taskTripletListName, 
 					triplet.getTaskTripletString() + " no. "
 							+ taskTripletList.indexOf(triplet) + " moved up");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
@@ -116,8 +115,7 @@ public class TaskSpec {
 		} else {
 			TaskTriplet triplet = taskTripletList.remove(tripletIndex);
 			taskTripletList.add(tripletIndex + 1, triplet);
-			logg.LoggingFile(
-					taskTripletListName,
+			logg.globalLogging(taskTripletListName,
 					triplet.getTaskTripletString() + " no. "
 							+ taskTripletList.indexOf(triplet) + " moved down");
 			notifyTaskSpecChanged(new TripletEvent(triplet, tripletIndex,
@@ -132,7 +130,7 @@ public class TaskSpec {
 			TaskTriplet tt = taskTripletList.set(tripletIndex, updateTriplet);
 			notifyTaskSpecChanged(new TripletEvent(updateTriplet, tripletIndex,
 					taskTripletList));
-			logg.LoggingFile(taskTripletListName, tt.getTaskTripletString()
+			logg.globalLogging(taskTripletListName, tt.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(updateTriplet)
 					+ " updated to " + updateTriplet.getTaskTripletString());
 			return tt;
@@ -176,12 +174,12 @@ public class TaskSpec {
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write(getTaskSpecString());
 			out.close();
-			logg.LoggingFile(taskTripletListName,
+			logg.globalLogging(taskTripletListName,
 					"saved actual task specification in >" + file.getName()
 							+ "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-			logg.LoggingFile(taskTripletListName, "saving failed! >");
+			logg.globalLogging(taskTripletListName, "saving failed! >");
 			return false;
 		}
 		return true;
@@ -199,7 +197,7 @@ public class TaskSpec {
 					return false;
 				System.out.println("Found and parsed task spec string: "
 						+ getTaskSpecString());
-				logg.LoggingFile(taskTripletListName, "Found and parsed task spec string");
+				logg.globalLogging(taskTripletListName, "Found and parsed task spec string");
 				notifyTaskSpecChanged(new TripletEvent(taskTripletList.get(0),
 						taskTripletList.size(), taskTripletList));
 			}
@@ -222,8 +220,11 @@ public class TaskSpec {
 			tT.setState(State.INIT);
 		else
 			tT.setState(newState);
-		logg.LoggingFile(
-				taskTripletListName,
+		logg.globalLogging(taskTripletListName,
+				tT.getTaskTripletString() + " no. "
+						+ taskTripletList.indexOf(tT) + " new state: "
+						+ tT.getState());
+		logg.competitionLogging(taskTripletListName,
 				tT.getTaskTripletString() + " no. "
 						+ taskTripletList.indexOf(tT) + " new state: "
 						+ tT.getState());
@@ -235,7 +236,7 @@ public class TaskSpec {
 	public void resetStates() {
 		for (TaskTriplet tT : taskTripletList) {
 			tT.setState(State.INIT);
-			logg.LoggingFile(taskTripletListName, tT.getTaskTripletString()
+			logg.globalLogging(taskTripletListName, tT.getTaskTripletString()
 					+ " no. " + taskTripletList.indexOf(tT)
 					+ " new state: INIT");
 		}

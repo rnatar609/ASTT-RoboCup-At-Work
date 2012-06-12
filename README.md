@@ -1,25 +1,69 @@
-# Installation
+# Installation for development
 
 The software should run under Linux, Windows and OS X.
 
 ## Requirements: 
-### Java 1.7
-To run and contribute to the Referee Box you need to have Java 1.7. [Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+### 1. [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JDK7 or newer) and Eclipse SDK (version 3.7.2 or newer).
 
-#### Linux
-If your Linux does not provide a deb file for java 1.7 you can use these [instructions](http://askubuntu.com/questions/55848/how-do-i-install-oracle-java-jdk-7) to install it.
+### 2. [ØMQ The Intelligent Transport Layer](http://www.zeromq.or) (version 2.2) with the language bindings Java and Python.
 
-### ZeroMQ 2.2 
-The middle-ware ZeroMQ can be found here: [zeromq.org](http://www.zeromq.org)
-You first need to install the core ZeroMQ and afterwards the language bindings like java, python, C++.
+## Installation under Ubuntu Linux: 
+
+### Install Java JDK7 under Ubuntu 10.04
+download the JDK7 form [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html) as tar.gz
+
+    tar -xvf jdk-7u4-linux-i586.tar.gz
+    sudo mv ./jdk1.7.0_04 /usr/lib/jvm/jdk1.7.0
+    sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.7.0/bin/java" 1
+    sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.7.0/bin/javac" 1
+    sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/lib/jvm/jdk1.7.0/bin/javaws" 1
+
+Choose the number for jdk1.7.0
+
+    sudo update-alternatives --config java
+
+Check the version of you new JDK 7 installation:
+
+    java -version
+
+Repeat the above for:
+
+    sudo update-alternatives --config javac
+    sudo update-alternatives --config javaws
+
+### Install ØMQ Core
+    sudo apt-get install libtool autoconf automake uuid-dev
+    wget http://download.zeromq.org/zeromq-2.2.0.tar.gz
+    tar -xvf zeromq-2.2.0.tar.gz
+    cd zeromq-2.2.0
+    ./configure
+    make
+    sudo make install
+    sudo ldconfig
+
+### Install [ØMQ Java binding] (http://www.zeromq.org/bindings:java)
+    git clone https://github.com/zeromq/jzmq.git
+    cd jzmq
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
+    sudo ldconfig
+
+### Install [ØMQ Python binding](http://www.zeromq.org/bindings:python)
+    easy_install pyzmq
 
 
-For detailed installation instruction have a look into the Installation.pdf
+### Use the Eclipse Project
+
+1. Open Eclipse SDK 
+2. Import Project by File -> Import choose in General "Existing Projects into Workspace" than choose the RefereePkg folder
+3. Right click -> Build Path -> Configure Build Path -> navigate to Libraries tab -> click on Add External JARs navigate to “/usr/local/share/java/zmq.jar”.
+4. And from the same tab click on Add External Class Folder navigate to “jzmq/pre” and click OK.
+5. Active the JRE and zmq.jar under "Java Build Path" -> "Order and Export"
+6. Run the project. For Referee System drop the RefereePkg src right click on the RefereeSystem.java select Run As Java Application. For Robot System drop the RobotPkg src right click on the JavaClientGUI.java select Run As Java Application.
 
 
-Usage
-------------
-=======
 # Usage
 A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
 
