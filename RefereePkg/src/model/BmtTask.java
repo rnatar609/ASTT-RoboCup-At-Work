@@ -18,10 +18,6 @@ public class BmtTask extends Task {
 
 	// copy bmttask
 	public BmtTask(BmtTask bmtTask) {
-		placeInitial = bmtTask.placeInitial;
-		placeSource = bmtTask.placeSource;
-		placeDestination = bmtTask.placeDestination;
-		configuration = bmtTask.configuration;
 		object = bmtTask.object;
 		state = bmtTask.state;
 	}
@@ -29,12 +25,12 @@ public class BmtTask extends Task {
 	// init bmttask
 	public BmtTask(String placeInit, String placeSource,
 			String placeDestination, String placeFinal, String configuration,
-			String object, String color) {
-		this.placeInitial = placeInit;
-		this.placeSource = placeSource;
-		this.placeDestination = placeDestination;
-		this.placeFinal = placeFinal;
-		this.configuration = configuration;
+			String object) {
+		BmtTask.placeInitial = placeInit;
+		BmtTask.placeSource = placeSource;
+		BmtTask.placeDestination = placeDestination;
+		BmtTask.placeFinal = placeFinal;
+		BmtTask.configuration = configuration;
 		this.object = object;
 		state = StateOfTask.INIT;
 	}
@@ -52,7 +48,7 @@ public class BmtTask extends Task {
 	}
 
 	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
+		BmtTask.configuration = configuration;
 	}
 
 	public void setObject(String object) {
@@ -65,5 +61,37 @@ public class BmtTask extends Task {
 
 	public String getString() {
 		return (new String(object));
+	}
+
+	public static String getPlaceInitial() {
+		return placeInitial;
+	}
+
+	public static String getPlaceSource() {
+		return placeSource;
+	}
+
+	public static String getPlaceDestination() {
+		return placeDestination;
+	}
+
+	public static String getPlaceFinal() {
+		return placeFinal;
+	}
+
+	public static void setPlaceInitial(String placeInitial) {
+		BmtTask.placeInitial = placeInitial;
+	}
+
+	public static void setPlaceSource(String placeSource) {
+		BmtTask.placeSource = placeSource;
+	}
+
+	public static void setPlaceDestination(String placeDestination) {
+		BmtTask.placeDestination = placeDestination;
+	}
+
+	public static void setPlaceFinal(String placeFinal) {
+		BmtTask.placeFinal = placeFinal;
 	}
 }
