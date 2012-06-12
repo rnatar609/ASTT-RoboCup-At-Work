@@ -16,7 +16,7 @@ public class RefereeSystem {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+		DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date();
 		String fileName = new String("Tasklog" + "_" + dateformat.format(date.getTime()) +  ".log");
 		Logging.setFileName(fileName);

@@ -91,7 +91,7 @@ public class Logging{
     public void setCompetitionLogging(boolean b) {
     	if (competitionLoggingIsActivated != b) {
     		if(b) {
-    			DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+    			DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
     			Date date = new Date();
     			System.out.println(fileParent + File.separatorChar + competitionFileName 
     					+ "_" + dateformat.format(date.getTime()) + ".log");
@@ -157,7 +157,7 @@ public class Logging{
     }
     
     public void renameCompetitionFile() {
-    	DateFormat dateformat = new SimpleDateFormat("yyMMddHHmmss");
+    	DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date();
 		System.out.println("Rename file to: " + fileParent + File.separatorChar + teamName +"_Competition_" 
 				+ competitionNo + "_" + dateformat.format(date.getTime()) + ".log");
