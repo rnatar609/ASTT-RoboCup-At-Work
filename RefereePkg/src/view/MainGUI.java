@@ -799,7 +799,8 @@ public class MainGUI extends JFrame implements TaskListener,
 					.setHorizontalAlignment(JLabel.CENTER);
 			// tripletTableScrollPane.setPreferredSize(competitionPanel[compIdent
 			// .ordinal()].getSequenceTable().getPreferredSize());
-			Component[] comp = editTripletPanel.getComponents();
+			Component[] comp = competitionPanel[compIdent.ordinal()]
+					.getEastPanel().getComponents();
 			for (int i = comp.length - 1; i >= comp.length - 11; i--) {
 				// don't change the glues!
 				if (comp[i].getPreferredSize().width != 0) {
