@@ -70,7 +70,6 @@ Finally logout and login in again to make the changes work.
 
 
 # Usage
-A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
 
 The Referee Box (server) can be found in the folder RefereePkg.
 The C++, Python, Java client can be found in the folder RobotPkg.
