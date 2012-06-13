@@ -4,13 +4,11 @@ The software should run under Linux, Windows and OS X.
 
 ## Requirements: 
 ### 1. [Java Runtime Environment](http://www.oracle.com/technetwork/java/javase/downloads/index.html) (JDK7 or newer) and Eclipse SDK (version 3.7.2 or newer).
-
 ### 2. [ØMQ The Intelligent Transport Layer](http://www.zeromq.or) (version 2.2) with the language bindings Java and Python.
 
 ## Installation under Ubuntu Linux: 
-
 ### Install Java JDK7 under Ubuntu 10.04
-download the JDK7 form [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html) as tar.gz
+Download the JDK7 form [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html) as tar.gz
 
     tar -xvf jdk-7u4-linux-i586.tar.gz
     sudo mv ./jdk1.7.0_04 /usr/lib/jvm/jdk1.7.0
@@ -31,6 +29,7 @@ Repeat the above for:
     sudo update-alternatives --config javac
     sudo update-alternatives --config javaws
 
+
 ### Install ØMQ Core
     sudo apt-get install libtool autoconf automake uuid-dev
     wget http://download.zeromq.org/zeromq-2.2.0.tar.gz
@@ -41,6 +40,7 @@ Repeat the above for:
     sudo make install
     sudo ldconfig
 
+
 ### Install [ØMQ Java binding] (http://www.zeromq.org/bindings:java)
     git clone https://github.com/zeromq/jzmq.git
     cd jzmq
@@ -49,6 +49,11 @@ Repeat the above for:
     make
     sudo make install
     sudo ldconfig
+    sudo echo "CLASSPATH=/usr/local/share/java/zmq.jar:." >> /etc/environment   # if you troubles with permission, add the line manually
+    echo "export LD_LIBRARY_PATH=/usr/local/lib" >> ~/.bashrc
+    
+Finally logout and login in again to make the changes work.
+
 
 ### Install [ØMQ Python binding](http://www.zeromq.org/bindings:python)
     easy_install pyzmq
@@ -65,7 +70,6 @@ Repeat the above for:
 
 
 # Usage
-A .jar file of the server can be found [here](https://github.com/b-it-bots/RoboCupAtWorkRefereeBox/wiki/RoboCupAtWorkRefereeBox0_1.jar)
 
 The Referee Box (server) can be found in the folder RefereePkg.
 The C++, Python, Java client can be found in the folder RobotPkg.

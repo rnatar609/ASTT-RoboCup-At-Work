@@ -794,7 +794,7 @@ public class MainGUI extends JFrame implements TaskListener,
 			}
 		} else {
 			compTableModel.setColumnCount(1);
-			compTable.getColumn("Triplets").setCellRenderer(compTableRend);
+			compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
 			competitionPanel[compIdent.ordinal()].getTableCellRenderer()
 					.setHorizontalAlignment(JLabel.CENTER);
 			// tripletTableScrollPane.setPreferredSize(competitionPanel[compIdent
