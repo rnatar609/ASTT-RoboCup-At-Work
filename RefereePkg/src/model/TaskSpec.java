@@ -83,10 +83,8 @@ public class TaskSpec {
 					s = s.concat(last.getObject());
 				}
 				s = s.concat(")");
-				if (last.getPlaceInitial().equals("")) {
-					s = s.concat(",");
-					s = s.concat(BmtTask.getPlaceFinal());
-				}
+				s = s.concat(",");
+				s = s.concat(BmtTask.getPlaceFinal());
 			}
 			break;
 		case BTT:
