@@ -267,7 +267,8 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			if (tServer.sendTaskSpecToClient(tS))
+			
+			if (tServer.sendTaskSpecToClient(tS.getTaskSpecString(compIdent)))
 				mG.setStatusLine("Task specification sent to the team.");
 			else
 				mG.setStatusLine("<html><FONT COLOR=RED>Task specification could not be send to the team!</FONT>  </html>");
