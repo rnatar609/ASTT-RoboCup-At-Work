@@ -374,8 +374,8 @@ public class TaskSpec {
 		tSpecStr = removeSpaces(tSpecStr);
 		// System.out.println("After removing spaces " + tSpecStr);
 		String competition = tSpecStr.substring(0, 2);
-		if (competition.equals(CompetitionIdentifier.BNT.name()))
-			bntTaskList = new ArrayList<BntTask>();
+		//if (competition.equals(CompetitionIdentifier.BNT.name()))
+		bntTaskList = new ArrayList<BntTask>();
 		try {
 			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
 			Matcher m = pat.matcher(tSpecStr);
