@@ -7,7 +7,7 @@ import java.text.*;
 
 import controller.TaskListener;
 
-import model.TaskTriplet.State;
+//import model.TaskTriplet.State;
 
 public class CompetitionLogging implements TaskListener {
 	static String fileParent = "";

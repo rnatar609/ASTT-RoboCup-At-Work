@@ -140,4 +140,15 @@ public class BmtPanel extends CompetitionPanel {
 		System.out.println(t.getString());
 		return t;
 	}
+	
+	public void setSelectedTask(BmtTask task) {
+
+		placeInitialBox.setSelectedItem(task.getPlaceInitial());
+		placeSourceBox.setSelectedItem(task.getPlaceSource());
+		placeDestinationBox.setSelectedItem(task.getPlaceDestination());
+		placeFinalBox.setSelectedItem(task.getPlaceFinal());
+		configurationBox.setSelectedItem(task.getConfiguration());
+
+		return;
+	}
 }

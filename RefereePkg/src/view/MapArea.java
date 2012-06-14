@@ -24,7 +24,7 @@ import model.BntTask;
 import model.BttTask;
 import model.StateOfTask;
 import model.Task;
-import model.TaskTriplet;
+//import model.TaskTriplet;
 import controller.TaskListener;
 
 public class MapArea extends JScrollPane implements TaskListener {

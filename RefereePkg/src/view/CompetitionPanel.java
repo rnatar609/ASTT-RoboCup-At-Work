@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import model.BmtTask;
 import model.BntTask;
 import model.Task;
 
@@ -190,6 +191,10 @@ public class CompetitionPanel extends JPanel {
 
 	public Task getSelectedTask() {
 		return null;
+	}
+	
+	public void setSelectedTask(BmtTask task) {
+		return;
 	}
 
 	public void setTaskBoxSected(Task task) {

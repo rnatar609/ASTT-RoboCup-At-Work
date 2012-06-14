@@ -249,7 +249,7 @@ public class ValidTripletElements {
 		return false;
 	}
 
-	public String getValidTripletPattern() {
+	public String getValidBNTPattern() {
 		String patStr = new String("\\(");
 		patStr = patStr.concat(constructPlacePattern());
 		patStr = patStr.concat("\\," + constructOrientationPattern());

@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
 
-import model.TaskTriplet.State;
+//import model.TaskTriplet.State;
 
 import view.Utils;
 import controller.TaskListener;
@@ -370,27 +370,51 @@ public class TaskSpec {
 
 	public boolean parseTaskSpecString(String tSpecStr) {
 		tSpecStr = removeSpaces(tSpecStr);
-		// System.out.println("After removing spaces " + tSpecStr);
-		String competition = tSpecStr.substring(0, 2);
-		//if (competition.equals(CompetitionIdentifier.BNT.name()))
-		bntTaskList = new ArrayList<BntTask>();
+		 
+		String competition = tSpecStr.substring(0, 3);
+		System.out.println("competition " + competition);
 		try {
-			Pattern pat = Pattern.compile(TaskTriplet.getValidTripletPattern());
-			Matcher m = pat.matcher(tSpecStr);
-			do {
-				BntTask nextTask = new BntTask();
-				if (m.find()) {
-					nextTask.setPlace(m.group(1));
-					nextTask.setOrientation(m.group(2));
-					nextTask.setPause(m.group(3));
-					bntTaskList.add(nextTask);
+			if (competition.equals(CompetitionIdentifier.BNT.toString())){
+				bntTaskList = new ArrayList<BntTask>();
+				Pattern pat = Pattern.compile(ValidTripletElements.getInstance().getValidBNTPattern());
+				Matcher m = pat.matcher(tSpecStr);
+				do {
+					BntTask nextTask = new BntTask();
+					if (m.find()) {
+						nextTask.setPlace(m.group(1));
+						nextTask.setOrientation(m.group(2));
+						nextTask.setPause(m.group(3));
+						bntTaskList.add(nextTask);
+						logg.globalLogging(taskListName, nextTask.getString()
+								+ " no. " + bntTaskList.indexOf(nextTask)
+								+ " added");
+						notifyBntTaskSpecChanged(nextTask,
+								bntTaskList.indexOf(nextTask), bntTaskList);
+					}
+				} while (!m.hitEnd());
+			}
+			if (competition.equals(CompetitionIdentifier.BMT.toString())){
+				 
+				bmtTaskList = new ArrayList<BmtTask>();				
+				String delims = "[<>,()]";
+				String[] tokens = tSpecStr.split(delims);
+				
+				for(int i= 5;i < tokens.length-2; i++){
+					BmtTask nextTask = new BmtTask();
+					nextTask.setPlaceInitial(tokens[1]);
+					nextTask.setPlaceSource(tokens[2]);
+					nextTask.setPlaceDestination(tokens[3]);
+					nextTask.setConfiguration(tokens[4]);
+					nextTask.setPlaceFinal(tokens[tokens.length-1]);
+					nextTask.setObject(tokens[i]);
+					bmtTaskList.add(nextTask);
 					logg.globalLogging(taskListName, nextTask.getString()
-							+ " no. " + bntTaskList.indexOf(nextTask)
+							+ " no. " + bmtTaskList.indexOf(nextTask)
 							+ " added");
-					notifyBntTaskSpecChanged(nextTask,
-							bntTaskList.indexOf(nextTask), bntTaskList);
+					notifyBmtTaskSpecChanged(nextTask,
+							bmtTaskList.indexOf(nextTask), bmtTaskList);
 				}
-			} while (!m.hitEnd());
+			}
 		} catch (Exception e) {
 			System.out.println("Caught exception in parseTaskSpec. Error: "
 					+ e.getMessage());
@@ -399,7 +423,7 @@ public class TaskSpec {
 		return true;
 	}
 
-	public TaskTriplet setTripletState(int tripletIndex, int column) {
+	//public TaskTriplet setTripletState(int tripletIndex, int column) {
 		/*
 		 * TaskTriplet tT = taskTripletList.get(tripletIndex); State newState;
 		 * if (column == 1) newState = State.PASSED; else newState =
@@ -409,8 +433,8 @@ public class TaskSpec {
 		 * " new state: " + tT.getState()); notifyTaskSpecChanged(new
 		 * TripletEvent(tT, taskTripletList.indexOf(tT), taskTripletList));
 		 */
-		return null; // tT;
-	}
+	//	return null; // tT;
+	//}
 
 	public void resetStates() {
 		/*

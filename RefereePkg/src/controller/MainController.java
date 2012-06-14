@@ -9,6 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -18,6 +19,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import model.BmtTask;
 import model.BntTask;
 import model.CompetitionIdentifier;
 import model.CompetitionLogging;
@@ -28,7 +30,7 @@ import model.Task;
 import model.TaskServer;
 import model.TaskSpec;
 import model.TaskTimer;
-import model.TaskTriplet;
+//import model.TaskTriplet;
 import model.ValidTripletElements;
 import view.BntPanel;
 import view.BmtPanel;
@@ -376,11 +378,11 @@ public class MainController implements TimerListener {
 			int selectedColumn = mG.getSequenceTable(compIdent.ordinal())
 					.getSelectedColumn();
 			if (selectedColumn > 0) {
-				TaskTriplet tT = tS
-						.setTripletState(selectedRow, selectedColumn);
-				mG.setStatusLine("Updated triplet state (" + tT.getPlace()
-						+ ", " + tT.getOrientation() + ", " + tT.getPause()
-						+ ")."); //
+			//	TaskTriplet tT = tS
+			//			.setTripletState(selectedRow, selectedColumn);
+			//	mG.setStatusLine("Updated triplet state (" + tT.getPlace()
+			//			+ ", " + tT.getOrientation() + ", " + tT.getPause()
+			//			+ ")."); //
 				// mG.setTableCellCorrected(selectedRow, selectedColumn); //
 				// mG.getTripletsTable().clearSelection();
 			}
@@ -561,6 +563,10 @@ public class MainController implements TimerListener {
 	private void setSavedChanges() {
 		unsavedChanges = false;
 		mG.getTimerStartStopButton().setEnabled(true);
+		ArrayList<BmtTask> bmttasklist = tS.getBmtTaskList();
+		if(bmttasklist.size() > 0)
+			mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal()).setSelectedTask(bmttasklist.get(0));
+		
 	}
 
 	private void setCompetitionMode(boolean mode) {
