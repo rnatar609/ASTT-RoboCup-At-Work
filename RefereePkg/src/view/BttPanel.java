@@ -107,22 +107,21 @@ public class BttPanel extends CompetitionPanel {
 		objectBox.setModel(objectCbm);
 	}
 
-	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {
-		sequenceTableModel.clearColumn(0);
-		sequenceTableModel.setRowCount(bmtTaskList.size());
-		for (int i = 0; i < bmtTaskList.size(); i++) {
-			sequenceTableModel.setValueAt(
-					((Task) bmtTaskList.get(i)).getString(), i, 0);
+	public void taskSpecChanged(ArrayList<BttTask> bttTaskList) {
+		super.sequenceTableModel.clearColumn(0);
+		super.sequenceTableModel.setRowCount(bttTaskList.size());
+		for (int i = 0; i < bttTaskList.size(); i++) {
+			super.sequenceTableModel.setValueAt(
+					((Task) bttTaskList.get(i)).getString(), i, 0);
 		}
 	}
 
 	public BttTask getSelectedTask() {
 		BttTask t = new BttTask();
 		t.setSituation((String) situationBox.getSelectedItem());
-		t.setPlace((String) placeBox.getSelectedItem());
 		t.setConfiguration((String) configurationBox.getSelectedItem());
+		t.setPlace((String) placeBox.getSelectedItem());
 		t.setObject((String) objectBox.getSelectedItem());
-		System.out.println(t.getString());
 		return t;
 	}
 }

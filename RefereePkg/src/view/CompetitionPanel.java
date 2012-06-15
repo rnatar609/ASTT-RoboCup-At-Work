@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 
 import model.BmtTask;
 import model.BntTask;
+import model.CompetitionIdentifier;
 import model.Task;
 
 public class CompetitionPanel extends JPanel {
@@ -103,6 +104,7 @@ public class CompetitionPanel extends JPanel {
 		sequenceTableModel = new SequenceTableModel();
 		sequenceTableModel.addColumn("Subgoals");
 		sequenceTable = new JTable(sequenceTableModel);
+		sequenceTable.getColumnModel().getColumn(0).setPreferredWidth(180);
 		tableCellRenderer = new DefaultTableCellRenderer();
 		sequenceTable.getColumn("Subgoals").setCellRenderer(tableCellRenderer);
 		tableCellRenderer.setHorizontalAlignment(JLabel.CENTER);

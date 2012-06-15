@@ -926,5 +926,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	@Override
 	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
+		((BttPanel) competitionPanel[CompetitionIdentifier.BTT.ordinal()])
+		.taskSpecChanged(bttTaskList);
 	}
 }

@@ -68,8 +68,6 @@ public class BntPanel extends CompetitionPanel {
 		for (String pos : positions.keySet()) {
 			posString[i] = pos;
 			i++;
-			System.out.println("Entered bnt panel set positions: " + posString[i-1]);
-
 		}
 		placeCbm = new DefaultComboBoxModel<String>(posString);
 		placeBox.setModel(placeCbm);

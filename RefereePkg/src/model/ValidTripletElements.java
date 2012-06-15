@@ -29,20 +29,20 @@ public class ValidTripletElements {
 	private List<String> validCTTConfigurations;
 	private List<String> validCTTObjects;
 	private List<String> validCTTSituations;
-    ConfigFile cfgFile;
-    
+	ConfigFile cfgFile;
+
 	private ValidTripletElements() {
 		validBNTPositions = new LinkedHashMap<String, Point>();
 		validBNTOrientations = new ArrayList<String>();
 		validBNTPauses = new ArrayList<String>();
-		validBMTPositions = new LinkedHashMap<String, Point>(); 
+		validBMTPositions = new LinkedHashMap<String, Point>();
 		validBMTConfigurations = new ArrayList<String>();
 		validBMTObjects = new ArrayList<String>();
-		validBTTPositions = new LinkedHashMap<String, Point>(); 
+		validBTTPositions = new LinkedHashMap<String, Point>();
 		validBTTConfigurations = new ArrayList<String>();
 		validBTTObjects = new ArrayList<String>();
 		validBTTSituations = new ArrayList<String>();
-		validCTTPositions = new LinkedHashMap<String, Point>(); 
+		validCTTPositions = new LinkedHashMap<String, Point>();
 		validCTTConfigurations = new ArrayList<String>();
 		validCTTObjects = new ArrayList<String>();
 		validCTTSituations = new ArrayList<String>();
@@ -56,9 +56,9 @@ public class ValidTripletElements {
 		allValid &= populateValidPauses(pr);
 		return allValid;
 	}
-	
-	private boolean parsePositions(String str, CompetitionIdentifier competitionID)
-	{
+
+	private boolean parsePositions(String str,
+			CompetitionIdentifier competitionID) {
 		boolean allValid = true;
 		LinkedHashMap<String, Point> hashMap = null;
 		if (competitionID == CompetitionIdentifier.BNT)
@@ -74,7 +74,7 @@ public class ValidTripletElements {
 		while (scnr.hasNext()) {
 			String tri = new String(scnr.next());
 			Scanner scnr1 = new Scanner(tri)
-							.useDelimiter("(\\s*[\\/|\\(|\\)]\\s*)");
+					.useDelimiter("(\\s*[\\/|\\(|\\)]\\s*)");
 			String s = new String(scnr1.next());
 			if (s.length() == 2 && Character.isLetter(s.charAt(0))
 					&& Character.isUpperCase(s.charAt(0))
@@ -84,39 +84,41 @@ public class ValidTripletElements {
 				try {
 					x = Integer.parseInt(sx);
 				} catch (NumberFormatException e) {
-				System.out.println("Invalid place label "
-											+ s
-											+ " in Config File. Place label format should be ([A-Z][0-9]).");
-							allValid = false;
-						}
-						String sy = new String(scnr1.next());
-						int y = 0;
-						try {
-							y = Integer.parseInt(sy);
-						} catch (NumberFormatException e) {
-							System.out
-									.println("Invalid place label "
-											+ s
-											+ " in Config File. Place label format should be ([A-Z][0-9]).");
-							allValid = false;
-						}
-						//validBNTPositions.put(s, new Point(x, y));
-						hashMap.put(s, new Point(x, y));
-					} else {
-						System.out
-								.println("Invalid place label "
-										+ s
-										+ " in Config File. Place label format should be ([A-Z][0-9]).");
-						allValid = false;
-					}
-
+					System.out
+							.println("Invalid place label "
+									+ s
+									+ " in Config File. Place label format should be ([A-Z][0-9]).");
+					allValid = false;
 				}
-				return allValid;
+				String sy = new String(scnr1.next());
+				int y = 0;
+				try {
+					y = Integer.parseInt(sy);
+				} catch (NumberFormatException e) {
+					System.out
+							.println("Invalid place label "
+									+ s
+									+ " in Config File. Place label format should be ([A-Z][0-9]).");
+					allValid = false;
+				}
+				// validBNTPositions.put(s, new Point(x, y));
+				hashMap.put(s, new Point(x, y));
+			} else {
+				System.out
+						.println("Invalid place label "
+								+ s
+								+ " in Config File. Place label format should be ([A-Z][0-9]).");
+				allValid = false;
+			}
+
+		}
+		return allValid;
 	}
 
 	private boolean populateValidPlaces(Properties props) {
-		
-		return parsePositions(props.getProperty("bnt.places"), CompetitionIdentifier.BNT);		
+
+		return parsePositions(props.getProperty("bnt.places"),
+				CompetitionIdentifier.BNT);
 	}
 
 	private boolean populateValidOrientations(Properties props) {
@@ -148,7 +150,7 @@ public class ValidTripletElements {
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
 		while (scnr.hasNextShort()) {
 			String i = new String(scnr.next());
-				validBNTPauses.add(i);
+			validBNTPauses.add(i);
 		}
 		return allValid;
 	}
@@ -171,7 +173,7 @@ public class ValidTripletElements {
 		Iterator<Entry<String, Point>> itr = positions.iterator();
 		for (int i = 0; i < placescount; i++) {
 			str = str.concat(itr.next().getKey());
-			//System.out.println(validPositions.entrySet());
+			// System.out.println(validPositions.entrySet());
 			if (i < placescount - 1) {
 				str = str.concat("|");
 			}
@@ -276,12 +278,13 @@ public class ValidTripletElements {
 	public List<String> getValidBNTPauses() {
 		return validBNTPauses;
 	}
-	
+
 	public LinkedHashMap<String, Point> getValidBMTPositions() {
-		parsePositions(cfgFile.getPropertyByName("bmt.places"), CompetitionIdentifier.BMT);		
+		parsePositions(cfgFile.getPropertyByName("bmt.places"),
+				CompetitionIdentifier.BMT);
 		return validBMTPositions;
 	}
-	
+
 	public List<String> getValidBMTConfigurations() {
 		String str = cfgFile.getPropertyByName("bmt.configurations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
@@ -301,15 +304,18 @@ public class ValidTripletElements {
 		}
 		return validBMTObjects;
 	}
-	
+
 	public LinkedHashMap<String, Point> getValidBTTPositions() {
-		parsePositions(cfgFile.getPropertyByName("btt.places"), CompetitionIdentifier.BTT);		
+		parsePositions(cfgFile.getPropertyByName("btt.places"),
+				CompetitionIdentifier.BTT);
 		return validBTTPositions;
 	}
-	
+
 	public List<String> getValidBTTConfigurations() {
 		String str = cfgFile.getPropertyByName("btt.configurations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		validBTTConfigurations.add(" "); // empty is a must for possible for
+											// initial tasks.
 		while (scnr.hasNext()) {
 			String i = new String(scnr.next());
 			validBTTConfigurations.add(i);
@@ -326,7 +332,7 @@ public class ValidTripletElements {
 		}
 		return validBTTObjects;
 	}
-	
+
 	public List<String> getValidBTTSituations() {
 		String str = cfgFile.getPropertyByName("btt.situations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
@@ -336,12 +342,13 @@ public class ValidTripletElements {
 		}
 		return validBTTSituations;
 	}
-	
+
 	public LinkedHashMap<String, Point> getValidCTTPositions() {
-		parsePositions(cfgFile.getPropertyByName("ctt.places"), CompetitionIdentifier.CTT);		
+		parsePositions(cfgFile.getPropertyByName("ctt.places"),
+				CompetitionIdentifier.CTT);
 		return validCTTPositions;
 	}
-	
+
 	public List<String> getValidCTTConfigurations() {
 		String str = cfgFile.getPropertyByName("ctt.configurations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
@@ -361,7 +368,7 @@ public class ValidTripletElements {
 		}
 		return validCTTObjects;
 	}
-	
+
 	public List<String> getValidCTTSituations() {
 		String str = cfgFile.getPropertyByName("ctt.situations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");

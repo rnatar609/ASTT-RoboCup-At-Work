@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -15,9 +17,11 @@ import java.util.regex.*;
 import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 //import model.TaskTriplet.State;
 
+import sun.misc.Compare;
 import view.Utils;
 import controller.TaskListener;
 
@@ -88,15 +92,31 @@ public class TaskSpec {
 			}
 			break;
 		case BTT:
-			/*
-			 * Iterator<BttTask> itBtt = bttTaskList.iterator();
-			 * ArrayList<BttTask> initialList = new ArrayList<BttTask>();
-			 * ArrayList<BttTask> goalList = new ArrayList<BttTask>(); while
-			 * (itBtt.hasNext()) { BttTask btt = itBtt.next(); if
-			 * (btt.getSituation().equals("initial")) initialList.add(btt); else
-			 * goalList.add(btt); } Iterator<BttTask> itInitial =
-			 * initialList.iterator(); while (itInitial.hasNext()) { ; }
-			 */
+			if (bttTaskList.size() > 0) {
+				Iterator<BttTask> itBtt = bttTaskList.iterator();
+				BttTask btt = itBtt.next();
+				BttTask previous = new BttTask();
+				do {
+					s = s.concat(btt.getSituation() + "Situation(");
+					do {
+						s = s.concat(btt.getPlace() + ",");
+						s = s.concat(btt.getConfiguration() + "(");
+						do {
+							s = s.concat(btt.getObject() + ",");
+							previous = btt;
+							if (itBtt.hasNext())
+								btt = itBtt.next();
+							else
+								btt = new BttTask();
+						} while (btt.getPlace().equals(previous.getPlace())
+								&& (btt.getConfiguration().equals(previous
+										.getConfiguration())));
+						s = s.substring(0, s.length() - 1); //comma is no longer needed
+						s = s.concat(")");
+					} while (btt.getSituation().equals(previous.getSituation()));
+					s = s.concat(")");
+				} while (btt.getSituation().length() != 0);
+			}
 			break;
 		default:
 		}
@@ -125,8 +145,10 @@ public class TaskSpec {
 		case BTT:
 			BttTask bttTask = (BttTask) task;
 			bttTaskList.add(bttTask);
-			logg.globalLogging(taskListName, bttTask.getString() + " no. "
-					+ bttTaskList.indexOf(bttTask) + " added");
+			Collections.sort(bttTaskList);
+			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BTT + bttTask.getString() + " no. "
+							+ bttTaskList.indexOf(bttTask) + " added");
 			notifyBttTaskSpecChanged(bttTask, bttTaskList.indexOf(bttTask),
 					bttTaskList);
 			break;
@@ -151,6 +173,7 @@ public class TaskSpec {
 			return bmtTask;
 		case BTT:
 			BttTask bttTask = bttTaskList.remove(pos);
+			Collections.sort(bttTaskList);
 			logg.globalLogging(taskListName, bttTask.getString() + " no. "
 					+ bttTaskList.indexOf(bttTask) + " deleted");
 			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
@@ -183,6 +206,7 @@ public class TaskSpec {
 			case BTT:
 				BttTask bttTask = bttTaskList.remove(pos);
 				bttTaskList.add(pos - 1, bttTask);
+				Collections.sort(bttTaskList);
 				logg.globalLogging(taskListName, bttTask.getString() + " no. "
 						+ bttTaskList.indexOf(bttTask) + " moved up");
 				notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
@@ -218,6 +242,7 @@ public class TaskSpec {
 				return null;
 			BttTask bttTask = bttTaskList.remove(pos);
 			bttTaskList.add(pos + 1, bttTask);
+			Collections.sort(bttTaskList);
 			logg.globalLogging(taskListName, bttTask.getString() + " no. "
 					+ bttTaskList.indexOf(bttTask) + " moved down");
 			notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
@@ -247,6 +272,7 @@ public class TaskSpec {
 			return bmtTask;
 		case BTT:
 			BttTask bttTask = bttTaskList.set(pos, (BttTask) task);
+			Collections.sort(bttTaskList);
 			logg.globalLogging(taskListName,
 					bttTask.getString() + " no. " + bttTaskList.indexOf(task)
 							+ " updated to " + bttTask.getString());
@@ -336,9 +362,8 @@ public class TaskSpec {
 			out.write(getTaskSpecString(CompetitionIdentifier.BTT));
 			out.write("\n");
 			out.close();
-			logg.globalLogging("TODO",
-					"saved actual task specification in >" + file.getName()
-							+ "<");
+			logg.globalLogging("TODO", "saved actual task specification in >"
+					+ file.getName() + "<");
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
 			logg.globalLogging("TODO", "saving failed! >");
@@ -370,13 +395,14 @@ public class TaskSpec {
 
 	public boolean parseTaskSpecString(String tSpecStr) {
 		tSpecStr = removeSpaces(tSpecStr);
-		 
+
 		String competition = tSpecStr.substring(0, 3);
 		System.out.println("competition " + competition);
 		try {
-			if (competition.equals(CompetitionIdentifier.BNT.toString())){
+			if (competition.equals(CompetitionIdentifier.BNT.toString())) {
 				bntTaskList = new ArrayList<BntTask>();
-				Pattern pat = Pattern.compile(ValidTripletElements.getInstance().getValidBNTPattern());
+				Pattern pat = Pattern.compile(ValidTripletElements
+						.getInstance().getValidBNTPattern());
 				Matcher m = pat.matcher(tSpecStr);
 				do {
 					BntTask nextTask = new BntTask();
@@ -393,19 +419,19 @@ public class TaskSpec {
 					}
 				} while (!m.hitEnd());
 			}
-			if (competition.equals(CompetitionIdentifier.BMT.toString())){
-				 
-				bmtTaskList = new ArrayList<BmtTask>();				
+			if (competition.equals(CompetitionIdentifier.BMT.toString())) {
+
+				bmtTaskList = new ArrayList<BmtTask>();
 				String delims = "[<>,()]";
 				String[] tokens = tSpecStr.split(delims);
-				
-				for(int i= 5;i < tokens.length-2; i++){
+
+				for (int i = 5; i < tokens.length - 2; i++) {
 					BmtTask nextTask = new BmtTask();
 					nextTask.setPlaceInitial(tokens[1]);
 					nextTask.setPlaceSource(tokens[2]);
 					nextTask.setPlaceDestination(tokens[3]);
 					nextTask.setConfiguration(tokens[4]);
-					nextTask.setPlaceFinal(tokens[tokens.length-1]);
+					nextTask.setPlaceFinal(tokens[tokens.length - 1]);
 					nextTask.setObject(tokens[i]);
 					bmtTaskList.add(nextTask);
 					logg.globalLogging(taskListName, nextTask.getString()
@@ -423,18 +449,18 @@ public class TaskSpec {
 		return true;
 	}
 
-	//public TaskTriplet setTripletState(int tripletIndex, int column) {
-		/*
-		 * TaskTriplet tT = taskTripletList.get(tripletIndex); State newState;
-		 * if (column == 1) newState = State.PASSED; else newState =
-		 * State.FAILED; if (tT.getState() == newState) tT.setState(State.INIT);
-		 * else tT.setState(newState); logg.LoggingFile(taskListName,
-		 * tT.getTaskTripletString() + " no. " + taskTripletList.indexOf(tT) +
-		 * " new state: " + tT.getState()); notifyTaskSpecChanged(new
-		 * TripletEvent(tT, taskTripletList.indexOf(tT), taskTripletList));
-		 */
-	//	return null; // tT;
-	//}
+	// public TaskTriplet setTripletState(int tripletIndex, int column) {
+	/*
+	 * TaskTriplet tT = taskTripletList.get(tripletIndex); State newState; if
+	 * (column == 1) newState = State.PASSED; else newState = State.FAILED; if
+	 * (tT.getState() == newState) tT.setState(State.INIT); else
+	 * tT.setState(newState); logg.LoggingFile(taskListName,
+	 * tT.getTaskTripletString() + " no. " + taskTripletList.indexOf(tT) +
+	 * " new state: " + tT.getState()); notifyTaskSpecChanged(new
+	 * TripletEvent(tT, taskTripletList.indexOf(tT), taskTripletList));
+	 */
+	// return null; // tT;
+	// }
 
 	public void resetStates() {
 		/*
