@@ -35,7 +35,8 @@ public class ConfigFile {
 			FileInputStream in = new FileInputStream(
 					ConfigFile.configFileFullName);
 			properties.load(in);
-			logg.globalLogging(configLogID, "Properties loaded from " + configFileFullName);
+			logg.globalLogging(configLogID, "Properties loaded from "
+					+ configFileFullName);
 			in.close();
 		} catch (Exception e) {
 			System.out.println("Exception in ConfigFile loadProperties: "
@@ -66,13 +67,13 @@ public class ConfigFile {
 		if (scnr.hasNext()) {
 			refIP = scnr.next();
 			System.out.println(refIP);
-		} else  {
+		} else {
 			System.out.println("No ServerIP specified in the config file");
 			logg.globalLogging(configLogID, "no ServerIP specified");
 		}
 		return refIP;
 	}
-	
+
 	public String getPortaddr() {
 		String str = properties.getProperty("Port");
 		String refPort = null;
@@ -84,10 +85,10 @@ public class ConfigFile {
 			System.out.println("No Port specified in the config file");
 			logg.globalLogging(configLogID, "no Port specified");
 		}
-		
+
 		return refPort;
 	}
-	
+
 	public long getRunTime() {
 		String str = properties.getProperty("runTime");
 		long runTime = 0;
@@ -98,9 +99,8 @@ public class ConfigFile {
 			logg.globalLogging(configLogID, "no configuration time");
 		return runTime;
 	}
-	
-	public String getPropertyByName(String key)
-	{
+
+	public String getPropertyByName(String key) {
 		return properties.getProperty(key);
 	}
 }

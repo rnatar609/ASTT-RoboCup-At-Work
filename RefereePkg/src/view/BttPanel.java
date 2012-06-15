@@ -124,12 +124,12 @@ public class BttPanel extends CompetitionPanel {
 		t.setObject((String) objectBox.getSelectedItem());
 		return t;
 	}
-	
+
 	public void setTaskBoxSected(Task task) {
-		situationCbm.setSelectedItem(((BttTask)task).getSituation());
-		configurationCbm.setSelectedItem(((BttTask)task).getConfiguration());
-		placeCbm.setSelectedItem(((BttTask)task).getPlace());
-		configurationCbm.setSelectedItem(((BttTask)task).getConfiguration());
-		objectCbm.setSelectedItem(((BttTask)task).getObject());
+		situationCbm.setSelectedItem(((BttTask) task).getSituation());
+		configurationCbm.setSelectedItem(((BttTask) task).getConfiguration());
+		placeCbm.setSelectedItem(((BttTask) task).getPlace());
+		configurationCbm.setSelectedItem(((BttTask) task).getConfiguration());
+		objectCbm.setSelectedItem(((BttTask) task).getObject());
 	}
 }

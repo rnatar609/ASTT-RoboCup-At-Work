@@ -24,7 +24,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -70,8 +69,6 @@ public class MainGUI extends JFrame implements TaskListener,
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
 	private static final int NUMBEROFCOMPETIONS = 0;
-	private JScrollPane tripletTableScrollPane;
-	private JPanel editTripletPanel;
 	private JPanel statusPanel;
 	private JPanel westPanel;
 	private JButton saveButton;
@@ -169,21 +166,6 @@ public class MainGUI extends JFrame implements TaskListener,
 		}
 	}
 
-	/*
-	 * private void createTripletTableScrollPaneInBntPanel(int i) {
-	 * tripletTableScrollPane = new JScrollPane(
-	 * JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-	 * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); tripletTableM = new
-	 * TripletTableM(); tripletTableM.addColumn("Triplets"); tripletTable = new
-	 * JTable(tripletTableM); rendTriplets = new DefaultTableCellRenderer();
-	 * tripletTable.getColumn("Triplets").setCellRenderer(rendTriplets);
-	 * rendTriplets.setHorizontalAlignment(JLabel.CENTER);
-	 * tripletTableScrollPane.setViewportView(tripletTable);
-	 * tripletTableScrollPane
-	 * .setPreferredSize(tripletTable.getPreferredSize());
-	 * competitionPanel[i].add(tripletTableScrollPane, BorderLayout.CENTER); }
-	 */
-
 	private void createWestPanelInContentPanel() {
 		westPanel = new JPanel(new BorderLayout());
 		createTabbedPanelInWestPanel();
@@ -207,11 +189,6 @@ public class MainGUI extends JFrame implements TaskListener,
 		tabbedPane.addTab(CompetitionIdentifier.values()[3].name(),
 				competitionPanel[3]);
 		westPanel.add(tabbedPane, BorderLayout.CENTER);
-	}
-
-	private String getCompetitionNames(int i) {
-		CompetitionIdentifier[] allNames = CompetitionIdentifier.values();
-		return allNames[i].toString();
 	}
 
 	private void createUpperServerPanel() {
@@ -786,6 +763,10 @@ public class MainGUI extends JFrame implements TaskListener,
 			if (disconnectButton.isEnabled()) {
 				sendTripletsButton.setEnabled(true);
 			}
+			for (int i = 0; i < competitionPanel.length; i++) {
+				tabbedPane.setEnabledAt(i, false);
+			}
+			tabbedPane.setEnabledAt(compIdent.ordinal(), true);
 		} else {
 			compTableModel.setColumnCount(1);
 			compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
@@ -800,18 +781,16 @@ public class MainGUI extends JFrame implements TaskListener,
 				}
 			}
 			competitionFinishedButton.setEnabled(false);
+			for (int i = 0; i < competitionPanel.length; i++) {
+				tabbedPane.setEnabledAt(i, true);
+			}
+			tabbedPane.setEnabledAt(compIdent.ordinal(), false);
 		}
 		compTable.getColumnModel().getColumn(0).setPreferredWidth(180);
 		competitionPanel[compIdent.ordinal()].getSequenceTableScrollPane()
 				.setPreferredSize(compTable.getPreferredSize());
 		this.validate();
 	}
-
-	private Component competitionFinishedButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * Register objects that listen for mouse events in the triplet table area
 	 * of the GUI.
@@ -826,12 +805,16 @@ public class MainGUI extends JFrame implements TaskListener,
 		}
 	}
 
-	/*
-	 * public void setTableCellCorrected(int row, int column) { if (column == 1)
-	 * tripletTableM.setValueAt(Boolean.FALSE, row, 2); if (column == 2)
-	 * tripletTableM.setValueAt(Boolean.FALSE, row, 1); tripletTable.repaint();
-	 * }
-	 */
+	public void setTableCellCorrected(int row, int column,
+			CompetitionIdentifier compIdent) {
+		if (column == 1)
+			competitionPanel[compIdent.ordinal()].getSequenceTableModel()
+					.setValueAt(Boolean.FALSE, row, 2);
+		if (column == 2)
+			competitionPanel[compIdent.ordinal()].getSequenceTableModel()
+					.setValueAt(Boolean.FALSE, row, 1);
+		competitionPanel[compIdent.ordinal()].getSequenceTable().repaint();
+	}
 
 	/**
 	 * Connect Competition Finished button to the corresponding action.
@@ -929,6 +912,14 @@ public class MainGUI extends JFrame implements TaskListener,
 	public void cttTaskSpecChanged(CttTask cttTask, int pos,
 			ArrayList<CttTask> cttTaskList) {
 		((CttPanel) competitionPanel[CompetitionIdentifier.CTT.ordinal()])
-		.taskSpecChanged(cttTaskList);
+				.taskSpecChanged(cttTaskList);
+	}
+
+	public JTabbedPane getTabbedPane() {
+		return tabbedPane;
+	}
+
+	public void setTabbedPane(JTabbedPane tabbedPane) {
+		this.tabbedPane = tabbedPane;
 	}
 }

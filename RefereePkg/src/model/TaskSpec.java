@@ -553,25 +553,67 @@ public class TaskSpec {
 		return true;
 	}
 
-	// public TaskTriplet setTripletState(int tripletIndex, int column) {
-	/*
-	 * TaskTriplet tT = taskTripletList.get(tripletIndex); State newState; if
-	 * (column == 1) newState = State.PASSED; else newState = State.FAILED; if
-	 * (tT.getState() == newState) tT.setState(State.INIT); else
-	 * tT.setState(newState); logg.LoggingFile(taskListName,
-	 * tT.getTaskTripletString() + " no. " + taskTripletList.indexOf(tT) +
-	 * " new state: " + tT.getState()); notifyTaskSpecChanged(new
-	 * TripletEvent(tT, taskTripletList.indexOf(tT), taskTripletList));
-	 */
-	// return null; // tT;
-	// }
+	public void setTaskState(int tripletIndex, int column,
+			CompetitionIdentifier compIdent) {
+		Task tT = getTaskAtIndex(tripletIndex, compIdent);
+		StateOfTask newState;
+		if (column == 1)
+			newState = StateOfTask.PASSED;
+		else
+			newState = StateOfTask.FAILED;
+		if (tT.getState() == newState)
+			tT.setState(StateOfTask.INIT);
+		else
+			tT.setState(newState);
+		switch (compIdent) {
+		case BNT:
+			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BNT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			notifyBntTaskSpecChanged(((BntTask) tT), column, bntTaskList);
+			break;
+		case BMT:
+			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BMT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			notifyBmtTaskSpecChanged(((BmtTask) tT), column, bmtTaskList);
+			break;
+		case BTT:
+			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BTT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			notifyBttTaskSpecChanged(((BttTask) tT), column, bttTaskList);
+			break;
+		case CTT:
+			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BNT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			notifyCttTaskSpecChanged(((CttTask) tT), column, cttTaskList);
+			break;
+		default:
+			;
+		}
+	}
 
-	public void resetStates() {
-		/*
-		 * for (TaskTriplet tT : taskTripletList) { tT.setState(State.INIT);
-		 * logg.LoggingFile(taskListName, tT.getTaskTripletString() + " no. " +
-		 * taskTripletList.indexOf(tT) + " new state: INIT"); }
-		 */
+	public void resetStates(CompetitionIdentifier compIdent) {
+		switch (compIdent) {
+		case BNT:
+			for (BntTask tT : bntTaskList) {
+				tT.setState(StateOfTask.INIT);
+			}
+		case BMT:
+			for (BmtTask tT : bmtTaskList) {
+				tT.setState(StateOfTask.INIT);
+			}
+		case BTT:
+			for (BttTask tT : bttTaskList) {
+				tT.setState(StateOfTask.INIT);
+			}
+		case CTT:
+			for (CttTask tT : cttTaskList) {
+				tT.setState(StateOfTask.INIT);
+			}
+		}
 	}
 
 	public ArrayList<BntTask> getBntTaskList() {

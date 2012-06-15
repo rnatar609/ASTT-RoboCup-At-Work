@@ -332,7 +332,7 @@ public class MainController implements TimerListener {
 			setCompetitionMode(false);
 			taskTimer.resetTimer();
 			mG.getTimerStartStopButton().setEnabled(true);
-			tS.resetStates();
+			tS.resetStates(compIdent);
 			tServer.disconnectClient();
 			tServer.createServerSocket(cfgFile.getServerIP(),
 					cfgFile.getPortaddr());
@@ -379,13 +379,11 @@ public class MainController implements TimerListener {
 			int selectedColumn = mG.getSequenceTable(compIdent.ordinal())
 					.getSelectedColumn();
 			if (selectedColumn > 0) {
-				// TaskTriplet tT = tS
-				// .setTripletState(selectedRow, selectedColumn);
-				// mG.setStatusLine("Updated triplet state (" + tT.getPlace()
-				// + ", " + tT.getOrientation() + ", " + tT.getPause()
-				// + ")."); //
-				// mG.setTableCellCorrected(selectedRow, selectedColumn); //
-				// mG.getTripletsTable().clearSelection();
+				tS.setTaskState(selectedRow, selectedColumn, compIdent);
+				mG.setStatusLine("Updated task state of "
+						+ tS.getTaskAtIndex(selectedRow, compIdent).getString());
+				mG.setTableCellCorrected(selectedRow, selectedColumn, compIdent); //
+				mG.getSequenceTable(compIdent.ordinal()).clearSelection();
 			}
 
 		}
@@ -394,6 +392,8 @@ public class MainController implements TimerListener {
 	public ChangeListener tabbChangeListener = new ChangeListener() {
 		public void stateChanged(ChangeEvent evt) {
 			JTabbedPane pane = (JTabbedPane) evt.getSource();
+			if (competitionMode)
+				mG.getTabbedPane().setSelectedIndex(compIdent.ordinal());
 			compIdent = CompetitionIdentifier.values()[pane.getSelectedIndex()];
 		}
 	};

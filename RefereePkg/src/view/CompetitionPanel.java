@@ -168,8 +168,6 @@ public class CompetitionPanel extends JPanel {
 				Dimension dim = comp[i].getPreferredSize();
 				dim.width = width;
 				comp[i].setMaximumSize(dim);
-				// comp[i].setPreferredSize(dim);
-				// comp[i].setMinimumSize(dim);
 			}
 		}
 	}
@@ -179,7 +177,7 @@ public class CompetitionPanel extends JPanel {
 	}
 
 	public void setTaskBoxSected(Task task) {
-;
+		;
 	}
 
 	public SequenceTableModel getSequenceTableModel() {
