@@ -154,12 +154,18 @@ public class CompetitionLogging implements TaskListener {
 	@Override
 	public void bmtTaskSpecChanged(BmtTask bmtTask, int pos,
 			ArrayList<BmtTask> bmtTaskList) {
-		setTaskState(pos, bmtTask.getState());
+		setTaskState(pos, ((Task)bmtTask).getState());
 	}
 
 	@Override
 	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
 		setTaskState(pos, bttTask.getState());
+	}
+
+	@Override
+	public void cttTaskSpecChanged(CttTask cttTask, int pos,
+			ArrayList<CttTask> cttTaskList) {
+		setTaskState(pos, cttTask.getState());
 	}
 }

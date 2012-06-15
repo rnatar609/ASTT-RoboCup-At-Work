@@ -54,7 +54,7 @@ public class MainController implements TimerListener {
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
 	private TaskTimer taskTimer;
-	//private CompetitionLogging compLogging;
+	// private CompetitionLogging compLogging;
 	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
 	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
 	private final int NUMBEROFCOMPETITIONS = 4;
@@ -269,7 +269,7 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			
+
 			if (tServer.sendTaskSpecToClient(tS.getTaskSpecString(compIdent)))
 				mG.setStatusLine("Task specification sent to the team.");
 			else
@@ -307,7 +307,7 @@ public class MainController implements TimerListener {
 				taskTimer.startNewTimer(configTime, runTime);
 				setCompetitionMode(true);
 				logg.setCompetitionLogging(true);
-				//CompetitionLogging.setTaskTripletListLength(tS);
+				// CompetitionLogging.setTaskTripletListLength(tS);
 			} else {
 				taskTimer.stopTimer();
 				tServer.disconnectClient();
@@ -325,19 +325,20 @@ public class MainController implements TimerListener {
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
-				String teamName = tServer.getTeamName();
-				logg.renameCompetitionFile();
-				logg.setCompetitionLogging(false);
-				mG.getCompetitionFinishedButton().setEnabled(false);
-				setCompetitionMode(false);
-				taskTimer.resetTimer();
-				mG.getTimerStartStopButton().setEnabled(true);
-				tS.resetStates();
-				tServer.disconnectClient();
-				tServer.createServerSocket(cfgFile.getServerIP(), cfgFile.getPortaddr());
-				tServer.listenForConnection();
-				mG.setStatusLine("Competition finished. Listening for next team.");
-			}
+			String teamName = tServer.getTeamName();
+			logg.renameCompetitionFile();
+			logg.setCompetitionLogging(false);
+			mG.getCompetitionFinishedButton().setEnabled(false);
+			setCompetitionMode(false);
+			taskTimer.resetTimer();
+			mG.getTimerStartStopButton().setEnabled(true);
+			tS.resetStates();
+			tServer.disconnectClient();
+			tServer.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortaddr());
+			tServer.listenForConnection();
+			mG.setStatusLine("Competition finished. Listening for next team.");
+		}
 	};
 
 	public MouseListener taskTableListener = new MouseListener() {
@@ -378,11 +379,11 @@ public class MainController implements TimerListener {
 			int selectedColumn = mG.getSequenceTable(compIdent.ordinal())
 					.getSelectedColumn();
 			if (selectedColumn > 0) {
-			//	TaskTriplet tT = tS
-			//			.setTripletState(selectedRow, selectedColumn);
-			//	mG.setStatusLine("Updated triplet state (" + tT.getPlace()
-			//			+ ", " + tT.getOrientation() + ", " + tT.getPause()
-			//			+ ")."); //
+				// TaskTriplet tT = tS
+				// .setTripletState(selectedRow, selectedColumn);
+				// mG.setStatusLine("Updated triplet state (" + tT.getPlace()
+				// + ", " + tT.getOrientation() + ", " + tT.getPause()
+				// + ")."); //
 				// mG.setTableCellCorrected(selectedRow, selectedColumn); //
 				// mG.getTripletsTable().clearSelection();
 			}
@@ -407,7 +408,7 @@ public class MainController implements TimerListener {
 		unsavedChanges = false;
 		competitionMode = false;
 		logg = Logging.getInstance();
-		//compLogging = new CompetitionLogging();
+		// compLogging = new CompetitionLogging();
 		init();
 		if (args.length > 0) {
 			File file = new File(System.getProperty("user.home")
@@ -519,17 +520,18 @@ public class MainController implements TimerListener {
 						.ordinal())).setValidSituations(vte
 						.getValidBTTSituations());
 
-			/*	((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-						.ordinal())).setValidPositions(vte
-						.getValidCTTPositions());
-				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-						.ordinal())).setValidConfigurations(vte
-						.getValidCTTConfigurations());
-				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-						.ordinal())).setValidObjects(vte.getValidCTTObjects());
-				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-						.ordinal())).setValidSituations(vte
-						.getValidCTTSituations());*/
+				/*
+				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+				 * .ordinal())).setValidPositions(vte .getValidCTTPositions());
+				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+				 * .ordinal())).setValidConfigurations(vte
+				 * .getValidCTTConfigurations()); ((CttPanel)
+				 * mG.getCompetitionPanel(CompetitionIdentifier.CTT
+				 * .ordinal())).setValidObjects(vte.getValidCTTObjects());
+				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+				 * .ordinal())).setValidSituations(vte
+				 * .getValidCTTSituations());
+				 */
 
 			}
 		} catch (Exception e) {
@@ -564,9 +566,12 @@ public class MainController implements TimerListener {
 		unsavedChanges = false;
 		mG.getTimerStartStopButton().setEnabled(true);
 		ArrayList<BmtTask> bmttasklist = tS.getBmtTaskList();
-		/*if(bmttasklist.size() > 0)
-			mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal()).setSelectedTask(bmttasklist.get(0));*/
-		
+		/*
+		 * if(bmttasklist.size() > 0)
+		 * mG.getCompetitionPanel(CompetitionIdentifier
+		 * .BMT.ordinal()).setSelectedTask(bmttasklist.get(0));
+		 */
+
 	}
 
 	private void setCompetitionMode(boolean mode) {
@@ -590,8 +595,6 @@ public class MainController implements TimerListener {
 				mG.configFileLoaded();
 				mG.setStatusLine("Loaded configuration file >" + file.getName()
 						+ "<");
-				// not the right place
-				logg.globalLogging(triplets,"Loaded configuration file >" + file.getName() + "<");
 			} else {
 				mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
 						+ "</FONT> No background file loaded. </html>");

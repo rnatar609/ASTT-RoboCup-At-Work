@@ -40,6 +40,7 @@ import model.BmtTask;
 import model.BntTask;
 import model.BttTask;
 import model.CompetitionIdentifier;
+import model.CttTask;
 import model.Task;
 import controller.ConnectionListener;
 import controller.TaskListener;
@@ -922,5 +923,12 @@ public class MainGUI extends JFrame implements TaskListener,
 			ArrayList<BttTask> bttTaskList) {
 		((BttPanel) competitionPanel[CompetitionIdentifier.BTT.ordinal()])
 				.taskSpecChanged(bttTaskList);
+	}
+
+	@Override
+	public void cttTaskSpecChanged(CttTask cttTask, int pos,
+			ArrayList<CttTask> cttTaskList) {
+		((CttPanel) competitionPanel[CompetitionIdentifier.CTT.ordinal()])
+		.taskSpecChanged(cttTaskList);
 	}
 }

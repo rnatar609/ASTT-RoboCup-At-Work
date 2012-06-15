@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import model.BmtTask;
 import model.BntTask;
 import model.BttTask;
+import model.CttTask;
 import model.StateOfTask;
 import model.Task;
 //import model.TaskTriplet;
@@ -166,6 +167,13 @@ public class MapArea extends JScrollPane implements TaskListener {
 	@Override
 	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void cttTaskSpecChanged(CttTask cttTask, int pos,
+			ArrayList<CttTask> cttTaskList) {
 		// TODO Auto-generated method stub
 
 	}

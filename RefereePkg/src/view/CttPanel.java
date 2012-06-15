@@ -108,7 +108,7 @@ public class CttPanel extends CompetitionPanel {
 		return t;
 	}
 
-	public void taskSpecChanged(ArrayList<BntTask> bntTaskList) {
+	public void  taskSpecChanged(ArrayList<CttTask> cttTaskList) {
 		sequenceTableModel.getDataVector().removeAllElements();
 		sequenceTableModel.setRowCount(0);
 		sequenceTableModel.fireTableDataChanged();
@@ -116,10 +116,10 @@ public class CttPanel extends CompetitionPanel {
 		{
 		    sequenceTableModel.removeRow(0);
 		}
-	 	sequenceTableModel.setRowCount(bntTaskList.size());
-		for (int i = 0; i < bntTaskList.size(); i++) {
+	 	sequenceTableModel.setRowCount(cttTaskList.size());
+		for (int i = 0; i < cttTaskList.size(); i++) {
 			sequenceTableModel.setValueAt(
-					((Task) bntTaskList.get(i)).getString(), i, 0);
+					((Task) cttTaskList.get(i)).getString(), i, 0);
 		}
 	}
 

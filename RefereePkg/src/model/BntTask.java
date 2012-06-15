@@ -41,10 +41,6 @@ public class BntTask extends Task {
 		this.pause = pause;
 	}
 
-	public void setState(StateOfTask state) {
-		this.state = state;
-	}
-
 	public String getPlace() {
 		return place;
 	}
@@ -55,10 +51,6 @@ public class BntTask extends Task {
 
 	public String getPause() {
 		return pause;
-	}
-
-	public StateOfTask getState() {
-		return state;
 	}
 
 	public String getString() {

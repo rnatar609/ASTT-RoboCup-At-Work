@@ -8,8 +8,6 @@ public class BmtTask extends Task {
 	static String configuration;
 	private String object;
 
-	// private StateOfTask state;
-
 	// empty bmttask
 	public BmtTask() {
 		object = "";
@@ -32,7 +30,7 @@ public class BmtTask extends Task {
 		BmtTask.placeFinal = placeFinal;
 		BmtTask.configuration = configuration;
 		this.object = object;
-		state = StateOfTask.INIT;
+		this.state = StateOfTask.INIT;
 	}
 
 	public String getConfiguration() {
@@ -43,20 +41,12 @@ public class BmtTask extends Task {
 		return object;
 	}
 
-	public StateOfTask getState() {
-		return state;
-	}
-
 	public void setConfiguration(String configuration) {
 		BmtTask.configuration = configuration;
 	}
 
 	public void setObject(String object) {
 		this.object = object;
-	}
-
-	public void setState(StateOfTask state) {
-		this.state = state;
 	}
 
 	public String getString() {

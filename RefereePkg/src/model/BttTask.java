@@ -49,20 +49,12 @@ public class BttTask extends Task implements Comparable<BttTask> {
 		return object;
 	}
 
-	public StateOfTask getState() {
-		return state;
-	}
-
 	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
 
 	public void setObject(String object) {
 		this.object = object;
-	}
-
-	public void setState(StateOfTask state) {
-		this.state = state;
 	}
 
 	public String getString() {

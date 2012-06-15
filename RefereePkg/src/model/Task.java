@@ -1,6 +1,6 @@
 package model;
 
-public class Task {
+public abstract class Task {
 
 	protected StateOfTask state;
 
@@ -14,8 +14,13 @@ public class Task {
 		state = task.state;
 	}
 
-	public String getString() {
-		return "error";
+	public abstract String getString();
+
+	public StateOfTask getState() {
+		return state;
 	}
-	
+
+	public void setState(StateOfTask state) {
+		this.state = state;
+	}
 }
