@@ -115,6 +115,9 @@ public class TaskSpec {
 						s = s.concat(")");
 					} while (btt.getSituation().equals(previous.getSituation()));
 					s = s.concat(")");
+					if(btt.getSituation().length() != 0){
+						s = s.concat(";");
+					}
 				} while (btt.getSituation().length() != 0);
 			}
 			break;
@@ -439,6 +442,53 @@ public class TaskSpec {
 							+ " added");
 					notifyBmtTaskSpecChanged(nextTask,
 							bmtTaskList.indexOf(nextTask), bmtTaskList);
+				}
+			}
+			if (competition.equals(CompetitionIdentifier.BTT.toString())) {
+
+				bttTaskList = new ArrayList<BttTask>();
+				String delimssemicolon = "[;]";
+				String delimsbracket = "[()]";
+				String delimskomma = "[,]";
+				String[] taskspec = tSpecStr.split("[<>]");
+				String[] initgoalsituation = taskspec[1].split(delimssemicolon);
+
+				for (int o = 0; o < initgoalsituation.length; o++) {
+
+					String[] tokens = initgoalsituation[o].split(delimsbracket);
+					
+					String pose;
+					String config;
+	
+					for (int i = 1; i < tokens.length; i++) {
+						pose = tokens[i].split(delimskomma)[0];
+						config = tokens[i].split(delimskomma)[1];
+						i++;
+						String[] objects = tokens[i].split(delimskomma);
+						for (int u = 0; u < objects.length; u++) {
+							
+							BttTask nextTask = new BttTask();
+							if(o == 0){
+								nextTask.setSituation("initial");
+							//	System.out.println("initial");
+							}else{
+								nextTask.setSituation("goal");
+							//	System.out.println("goal");
+							}
+							//System.out.println("pose: "+ pose);
+							//System.out.println("config: "+ config);
+							//System.out.println("objects: "+ objects[u]);
+							nextTask.setPlace(pose);
+							nextTask.setConfiguration(config);
+							nextTask.setObject(objects[u]);
+							bttTaskList.add(nextTask);
+							logg.globalLogging(taskListName, nextTask.getString()
+									+ " no. " + bttTaskList.indexOf(nextTask)
+									+ " added");
+							notifyBttTaskSpecChanged(nextTask,
+									bttTaskList.indexOf(nextTask), bttTaskList);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
