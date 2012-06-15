@@ -152,23 +152,6 @@ public class CompetitionPanel extends JPanel {
 		downButton.setAction(down);
 	}
 
-	public void setComboBoxSelected(String listTitle, String selectedValue) {
-		/*
-		 * for (int i = 0; i < numberOfDropDownLists; i++) { if
-		 * (dropDownListTitles[i].equals(listTitle)) {
-		 * dropDownLists[i].setSelectedItem(selectedValue); break; } }
-		 */
-	}
-
-	public JComboBox<String> getComboBoxByName(String boxName) {
-		/*
-		 * for (int i = 0; i < numberOfDropDownLists; i++) { if
-		 * (dropDownListTitles[i].equals(boxName)) { return dropDownLists[i]; }
-		 * }
-		 */
-		return null;
-	}
-
 	public void setButtonDimension() {
 		int width = 0;
 		Component[] comp = eastPanel.getComponents();
@@ -194,13 +177,9 @@ public class CompetitionPanel extends JPanel {
 	public Task getSelectedTask() {
 		return null;
 	}
-	
-	public void setSelectedTask(BmtTask task) {
-		return;
-	}
 
 	public void setTaskBoxSected(Task task) {
-
+;
 	}
 
 	public SequenceTableModel getSequenceTableModel() {
@@ -213,5 +192,9 @@ public class CompetitionPanel extends JPanel {
 
 	public JPanel getEastPanel() {
 		return eastPanel;
+	}
+
+	public Component getSequenceTableScrollPane() {
+		return sequenceTableScrollPane;
 	}
 }

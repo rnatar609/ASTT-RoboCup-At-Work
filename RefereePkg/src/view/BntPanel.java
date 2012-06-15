@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import model.BmtTask;
 import model.BntTask;
 import model.Task;
 
@@ -123,8 +124,8 @@ public class BntPanel extends CompetitionPanel {
 	}
 
 	public void setTaskBoxSected(Task task) {
-		placeCbm.setSelectedItem(task.getPlace());
-		orientationCbm.setSelectedItem(task.getOrientation());
-		pauseCbm.setSelectedItem(task.getPause());
+		placeCbm.setSelectedItem(((BntTask)task).getPlace());
+		orientationCbm.setSelectedItem(((BntTask)task).getOrientation());
+		pauseCbm.setSelectedItem(((BntTask)task).getPause());
 	}
 }

@@ -9,19 +9,15 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 import java.util.regex.*;
 import java.util.StringTokenizer;
 
 import javax.swing.event.EventListenerList;
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
+
 
 //import model.TaskTriplet.State;
 
-import sun.misc.Compare;
 import view.Utils;
 import controller.TaskListener;
 
@@ -100,7 +96,7 @@ public class TaskSpec {
 					s = s.concat(btt.getSituation() + "Situation(");
 					do {
 						s = s.concat(btt.getPlace() + ",");
-						s = s.concat(btt.getConfiguration() + "(");
+						s = s.concat(btt.getConfiguration() + ",(");
 						do {
 							s = s.concat(btt.getObject() + ",");
 							previous = btt;
@@ -430,11 +426,11 @@ public class TaskSpec {
 
 				for (int i = 5; i < tokens.length - 2; i++) {
 					BmtTask nextTask = new BmtTask();
-					nextTask.setPlaceInitial(tokens[1]);
-					nextTask.setPlaceSource(tokens[2]);
-					nextTask.setPlaceDestination(tokens[3]);
+					BmtTask.setPlaceInitial(tokens[1]);
+					BmtTask.setPlaceSource(tokens[2]);
+					BmtTask.setPlaceDestination(tokens[3]);
 					nextTask.setConfiguration(tokens[4]);
-					nextTask.setPlaceFinal(tokens[tokens.length - 1]);
+					BmtTask.setPlaceFinal(tokens[tokens.length - 1]);
 					nextTask.setObject(tokens[i]);
 					bmtTaskList.add(nextTask);
 					logg.globalLogging(taskListName, nextTask.getString()
@@ -461,8 +457,12 @@ public class TaskSpec {
 					String config;
 	
 					for (int i = 1; i < tokens.length; i++) {
-						pose = tokens[i].split(delimskomma)[0];
+						String test[] = tokens[i].split(delimskomma);
+						pose = test[0];
+						if (test.length > 1)
 						config = tokens[i].split(delimskomma)[1];
+						else 
+							config = "";
 						i++;
 						String[] objects = tokens[i].split(delimskomma);
 						for (int u = 0; u < objects.length; u++) {

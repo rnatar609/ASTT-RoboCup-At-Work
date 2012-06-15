@@ -649,11 +649,6 @@ public class MainGUI extends JFrame implements TaskListener,
 		return placesBox;
 	}
 
-	public JComboBox<String> getComboBox(String competitionName, String boxName) {
-		return competitionPanel[CompetitionIdentifier.valueOf(competitionName)
-				.ordinal()].getComboBoxByName(boxName);
-	}
-
 	/**
 	 * Get the GUI component that displays the triplets in the task
 	 * specification.
@@ -778,8 +773,6 @@ public class MainGUI extends JFrame implements TaskListener,
 				compTableModel.addColumn("Failed");
 				compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
 				compTableRend.setHorizontalAlignment(JLabel.CENTER);
-				// tripletTableScrollPane
-				// .setPreferredSize(comptTableRend.getPreferredSize());
 				Component[] comp = competitionPanel[compIdent.ordinal()]
 						.getEastPanel().getComponents();
 				for (int i = comp.length - 1; i >= comp.length - 11; i--) {
@@ -797,8 +790,6 @@ public class MainGUI extends JFrame implements TaskListener,
 			compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
 			competitionPanel[compIdent.ordinal()].getTableCellRenderer()
 					.setHorizontalAlignment(JLabel.CENTER);
-			// tripletTableScrollPane.setPreferredSize(competitionPanel[compIdent
-			// .ordinal()].getSequenceTable().getPreferredSize());
 			Component[] comp = competitionPanel[compIdent.ordinal()]
 					.getEastPanel().getComponents();
 			for (int i = comp.length - 1; i >= comp.length - 11; i--) {
@@ -809,6 +800,9 @@ public class MainGUI extends JFrame implements TaskListener,
 			}
 			competitionFinishedButton.setEnabled(false);
 		}
+		compTable.getColumnModel().getColumn(0).setPreferredWidth(180);
+		competitionPanel[compIdent.ordinal()].getSequenceTableScrollPane()
+				.setPreferredSize(compTable.getPreferredSize());
 		this.validate();
 	}
 
@@ -927,6 +921,6 @@ public class MainGUI extends JFrame implements TaskListener,
 	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
 		((BttPanel) competitionPanel[CompetitionIdentifier.BTT.ordinal()])
-		.taskSpecChanged(bttTaskList);
+				.taskSpecChanged(bttTaskList);
 	}
 }

@@ -564,8 +564,8 @@ public class MainController implements TimerListener {
 		unsavedChanges = false;
 		mG.getTimerStartStopButton().setEnabled(true);
 		ArrayList<BmtTask> bmttasklist = tS.getBmtTaskList();
-		if(bmttasklist.size() > 0)
-			mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal()).setSelectedTask(bmttasklist.get(0));
+		/*if(bmttasklist.size() > 0)
+			mG.getCompetitionPanel(CompetitionIdentifier.BMT.ordinal()).setSelectedTask(bmttasklist.get(0));*/
 		
 	}
 

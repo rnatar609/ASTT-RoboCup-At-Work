@@ -29,7 +29,6 @@ public class BmtPanel extends CompetitionPanel {
 	public DefaultComboBoxModel<String> placeInitialCbm;
 	public DefaultComboBoxModel<String> placeSourceCbm;
 	public DefaultComboBoxModel<String> placeDestinationCbm;
-	public DefaultComboBoxModel<String> placeCbm;
 	private DefaultComboBoxModel<String> configurationCbm;
 	private DefaultComboBoxModel<String> objectCbm;
 	private JComboBox<String> placeFinalBox;
@@ -86,14 +85,14 @@ public class BmtPanel extends CompetitionPanel {
 			posString[i] = pos;
 			i++;
 		}
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeInitialBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeSourceBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeDestinationBox.setModel(placeCbm);
-		placeCbm = new DefaultComboBoxModel<String>(posString);
-		placeFinalBox.setModel(placeCbm);		
+		placeInitialCbm = new DefaultComboBoxModel<String>(posString);
+		placeInitialBox.setModel(placeInitialCbm);
+		placeSourceCbm = new DefaultComboBoxModel<String>(posString);
+		placeSourceBox.setModel(placeSourceCbm);
+		placeDestinationCbm = new DefaultComboBoxModel<String>(posString);
+		placeDestinationBox.setModel(placeDestinationCbm);
+		placeFinalCbm = new DefaultComboBoxModel<String>(posString);
+		placeFinalBox.setModel(placeFinalCbm);		
 	}
 
 	/**
@@ -141,14 +140,12 @@ public class BmtPanel extends CompetitionPanel {
 		return t;
 	}
 	
-	public void setSelectedTask(BmtTask task) {
-
-		placeInitialBox.setSelectedItem(task.getPlaceInitial());
-		placeSourceBox.setSelectedItem(task.getPlaceSource());
-		placeDestinationBox.setSelectedItem(task.getPlaceDestination());
-		placeFinalBox.setSelectedItem(task.getPlaceFinal());
-		configurationBox.setSelectedItem(task.getConfiguration());
-
-		return;
+	public void setTaskBoxSected(Task task) {
+		placeInitialCbm.setSelectedItem(((BmtTask)task).getPlaceInitial());
+		placeSourceCbm.setSelectedItem(((BmtTask)task).getPlaceSource());
+		placeDestinationCbm.setSelectedItem(((BmtTask)task).getPlaceDestination());
+		placeFinalCbm.setSelectedItem(((BmtTask)task).getPlaceFinal());
+		configurationCbm.setSelectedItem(((BmtTask)task).getConfiguration());
+		objectCbm.setSelectedItem(((BmtTask)task).getObject());
 	}
 }

@@ -59,8 +59,8 @@ public class MapArea extends JScrollPane implements TaskListener {
 					backgroundMap.getHeight(), this);
 			int i = 0;
 			Point pPrev = new Point(0, 0);
-			for (Object tT : taskList) {
-				Point p = validPositions.get(((Task) tT).getPlace());
+			for (BntTask tT : taskList) {
+				Point p = validPositions.get(tT.getPlace());
 				if (i == 0) {
 					pPrev = p;
 				} else {
@@ -76,35 +76,35 @@ public class MapArea extends JScrollPane implements TaskListener {
 				pPrev = p;
 			}
 			g2.setStroke(new BasicStroke(2.0f));
-			for (Object tT : taskList) {
+			for (BntTask tT : taskList) {
 				int theta = 0;
 				if (((BntTask) tT).getOrientation().equals("N")) {
 					theta = 90;
-				} else if (((Task) tT).getOrientation().equals("S")) {
+				} else if (tT.getOrientation().equals("S")) {
 					theta = -90;
-				} else if (((Task) tT).getOrientation().equals("W")) {
+				} else if (tT.getOrientation().equals("W")) {
 					theta = 180;
-				} else if (((Task) tT).getOrientation().equals("E")) {
+				} else if (tT.getOrientation().equals("E")) {
 					theta = 0;
-				} else if (((Task) tT).getOrientation().equals("NE")) {
+				} else if (tT.getOrientation().equals("NE")) {
 					theta = 45;
-				} else if (((Task) tT).getOrientation().equals("SE")) {
+				} else if (tT.getOrientation().equals("SE")) {
 					theta = -45;
-				} else if (((Task) tT).getOrientation().equals("SW")) {
+				} else if (tT.getOrientation().equals("SW")) {
 					theta = -135;
-				} else if (((Task) tT).getOrientation().equals("NW")) {
+				} else if (tT.getOrientation().equals("NW")) {
 					theta = 135;
 				}
-				if (((Task) tT).getState() == StateOfTask.INIT)
+				if (tT.getState() == StateOfTask.INIT)
 					g.setColor(Color.cyan);
-				if (((Task) tT).getState() == StateOfTask.PASSED)
+				if (tT.getState() == StateOfTask.PASSED)
 					g.setColor(Color.green);
-				if (((Task) tT).getState() == StateOfTask.FAILED)
+				if (tT.getState() == StateOfTask.FAILED)
 					g.setColor(Color.red);
-				Point p = validPositions.get(((Task) tT).getPlace());
+				Point p = validPositions.get(tT.getPlace());
 				drawArrow(g, p, theta * Math.PI / 180.0);
 				g2.setColor(Color.black);
-				g2.drawString(((Task) tT).getPlace(), p.x - 5, p.y + 4);
+				g2.drawString(tT.getPlace(), p.x - 5, p.y + 4);
 			}
 		}
 

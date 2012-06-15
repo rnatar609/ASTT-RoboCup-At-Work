@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.BntTask;
+import model.CttTask;
 import model.Task;
 
 public class CttPanel extends CompetitionPanel {
@@ -123,8 +124,8 @@ public class CttPanel extends CompetitionPanel {
 	}
 
 	public void setTaskBoxSected(Task task) {
-		placeCbm.setSelectedItem(task.getPlace());
-		orientationCbm.setSelectedItem(task.getOrientation());
-		pauseCbm.setSelectedItem(task.getPause());
+		/*placeCbm.setSelectedItem(((CttTask)task).getPlace());
+		orientationCbm.setSelectedItem(((CttTask)task).getOrientation());
+		pauseCbm.setSelectedItem(((CttTask)task).getPause())*/;
 	}
 }
