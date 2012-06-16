@@ -21,9 +21,11 @@ import javax.swing.event.ChangeListener;
 
 import model.BmtTask;
 import model.BntTask;
+import model.BttTask;
 import model.CompetitionIdentifier;
 import model.CompetitionLogging;
 import model.ConfigFile;
+import model.CttTask;
 import model.Logging;
 import model.Map;
 import model.Task;
@@ -106,6 +108,8 @@ public class MainController implements TimerListener {
 					mG.setStatusLine("Opened task specification >"
 							+ file.getName() + "<");
 					setSavedChanges();
+					mG.getTabbedPane().setSelectedIndex(-1); // to repaint the
+																// map
 					logg.setFilePath(file);
 				} else {
 					mG.setStatusLine("<html><FONT COLOR=RED>Something went wrong!"
@@ -391,9 +395,34 @@ public class MainController implements TimerListener {
 	public ChangeListener tabbChangeListener = new ChangeListener() {
 		public void stateChanged(ChangeEvent evt) {
 			JTabbedPane pane = (JTabbedPane) evt.getSource();
-			if (competitionMode)
+			if (competitionMode || pane.getSelectedIndex() == -1) // -1 to
+																	// repaint
+																	// the map
 				mG.getTabbedPane().setSelectedIndex(compIdent.ordinal());
-			compIdent = CompetitionIdentifier.values()[pane.getSelectedIndex()];
+			else {
+				compIdent = CompetitionIdentifier.values()[pane
+						.getSelectedIndex()];
+				if (compIdent == CompetitionIdentifier.BNT) {
+					tS.notifyBntTaskSpecChanged(new BntTask(), 0,
+							tS.getBntTaskList());
+					return;
+				}
+				if (compIdent == CompetitionIdentifier.BMT) {
+					tS.notifyBmtTaskSpecChanged(new BmtTask(), 0,
+							tS.getBmtTaskList());
+					return;
+				}
+				if (compIdent == CompetitionIdentifier.BTT) {
+					tS.notifyBttTaskSpecChanged(new BttTask(), 0,
+							tS.getBttTaskList());
+					return;
+				}
+				if (compIdent == CompetitionIdentifier.CTT) {
+					tS.notifyCttTaskSpecChanged(new CttTask(), 0,
+							tS.getCttTaskList());
+					return;
+				}
+			}
 		}
 	};
 
@@ -587,7 +616,6 @@ public class MainController implements TimerListener {
 						.println("Exception while loading config properties: "
 								+ e);
 			}
-
 			populateValidItems();
 			if (initializeBackgroundMap(file.getParent())) {
 				mG.pack();

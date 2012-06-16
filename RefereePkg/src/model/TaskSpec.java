@@ -347,7 +347,7 @@ public class TaskSpec {
 		listOfTaskListeners.remove(TaskListener.class, tL);
 	}
 
-	private void notifyBntTaskSpecChanged(BntTask bntTask, int pos,
+	public void notifyBntTaskSpecChanged(BntTask bntTask, int pos,
 			ArrayList<BntTask> bntTaskList2) {
 		Object[] listeners = listOfTaskListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
@@ -360,7 +360,7 @@ public class TaskSpec {
 		}
 	}
 
-	private void notifyBmtTaskSpecChanged(BmtTask bmtTask, int pos,
+	public void notifyBmtTaskSpecChanged(BmtTask bmtTask, int pos,
 			ArrayList<BmtTask> bntTaskList2) {
 		Object[] listeners = listOfTaskListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
@@ -373,7 +373,7 @@ public class TaskSpec {
 		}
 	}
 
-	private void notifyBttTaskSpecChanged(BttTask bttTask, int pos,
+	public void notifyBttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
 		Object[] listeners = listOfTaskListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
@@ -386,7 +386,7 @@ public class TaskSpec {
 		}
 	}
 
-	private void notifyCttTaskSpecChanged(CttTask cttTask, int pos,
+	public void notifyCttTaskSpecChanged(CttTask cttTask, int pos,
 			ArrayList<CttTask> cttTaskList) {
 		Object[] listeners = listOfTaskListeners.getListenerList();
 		// Each listener occupies two elements - the first is the listener class
@@ -570,36 +570,36 @@ public class TaskSpec {
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BNT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
-			logg.competitionLogging(taskListName,
-			CompetitionIdentifier.BNT + tT.getString() + " no. "
-					+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName, CompetitionIdentifier.BNT
+					+ tT.getString() + " no. " + tripletIndex + " new state: "
+					+ tT.getState());
 			notifyBntTaskSpecChanged(((BntTask) tT), column, bntTaskList);
 			break;
 		case BMT:
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BMT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
-			logg.competitionLogging(taskListName,
-					CompetitionIdentifier.BMT + tT.getString() + " no. "
-							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName, CompetitionIdentifier.BMT
+					+ tT.getString() + " no. " + tripletIndex + " new state: "
+					+ tT.getState());
 			notifyBmtTaskSpecChanged(((BmtTask) tT), column, bmtTaskList);
 			break;
 		case BTT:
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BTT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
-			logg.competitionLogging(taskListName,
-					CompetitionIdentifier.BTT + tT.getString() + " no. "
-							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName, CompetitionIdentifier.BTT
+					+ tT.getString() + " no. " + tripletIndex + " new state: "
+					+ tT.getState());
 			notifyBttTaskSpecChanged(((BttTask) tT), column, bttTaskList);
 			break;
 		case CTT:
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BNT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
-			logg.competitionLogging(taskListName,
-					CompetitionIdentifier.BNT + tT.getString() + " no. "
-							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName, CompetitionIdentifier.BNT
+					+ tT.getString() + " no. " + tripletIndex + " new state: "
+					+ tT.getState());
 			notifyCttTaskSpecChanged(((CttTask) tT), column, cttTaskList);
 			break;
 		default:
@@ -638,5 +638,9 @@ public class TaskSpec {
 
 	public ArrayList<BttTask> getBttTaskList() {
 		return bttTaskList;
+	}
+
+	public ArrayList<CttTask> getCttTaskList() {
+		return cttTaskList;
 	}
 }

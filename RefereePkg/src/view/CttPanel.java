@@ -108,15 +108,9 @@ public class CttPanel extends CompetitionPanel {
 		return t;
 	}
 
-	public void  taskSpecChanged(ArrayList<CttTask> cttTaskList) {
-		sequenceTableModel.getDataVector().removeAllElements();
+	public void taskSpecChanged(ArrayList<CttTask> cttTaskList) {
 		sequenceTableModel.setRowCount(0);
-		sequenceTableModel.fireTableDataChanged();
-		while(sequenceTableModel.getRowCount() > 0)
-		{
-		    sequenceTableModel.removeRow(0);
-		}
-	 	sequenceTableModel.setRowCount(cttTaskList.size());
+		sequenceTableModel.setRowCount(cttTaskList.size());
 		for (int i = 0; i < cttTaskList.size(); i++) {
 			sequenceTableModel.setValueAt(
 					((Task) cttTaskList.get(i)).getString(), i, 0);
@@ -124,8 +118,10 @@ public class CttPanel extends CompetitionPanel {
 	}
 
 	public void setTaskBoxSected(Task task) {
-		/*placeCbm.setSelectedItem(((CttTask)task).getPlace());
-		orientationCbm.setSelectedItem(((CttTask)task).getOrientation());
-		pauseCbm.setSelectedItem(((CttTask)task).getPause())*/;
+		/*
+		 * placeCbm.setSelectedItem(((CttTask)task).getPlace());
+		 * orientationCbm.setSelectedItem(((CttTask)task).getOrientation());
+		 * pauseCbm.setSelectedItem(((CttTask)task).getPause())
+		 */;
 	}
 }

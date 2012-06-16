@@ -33,7 +33,7 @@ public class BmtPanel extends CompetitionPanel {
 	private DefaultComboBoxModel<String> objectCbm;
 	private JComboBox<String> placeFinalBox;
 	public DefaultComboBoxModel<String> placeFinalCbm;
-	
+
 	BmtPanel(BorderLayout borderLayout) {
 		super(borderLayout);
 		createFlowPanelsInEastPanel();
@@ -70,7 +70,7 @@ public class BmtPanel extends CompetitionPanel {
 		flowPanels[5].add(new JLabel("Final Place"));
 		flowPanels[5].add(placeFinalBox);
 		eastPanel.add(flowPanels[5]);
-		}
+	}
 
 	/**
 	 * Update appropriate GUI components with the provided valid positions.
@@ -92,7 +92,7 @@ public class BmtPanel extends CompetitionPanel {
 		placeDestinationCbm = new DefaultComboBoxModel<String>(posString);
 		placeDestinationBox.setModel(placeDestinationCbm);
 		placeFinalCbm = new DefaultComboBoxModel<String>(posString);
-		placeFinalBox.setModel(placeFinalCbm);		
+		placeFinalBox.setModel(placeFinalCbm);
 	}
 
 	/**
@@ -118,34 +118,34 @@ public class BmtPanel extends CompetitionPanel {
 				object.toArray(new String[object.size()]));
 		objectBox.setModel(objectCbm);
 	}
-	
+
 	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {
-		sequenceTableModel.clearColumn(0);
+		sequenceTableModel.setRowCount(0);
 		sequenceTableModel.setRowCount(bmtTaskList.size());
 		for (int i = 0; i < bmtTaskList.size(); i++) {
-			sequenceTableModel.setValueAt(((Task) bmtTaskList.get(i)).getString(),
-					i, 0);
+			sequenceTableModel.setValueAt(
+					((Task) bmtTaskList.get(i)).getString(), i, 0);
 		}
 	}
-	
+
 	public BmtTask getSelectedTask() {
 		BmtTask t = new BmtTask();
 		BmtTask.setPlaceInitial((String) placeInitialBox.getSelectedItem());
 		BmtTask.setPlaceSource((String) placeSourceBox.getSelectedItem());
-		BmtTask.setPlaceDestination((String) placeDestinationBox.getSelectedItem());
+		BmtTask.setPlaceDestination((String) placeDestinationBox
+				.getSelectedItem());
 		BmtTask.setPlaceFinal((String) placeFinalBox.getSelectedItem());
 		t.setConfiguration((String) configurationBox.getSelectedItem());
 		t.setObject((String) objectBox.getSelectedItem());
-		System.out.println(t.getString());
 		return t;
 	}
-	
+
 	public void setTaskBoxSected(Task task) {
-		placeInitialCbm.setSelectedItem(((BmtTask)task).getPlaceInitial());
-		placeSourceCbm.setSelectedItem(((BmtTask)task).getPlaceSource());
-		placeDestinationCbm.setSelectedItem(((BmtTask)task).getPlaceDestination());
-		placeFinalCbm.setSelectedItem(((BmtTask)task).getPlaceFinal());
-		configurationCbm.setSelectedItem(((BmtTask)task).getConfiguration());
-		objectCbm.setSelectedItem(((BmtTask)task).getObject());
+		placeInitialCbm.setSelectedItem(BmtTask.getPlaceInitial());
+		placeSourceCbm.setSelectedItem(BmtTask.getPlaceSource());
+		placeDestinationCbm.setSelectedItem(BmtTask.getPlaceDestination());
+		placeFinalCbm.setSelectedItem(BmtTask.getPlaceFinal());
+		configurationCbm.setSelectedItem(((BmtTask) task).getConfiguration());
+		objectCbm.setSelectedItem(((BmtTask) task).getObject());
 	}
 }
