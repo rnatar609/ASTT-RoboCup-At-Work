@@ -33,7 +33,7 @@ public class BmtTask extends Task {
 		this.state = StateOfTask.INIT;
 	}
 
-	public String getConfiguration() {
+	public static String getConfiguration() {
 		return configuration;
 	}
 

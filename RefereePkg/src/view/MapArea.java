@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -36,10 +37,11 @@ public class MapArea extends JScrollPane implements TaskListener {
 	private List<BntTask> taskList;
 	private CompetitionIdentifier compIdent;
 	private BmtTask bmtTask;
+	private ArrayList<BttTask> bttList;
 
 	public MapArea() {
 		super();
-		compIdent = CompetitionIdentifier.BNT;	
+		compIdent = CompetitionIdentifier.BNT;
 		mapPane = new MapPane();
 		taskList = new ArrayList<BntTask>();
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -55,6 +57,8 @@ public class MapArea extends JScrollPane implements TaskListener {
 		private static final double R140 = Math.PI / 180 * 140;
 		private static final double R180 = Math.PI;
 		private static final double R220 = Math.PI / 180 * 220;
+		private final double phi = Math.toRadians(40);
+		private double dis = 20;
 
 		protected void paintComponent(Graphics g) {
 			Dimension d = getSize();
@@ -74,12 +78,10 @@ public class MapArea extends JScrollPane implements TaskListener {
 					if (i == 0) {
 						pPrev = p;
 					} else {
-						g2.setStroke(new BasicStroke(6.0f));
+						g2.setStroke(new BasicStroke(4.0f));
 						g2.setColor(Color.black);
 						g2.drawLine(pPrev.x, pPrev.y, p.x, p.y);
-						g2.setStroke(new BasicStroke(4.0f));
-						g2.setColor(Color.gray);
-						g2.drawLine(pPrev.x, pPrev.y, p.x, p.y);
+						drawArrowHead(g2, p, pPrev);
 					}
 					i++;
 					pPrev = p;
@@ -113,7 +115,7 @@ public class MapArea extends JScrollPane implements TaskListener {
 					Point p = validPositions.get(tT.getPlace());
 					drawArrow(g, p, theta * Math.PI / 180.0);
 					g2.setColor(Color.black);
-					g2.drawString(tT.getPlace(), p.x - 5, p.y + 4);
+					g2.drawString(tT.getPlace(), p.x - 7, p.y + 4);
 				}
 			}
 			if (compIdent == CompetitionIdentifier.BMT) {
@@ -126,7 +128,8 @@ public class MapArea extends JScrollPane implements TaskListener {
 					g2.setColor(Color.black);
 					g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE, 2 * R_CIRCLE,
 							2 * R_CIRCLE);
-					g2.drawString("I", p.x - 3, p.y + 3);
+					g2.drawString(BmtTask.getPlaceInitial(), p.x - 7, p.y + 3);
+					g2.drawString("initial", p.x + R_CIRCLE + 2, p.y + 4);
 				}
 				if (validPositions.containsKey(BmtTask.getPlaceSource())) {
 					g.setColor(Color.cyan);
@@ -136,7 +139,8 @@ public class MapArea extends JScrollPane implements TaskListener {
 					g2.setColor(Color.black);
 					g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE, 2 * R_CIRCLE,
 							2 * R_CIRCLE);
-					g2.drawString("S", p.x - 3, p.y + 3);
+					g2.drawString(BmtTask.getPlaceSource(), p.x - 7, p.y + 3);
+					g2.drawString("source", p.x + R_CIRCLE + 2, p.y + 4);
 				}
 				if (validPositions.containsKey(BmtTask.getPlaceDestination())) {
 					g.setColor(Color.cyan);
@@ -146,7 +150,9 @@ public class MapArea extends JScrollPane implements TaskListener {
 					g2.setColor(Color.black);
 					g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE, 2 * R_CIRCLE,
 							2 * R_CIRCLE);
-					g2.drawString("D", p.x - 3, p.y + 3);
+					g2.drawString(BmtTask.getPlaceDestination(), p.x - 7,
+							p.y + 3);
+					g2.drawString("destination", p.x + R_CIRCLE + 2, p.y + 4);
 				}
 				if (validPositions.containsKey(BmtTask.getPlaceFinal())) {
 					g.setColor(Color.cyan);
@@ -156,7 +162,34 @@ public class MapArea extends JScrollPane implements TaskListener {
 					g2.setColor(Color.black);
 					g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE, 2 * R_CIRCLE,
 							2 * R_CIRCLE);
-					g2.drawString("F", p.x - 3, p.y + 3);
+					g2.drawString(BmtTask.getPlaceFinal(), p.x - 7, p.y + 3);
+					g2.drawString(BmtTask.getConfiguration(), p.x + R_CIRCLE
+							+ 2, p.y + 4);
+				}
+			}
+			if (compIdent == CompetitionIdentifier.BTT) {
+				g2.setStroke(new BasicStroke(2.0f));
+				for (BttTask tT : bttList) {
+					if (validPositions.containsKey(tT.getPlace())) {
+						if (tT.getSituation().equals("initial"))
+							g.setColor(Color.yellow);
+						else
+							g.setColor(Color.cyan);
+						Point p = validPositions.get(tT.getPlace());
+						g2.fillOval(p.x - R_CIRCLE, p.y - R_CIRCLE,
+								2 * R_CIRCLE, 2 * R_CIRCLE);
+						g2.setColor(Color.black);
+						g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE,
+								2 * R_CIRCLE, 2 * R_CIRCLE);
+						String ident;
+						g2.drawString(tT.getPlace(), p.x - 5, p.y + 4);
+						if (tT.getConfiguration().length() == 0)
+							g2.drawString(tT.getSituation(),
+									p.x + R_CIRCLE + 2, p.y + 4);
+						else
+							g2.drawString(tT.getConfiguration(), p.x + R_CIRCLE
+									+ 2, p.y + 4);
+					}
 				}
 			}
 		}
@@ -184,6 +217,24 @@ public class MapArea extends JScrollPane implements TaskListener {
 		private Point2D getPolyPoint(double d) {
 			Point2D p = new Point2D.Double(Math.cos(d), Math.sin(d));
 			return p;
+		}
+
+		private void drawArrowHead(Graphics2D g2, Point end, Point start) {
+			g2.setPaint(Color.black);
+			double dy = end.y - start.y;
+			double dx = end.x - start.x;
+			double theta = Math.atan2(dy, dx);
+			double x, y, rho = theta + phi;
+			double partX = end.x - dx / 4;
+			double partY = end.y - dy / 4;
+			for (int j = 0; j < 2; j++) {
+				x = partX - dis * Math.cos(rho);
+				y = partY - dis * Math.sin(rho);
+				g2.setStroke(new BasicStroke(6.0f));
+				g2.setColor(Color.cyan);
+				g2.draw(new Line2D.Double(partX, partY, x, y));
+				rho = theta - phi;
+			}
 		}
 	}
 
@@ -221,8 +272,9 @@ public class MapArea extends JScrollPane implements TaskListener {
 	@Override
 	public void bttTaskSpecChanged(BttTask bttTask, int pos,
 			ArrayList<BttTask> bttTaskList) {
-		// TODO Auto-generated method stub
-
+		this.bttList = bttTaskList;
+		compIdent = CompetitionIdentifier.BTT;
+		mapPane.repaint();
 	}
 
 	@Override
