@@ -570,10 +570,16 @@ public class TaskSpec {
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BNT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName,
+			CompetitionIdentifier.BNT + tT.getString() + " no. "
+					+ tripletIndex + " new state: " + tT.getState());
 			notifyBntTaskSpecChanged(((BntTask) tT), column, bntTaskList);
 			break;
 		case BMT:
 			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BMT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName,
 					CompetitionIdentifier.BMT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
 			notifyBmtTaskSpecChanged(((BmtTask) tT), column, bmtTaskList);
@@ -582,10 +588,16 @@ public class TaskSpec {
 			logg.globalLogging(taskListName,
 					CompetitionIdentifier.BTT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName,
+					CompetitionIdentifier.BTT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
 			notifyBttTaskSpecChanged(((BttTask) tT), column, bttTaskList);
 			break;
 		case CTT:
 			logg.globalLogging(taskListName,
+					CompetitionIdentifier.BNT + tT.getString() + " no. "
+							+ tripletIndex + " new state: " + tT.getState());
+			logg.competitionLogging(taskListName,
 					CompetitionIdentifier.BNT + tT.getString() + " no. "
 							+ tripletIndex + " new state: " + tT.getState());
 			notifyCttTaskSpecChanged(((CttTask) tT), column, cttTaskList);
