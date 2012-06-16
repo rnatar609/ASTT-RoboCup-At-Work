@@ -784,7 +784,6 @@ public class MainGUI extends JFrame implements TaskListener,
 			for (int i = 0; i < competitionPanel.length; i++) {
 				tabbedPane.setEnabledAt(i, true);
 			}
-			tabbedPane.setEnabledAt(compIdent.ordinal(), false);
 		}
 		compTable.getColumnModel().getColumn(0).setPreferredWidth(180);
 		competitionPanel[compIdent.ordinal()].getSequenceTableScrollPane()
