@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -51,7 +52,7 @@ public class CompetitionPanel extends JPanel {
 
 	class SequenceTableModel extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
-
+		
 		public Class getColumnClass(int column) {
 			if (column >= 1)
 				return Boolean.class;

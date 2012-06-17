@@ -342,7 +342,7 @@ public class MainController implements TimerListener {
 					.getSelectedRow();
 			if (selectedRow >= 0) {
 				Task tT = tS.getTaskAtIndex(selectedRow, compIdent);
-				mG.setTaskBoxSected(tT, compIdent);
+				mG.setTaskBoxSelected(tT, compIdent);
 				mG.setStatusLine("Selected task " + tT.getString() + ".");
 			}
 		}
@@ -375,8 +375,8 @@ public class MainController implements TimerListener {
 				tS.setTaskState(selectedRow, selectedColumn, compIdent);
 				mG.setStatusLine("Updated task state of "
 						+ tS.getTaskAtIndex(selectedRow, compIdent).getString());
-				mG.setTableCellCorrected(selectedRow, selectedColumn, compIdent); //
-				mG.getSequenceTable(compIdent.ordinal()).clearSelection();
+				mG.setTableCellCorrected(selectedRow, selectedColumn, compIdent);
+				//mG.getSequenceTable(compIdent.ordinal()).clearSelection();
 			}
 
 		}

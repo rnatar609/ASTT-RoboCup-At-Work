@@ -108,7 +108,7 @@ public class BntPanel extends CompetitionPanel {
 	}
 
 	public void taskSpecChanged(ArrayList<BntTask> bntTaskList) {
-		sequenceTableModel.setRowCount(0);
+		sequenceTableModel.clearColumn(0);
 		sequenceTableModel.setRowCount(bntTaskList.size());
 		for (int i = 0; i < bntTaskList.size(); i++) {
 			sequenceTableModel.setValueAt(

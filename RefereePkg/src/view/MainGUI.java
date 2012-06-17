@@ -35,6 +35,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import view.CompetitionPanel.SequenceTableModel;
+
 import model.BmtTask;
 import model.BntTask;
 import model.BttTask;
@@ -115,30 +117,6 @@ public class MainGUI extends JFrame implements TaskListener,
 	private CompetitionPanel[] competitionPanel;
 	private JTabbedPane tabbedPane;
 	private final int NUMBEROFCOMPETITIONS;
-
-	private class TripletTableM extends DefaultTableModel {
-		private static final long serialVersionUID = 1L;
-
-		public Class getColumnClass(int column) {
-			if (column >= 1)
-				return Boolean.class;
-			else
-				return String.class;
-		}
-
-		public void clearColumn(int c) {
-			for (int i = 0; i < this.getRowCount(); i++) {
-				this.setValueAt(null, i, c);
-			}
-		}
-
-		public boolean isCellEditable(int row, int col) {
-			if (col == 0)
-				return false;
-			else
-				return true;
-		}
-	}
 
 	/** Default constructor */
 	public MainGUI(int num) {
@@ -691,7 +669,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	 * @param task
 	 *            Task containing the task to be selected.
 	 */
-	public void setTaskBoxSected(Task task, CompetitionIdentifier compIdent) {
+	public void setTaskBoxSelected(Task task, CompetitionIdentifier compIdent) {
 		competitionPanel[compIdent.ordinal()].setTaskBoxSected(task);
 	}
 
@@ -738,8 +716,8 @@ public class MainGUI extends JFrame implements TaskListener,
 			CompetitionIdentifier compIdent) {
 		JTable compTable = competitionPanel[compIdent.ordinal()]
 				.getSequenceTable();
-		DefaultTableModel compTableModel = competitionPanel[compIdent.ordinal()]
-				.getSequenceTableModel();
+		SequenceTableModel compTableModel = competitionPanel[compIdent
+				.ordinal()].getSequenceTableModel();
 		DefaultTableCellRenderer compTableRend = competitionPanel[compIdent
 				.ordinal()].getTableCellRenderer();
 		if (enable) {
@@ -762,9 +740,9 @@ public class MainGUI extends JFrame implements TaskListener,
 				sendTripletsButton.setEnabled(true);
 			}
 			for (int i = 0; i < competitionPanel.length; i++) {
-				tabbedPane.setEnabledAt(i, false);
+				if (i != compIdent.ordinal())
+					tabbedPane.setEnabledAt(i, false);
 			}
-			tabbedPane.setEnabledAt(compIdent.ordinal(), true);
 		} else {
 			compTableModel.setColumnCount(1);
 			compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
@@ -805,6 +783,8 @@ public class MainGUI extends JFrame implements TaskListener,
 
 	public void setTableCellCorrected(int row, int column,
 			CompetitionIdentifier compIdent) {
+		// competitionPanel[compIdent.ordinal()].getSequenceTableModel().setValueAt(true,
+		// row, column);
 		if (column == 1)
 			competitionPanel[compIdent.ordinal()].getSequenceTableModel()
 					.setValueAt(Boolean.FALSE, row, 2);

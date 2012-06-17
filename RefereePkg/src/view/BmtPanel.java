@@ -120,7 +120,7 @@ public class BmtPanel extends CompetitionPanel {
 	}
 
 	public void taskSpecChanged(ArrayList<BmtTask> bmtTaskList) {
-		sequenceTableModel.setRowCount(0);
+		sequenceTableModel.clearColumn(0);
 		sequenceTableModel.setRowCount(bmtTaskList.size());
 		for (int i = 0; i < bmtTaskList.size(); i++) {
 			sequenceTableModel.setValueAt(
