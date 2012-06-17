@@ -18,38 +18,46 @@ public class TaskServer implements Runnable{
 	private Thread serverThread;
 	private String teamName;
 	private String commLogID= "Communication";
+	private boolean activeConnection;
 	
 	public TaskServer() {
 		logg = Logging.getInstance();
+		teamName = "";
+		activeConnection = false;
 	}
 
 	public void createServerSocket(String ServerIP, String ServerPort){
 		// Prepare context and socket
-		ZMQ.Context context = ZMQ.context(1);
-		refereeSocket = context.socket(ZMQ.REP);
-		try {
-			refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
-		}
-		catch(Exception e) {
-			System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
-			File file = new File(Logging.logFileName);
-			if (!file.delete()) {
-				System.out.println("Deletion of file >" + Logging.logFileName + "< failed.");
+		if(activeConnection == false){
+			ZMQ.Context context = ZMQ.context(1);
+			refereeSocket = context.socket(ZMQ.REP);
+			try {
+				refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
 			}
-			//System.exit(1);
-		} 
-		System.out.println("Server socket created: " + refereeSocket
-				+ " ipAddress: " + ServerIP + " port: " + ServerPort);
-		logg.globalLogging(commLogID, 
-				"Server socket created: " + " ipAddress: " + ServerIP + " port: " + ServerPort);
+			catch(Exception e) {
+				System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
+				File file = new File(Logging.logFileName);
+				if (!file.delete()) {
+					System.out.println("Deletion of file >" + Logging.logFileName + "< failed.");
+				}
+				//System.exit(1);
+			} 
+			System.out.println("Server socket created: " + refereeSocket
+					+ " ipAddress: " + ServerIP + " port: " + ServerPort);
+			logg.globalLogging(commLogID, 
+					"Server socket created: " + " ipAddress: " + ServerIP + " port: " + ServerPort);
+		}
 	}
 	
 	public void listenForConnection() {
-		teamName = new String();
-		serverThread = new Thread(this, "Task Server Thread");
-		serverThread.start();
-		System.out.println("Server thread started... ");
-		logg.globalLogging(commLogID, "Server thread started... ");
+		if(activeConnection == false){
+			activeConnection = true;
+			teamName = new String();
+			serverThread = new Thread(this, "Task Server Thread");
+			serverThread.start();
+			System.out.println("Server thread started... ");
+			logg.globalLogging(commLogID, "Server thread started... ");
+		}
 	}
 
 	public void run() {
@@ -71,7 +79,9 @@ public class TaskServer implements Runnable{
 	
 	public boolean sendTaskSpecToClient(String tSpec) {
 		// Send task specification
-		
+		if(activeConnection == false){
+			return false;
+		}
 		refereeSocket.send(tSpec.getBytes(), 0);
 		System.out.println("String sent to client: "+ tSpec);
 		logg.globalLogging(commLogID, "String sent to client: "+ tSpec);
@@ -102,16 +112,26 @@ public class TaskServer implements Runnable{
 
 	public boolean disconnectClient() {
 		try{
-			refereeSocket.close();	
-			System.out.println("Client Disconnected");
-			logg.globalLogging(commLogID, "Client Disconnected");
-			notifyTeamDisconnected();
+			
+			if(!teamName.equals("")){
+				System.out.println("teamName " + teamName);
+				refereeSocket.close();
+				activeConnection = false;
+				teamName = "";
+				System.out.println("Client Disconnected");
+				logg.globalLogging(commLogID, "Client Disconnected");
+				notifyTeamDisconnected();
+				return true;
+			}else{
+				return false;
+			}
+			
 		}
 		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 	public void addConnectionListener(ConnectionListener cL) {

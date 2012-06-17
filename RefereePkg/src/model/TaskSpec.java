@@ -92,7 +92,7 @@ public class TaskSpec {
 				BttTask btt = itBtt.next();
 				BttTask previous = new BttTask();
 				do {
-					s = s.concat(btt.getSituation() + "Situation(");
+					s = s.concat(btt.getSituation() + "situation(");
 					do {
 						s = s.concat(btt.getPlace() + ",");
 						s = s.concat(btt.getConfiguration() + ",(");
@@ -500,47 +500,49 @@ public class TaskSpec {
 				String delimsbracket = "[()]";
 				String delimskomma = "[,]";
 				String[] taskspec = tSpecStr.split("[<>]");
-				String[] initgoalsituation = taskspec[1].split(delimssemicolon);
-
-				for (int o = 0; o < initgoalsituation.length; o++) {
-
-					String[] tokens = initgoalsituation[o].split(delimsbracket);
-
-					String pose;
-					String config;
-
-					for (int i = 1; i < tokens.length; i++) {
-						String test[] = tokens[i].split(delimskomma);
-						pose = test[0];
-						if (test.length > 1)
-							config = tokens[i].split(delimskomma)[1];
-						else
-							config = "";
-						i++;
-						String[] objects = tokens[i].split(delimskomma);
-						for (int u = 0; u < objects.length; u++) {
-
-							BttTask nextTask = new BttTask();
-							if (o == 0) {
-								nextTask.setSituation("initial");
-								// System.out.println("initial");
-							} else {
-								nextTask.setSituation("goal");
-								// System.out.println("goal");
+				if(taskspec.length > 1){
+					String[] initgoalsituation = taskspec[1].split(delimssemicolon);
+	
+					for (int d = 0; d < initgoalsituation.length; d++) {
+	
+						String[] tokens = initgoalsituation[d].split(delimsbracket);
+	
+						String pose;
+						String config;
+						String situation = "";
+						if(tokens[0].contains("initial"))
+							situation = "initial";
+						if(tokens[0].contains("goal"))
+							situation = "goal";
+	
+						for (int i = 1; i < tokens.length; i++) {
+							String test[] = tokens[i].split(delimskomma);
+							pose = test[0];
+							if (test.length > 1)
+								config = tokens[i].split(delimskomma)[1];
+							else
+								config = "";
+							i++;
+							String[] objects = tokens[i].split(delimskomma);
+							for (int u = 0; u < objects.length; u++) {
+	
+								BttTask nextTask = new BttTask();
+								
+								// System.out.println("pose: "+ pose);
+								// System.out.println("config: "+ config);
+								// System.out.println("objects: "+ objects[u]);
+								nextTask.setSituation(situation);
+								nextTask.setPlace(pose);
+								nextTask.setConfiguration(config);
+								nextTask.setObject(objects[u]);
+								bttTaskList.add(nextTask);
+								logg.globalLogging(taskListName,
+										nextTask.getString() + " no. "
+												+ bttTaskList.indexOf(nextTask)
+												+ " added");
+								notifyBttTaskSpecChanged(nextTask,
+										bttTaskList.indexOf(nextTask), bttTaskList);
 							}
-							// System.out.println("pose: "+ pose);
-							// System.out.println("config: "+ config);
-							// System.out.println("objects: "+ objects[u]);
-							nextTask.setPlace(pose);
-							nextTask.setConfiguration(config);
-							nextTask.setObject(objects[u]);
-							bttTaskList.add(nextTask);
-							logg.globalLogging(taskListName,
-									nextTask.getString() + " no. "
-											+ bttTaskList.indexOf(nextTask)
-											+ " added");
-							notifyBttTaskSpecChanged(nextTask,
-									bttTaskList.indexOf(nextTask), bttTaskList);
 						}
 					}
 				}
