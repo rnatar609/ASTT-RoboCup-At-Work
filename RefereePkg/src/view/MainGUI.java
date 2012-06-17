@@ -68,7 +68,6 @@ public class MainGUI extends JFrame implements TaskListener,
 		ConnectionListener, TimerListener {
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
-	private static final int NUMBEROFCOMPETIONS = 0;
 	private JPanel statusPanel;
 	private JPanel westPanel;
 	private JButton saveButton;
@@ -80,7 +79,6 @@ public class MainGUI extends JFrame implements TaskListener,
 
 	private JButton sendTripletsButton;
 	private JToggleButton timerStartStopButton;
-	private JPanel boxPanel;
 	private JComboBox<String> orientationsBox;
 	private JComboBox<Short> pausesBox;
 	private JComboBox<String> placesBox;
@@ -429,7 +427,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	 *            Reference to an object of type Action that performs the
 	 *            functionality.
 	 */
-	public void connectSendTriplets(Action sendTriplets) {
+	public void connectSendSpecAction(Action sendTriplets) {
 		sendTripletsButton.setAction(sendTriplets);
 		sendTripletsButton.setEnabled(false);
 	}
@@ -790,6 +788,7 @@ public class MainGUI extends JFrame implements TaskListener,
 				.setPreferredSize(compTable.getPreferredSize());
 		this.validate();
 	}
+
 	/**
 	 * Register objects that listen for mouse events in the triplet table area
 	 * of the GUI.
@@ -833,7 +832,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	}
 
 	/** Get the reference to the GUI component Send Triplets button. */
-	public JButton getSendTripletsButton() {
+	public JButton getSendSpecButton() {
 		return sendTripletsButton;
 	}
 

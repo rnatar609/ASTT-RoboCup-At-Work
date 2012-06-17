@@ -13,8 +13,8 @@ import java.util.Scanner;
 /**
  * This class is implemented as a Singleton.
  */
-public class ValidTripletElements {
-	static private ValidTripletElements instance;
+public class ValidTaskElements {
+	static private ValidTaskElements instance;
 	private LinkedHashMap<String, Point> validBNTPositions;
 	private List<String> validBNTOrientations;
 	private List<String> validBNTPauses;
@@ -31,7 +31,7 @@ public class ValidTripletElements {
 	private List<String> validCTTSituations;
 	ConfigFile cfgFile;
 
-	private ValidTripletElements() {
+	private ValidTaskElements() {
 		validBNTPositions = new LinkedHashMap<String, Point>();
 		validBNTOrientations = new ArrayList<String>();
 		validBNTPauses = new ArrayList<String>();
@@ -179,7 +179,7 @@ public class ValidTripletElements {
 			}
 		}
 		str = str.concat(")");
-		System.out.println("Valid place pattern: " + str);
+		//System.out.println("Valid place pattern: " + str);
 		return str;
 	}
 
@@ -193,7 +193,7 @@ public class ValidTripletElements {
 			}
 		}
 		str = str.concat(")");
-		System.out.println("Valid orientation pattern: " + str);
+		//System.out.println("Valid orientation pattern: " + str);
 		return str;
 	}
 
@@ -207,26 +207,19 @@ public class ValidTripletElements {
 			}
 		}
 		str = str.concat(")");
-		System.out.println("Valid pause pattern: " + str);
+		//System.out.println("Valid pause pattern: " + str);
 		return str;
 	}
 
 	public boolean readFromConfigFile(ConfigFile cfg) throws Exception {
 		cfgFile = cfg;
-		ValidTripletElements vte = ValidTripletElements.getInstance();
+		ValidTaskElements vte = ValidTaskElements.getInstance();
 		boolean allValid = vte.populateLists(cfg);
 		if (!allValid) {
 			System.out.println("There are invalid values in the Config File.");
 		}
 		return allValid;
 	}
-
-	/*
-	 * boolean isPlaceValid(String s) { // System.out.println(
-	 * "User-given place " + s ); Iterator<Position> iterator =
-	 * validPositions.iterator(); while (iterator.hasNext()) { if
-	 * (s.equals(iterator.next())) { return true; } } return false; }
-	 */
 
 	boolean isOrientationValid(String s) {
 		// System.out.println( "User-given Orientation: " + s );
@@ -256,13 +249,13 @@ public class ValidTripletElements {
 		patStr = patStr.concat(constructPlacePattern());
 		patStr = patStr.concat("\\," + constructOrientationPattern());
 		patStr = patStr.concat("\\," + constructPausePattern() + "\\)");
-		System.out.println("Valid triplet pattern " + patStr);
+		//System.out.println("Valid triplet pattern " + patStr);
 		return patStr;
 	}
 
-	public static ValidTripletElements getInstance() {
+	public static ValidTaskElements getInstance() {
 		if (instance == null) {
-			instance = new ValidTripletElements();
+			instance = new ValidTaskElements();
 		}
 		return instance;
 	}

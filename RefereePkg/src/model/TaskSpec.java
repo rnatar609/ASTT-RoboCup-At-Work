@@ -339,7 +339,7 @@ public class TaskSpec {
 		}
 	}
 
-	public void addTripletListener(TaskListener tL) {
+	public void addTaskListener(TaskListener tL) {
 		listOfTaskListeners.add(TaskListener.class, tL);
 	}
 
@@ -453,7 +453,7 @@ public class TaskSpec {
 		try {
 			if (competition.equals(CompetitionIdentifier.BNT.toString())) {
 				bntTaskList = new ArrayList<BntTask>();
-				Pattern pat = Pattern.compile(ValidTripletElements
+				Pattern pat = Pattern.compile(ValidTaskElements
 						.getInstance().getValidBNTPattern());
 				Matcher m = pat.matcher(tSpecStr);
 				do {
