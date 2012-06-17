@@ -376,7 +376,7 @@ public class MainController implements TimerListener {
 				mG.setStatusLine("Updated task state of "
 						+ tS.getTaskAtIndex(selectedRow, compIdent).getString());
 				mG.setTableCellCorrected(selectedRow, selectedColumn, compIdent);
-				//mG.getSequenceTable(compIdent.ordinal()).clearSelection();
+				mG.getSequenceTable(compIdent.ordinal()).clearSelection();
 			}
 
 		}
