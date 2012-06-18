@@ -33,6 +33,7 @@ import model.ValidTaskElements;
 import view.BmtPanel;
 import view.BntPanel;
 import view.BttPanel;
+import view.CttPanel;
 import view.DialogType;
 import view.FileType;
 import view.MainGUI;
@@ -536,20 +537,17 @@ public class MainController implements TimerListener {
 				((BttPanel) mG.getCompetitionPanel(CompetitionIdentifier.BTT
 						.ordinal())).setValidSituations(vte
 						.getValidBTTSituations());
-
-				/*
-				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-				 * .ordinal())).setValidPositions(vte .getValidCTTPositions());
-				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-				 * .ordinal())).setValidConfigurations(vte
-				 * .getValidCTTConfigurations()); ((CttPanel)
-				 * mG.getCompetitionPanel(CompetitionIdentifier.CTT
-				 * .ordinal())).setValidObjects(vte.getValidCTTObjects());
-				 * ((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
-				 * .ordinal())).setValidSituations(vte
-				 * .getValidCTTSituations());
-				 */
-
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidPositions(vte
+						.getValidCTTPositions());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidConfigurations(vte
+						.getValidCTTConfigurations());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidObjects(vte.getValidCTTObjects());
+				((CttPanel) mG.getCompetitionPanel(CompetitionIdentifier.CTT
+						.ordinal())).setValidSituations(vte
+						.getValidCTTSituations());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
