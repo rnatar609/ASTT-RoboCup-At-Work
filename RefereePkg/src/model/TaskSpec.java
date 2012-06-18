@@ -609,6 +609,63 @@ public class TaskSpec {
 					}
 				}
 			}
+			if (competition.equals(CompetitionIdentifier.CTT.toString())) {
+
+				cttTaskList = new ArrayList<CttTask>();
+				String delimssemicolon = "[;]";
+				String delimsbracket = "[()]";
+				String delimskomma = "[,]";
+				String[] taskspec = tSpecStr.split("[<>]");
+				if (taskspec.length > 1) {
+					String[] initgoalsituation = taskspec[1]
+							.split(delimssemicolon);
+
+					for (int d = 0; d < initgoalsituation.length; d++) {
+
+						String[] tokens = initgoalsituation[d]
+								.split(delimsbracket);
+
+						String pose;
+						String config;
+						String situation = "";
+						if (tokens[0].contains("initial"))
+							situation = "initial";
+						if (tokens[0].contains("goal"))
+							situation = "goal";
+
+						for (int i = 1; i < tokens.length; i++) {
+							String test[] = tokens[i].split(delimskomma);
+							pose = test[0];
+							if (test.length > 1)
+								config = tokens[i].split(delimskomma)[1];
+							else
+								config = "";
+							i++;
+							String[] objects = tokens[i].split(delimskomma);
+							for (int u = 0; u < objects.length; u++) {
+
+								CttTask nextTask = new CttTask();
+
+								// System.out.println("pose: "+ pose);
+								// System.out.println("config: "+ config);
+								// System.out.println("objects: "+ objects[u]);
+								nextTask.setSituation(situation);
+								nextTask.setPlace(pose);
+								nextTask.setConfiguration(config);
+								nextTask.setObject(objects[u]);
+								cttTaskList.add(nextTask);
+								logg.globalLogging(taskListName,
+										nextTask.getString() + " no. "
+												+ bttTaskList.indexOf(nextTask)
+												+ " added");
+								notifyCttTaskSpecChanged(nextTask,
+										cttTaskList.indexOf(nextTask),
+										cttTaskList);
+							}
+						}
+					}
+				}
+			}
 		} catch (Exception e) {
 			System.out.println("Caught exception in parseTaskSpec. Error: "
 					+ e.getMessage());
