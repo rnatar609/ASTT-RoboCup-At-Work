@@ -16,10 +16,10 @@ public class TaskTimer implements ConnectionListener {
 
 	private long configTime;
 	private long runTime;
+	private long usedTime;
 	private Timer timer;
 	private long startTime;
 	private long startRunTime;
-	private long currentSec;
 	private boolean configTimeRunning;
 	private boolean runTimeRunning;
 	private boolean timerStop;
@@ -37,30 +37,30 @@ public class TaskTimer implements ConnectionListener {
 				this.cancel();
 				return;
 			}
-			currentSec++;
 			if (configTimeRunning) {
-				long usedConfigTime = System.currentTimeMillis() - startTime;
-				if (usedConfigTime >= configTime) {
+				usedTime = System.currentTimeMillis() - startTime;
+				if (usedTime >= configTime) {
 					setConfigTimeStop();
 					inTime = false;
 				}
 			}
 			if (runTimeRunning) {
-				long usedRunTime = System.currentTimeMillis() - startRunTime;
-				if (usedRunTime >= runTime) {
-					notifyTimerTick(secToString(currentSec), inTime);
+				usedTime = System.currentTimeMillis() - startRunTime;
+				if (usedTime >= runTime) {
+					notifyTimerTick(millisecToString(usedTime), inTime);
 					notifyTimerOverrun();
 					cancel();
 					return;
 				}
 			}
-			notifyTimerTick(secToString(currentSec), inTime);
+			notifyTimerTick(millisecToString(usedTime), inTime);
 		}
 	}
 
 	public TaskTimer() {
 		logg = Logging.getInstance();
 		timerStop = true;
+		usedTime = 0;
 	}
 
 	public void startNewTimer(long configTime, long runTime) {
@@ -68,18 +68,21 @@ public class TaskTimer implements ConnectionListener {
 		if (timerStop) {
 			this.configTime = configTime * 1000;
 			this.runTime = runTime * 1000;
-			currentSec = 0;
+			usedTime = 0;
 			timer = new Timer();
 			configTimeRunning = true;
 			runTimeRunning = false;
 			inTime = true;
 			timerStop = false;
 			startTime = System.currentTimeMillis();
-			timer.scheduleAtFixedRate(new Task(), 1000, 1000);
-			logg.globalLogging(logId, "new config time  " + millisecToString(this.configTime));
-			logg.globalLogging(logId, "new run time " + millisecToString(this.runTime));
-			logg.globalLogging(logId, "Setup time startet at " + millisecToString(currentSec));
-			notifyTimerReset(secToString(currentSec));
+			timer.scheduleAtFixedRate(new Task(), 10, 10);
+			logg.globalLogging(logId, "New config time  "
+					+ millisecToString(this.configTime));
+			logg.globalLogging(logId, "New run time "
+					+ millisecToString(this.runTime));
+			logg.globalLogging(logId, "Setup time startet at "
+					+ millisecToString(usedTime));
+			notifyTimerReset(millisecToString(usedTime));
 			notifyTimerSetMaximumTime(("setup time: ")
 					.concat(millisecToString(this.configTime)));
 		}
@@ -91,29 +94,32 @@ public class TaskTimer implements ConnectionListener {
 
 	public void stopTimer() {
 		timerStop = true;
-		logg.globalLogging(logId, "stopped at " + secToString(currentSec));
-		logg.competitionLogging(logId, "stopped at " + secToString(currentSec));
+		logg.globalLogging(logId, "stopped at " + millisecToString(usedTime));
+		logg.competitionLogging(logId, "stopped at "
+				+ millisecToString(usedTime));
 	}
 
 	public void resetTimer() {
 		this.configTime = 0;
 		this.runTime = 0;
-		currentSec = 0;
+		usedTime = 0;
 		configTimeRunning = false;
 		runTimeRunning = false;
 		timerStop = true;
-		notifyTimerReset(secToString(currentSec));
+		notifyTimerReset(millisecToString(usedTime));
 	}
 
 	public void setConfigTimeStop() {
 		configTimeRunning = false;
-		currentSec = 0;
+		usedTime = 0;
 		startRunTime = System.currentTimeMillis();
 		runTimeRunning = true;
 		notifyTimerSetMaximumTime(("run time: ")
 				.concat(millisecToString(runTime)));
-		logg.globalLogging(logId, "Run time started at " + secToString(currentSec));
-		logg.competitionLogging(logId, "Run time started at " + secToString(currentSec));
+		logg.globalLogging(logId, "Run time started at "
+				+ millisecToString(usedTime));
+		logg.competitionLogging(logId, "Run time started at "
+				+ millisecToString(usedTime));
 	}
 
 	private void notifyTimerTick(String currentTime, boolean inTime) {
@@ -167,10 +173,6 @@ public class TaskTimer implements ConnectionListener {
 
 	public void removeTimerListener(TimerListener tL) {
 		listOfTimerListeners.remove(TimerListener.class, tL);
-	}
-
-	private String secToString(long sec) {
-		return millisecToString(sec * 1000);
 	}
 
 	private String millisecToString(long millisec) {
