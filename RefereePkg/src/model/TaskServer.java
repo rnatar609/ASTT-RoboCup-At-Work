@@ -52,7 +52,8 @@ public class TaskServer implements Runnable{
 	public void listenForConnection() {
 		if(activeConnection == false){
 			activeConnection = true;
-			teamName = new String();
+			teamName = new String("");
+			logg.setTeamName(teamName);
 			serverThread = new Thread(this, "Task Server Thread");
 			serverThread.start();
 			System.out.println("Server thread started... ");

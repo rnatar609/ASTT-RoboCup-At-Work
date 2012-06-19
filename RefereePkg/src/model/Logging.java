@@ -143,7 +143,7 @@ public class Logging {
 	}
 
 	public void setTeamName(String name) {
-		if (teamName == null || teamName == "") {
+		if (name == null || name.equals("")) {
 			teamName = "Unknown";
 		} else {
 			teamName = name;
