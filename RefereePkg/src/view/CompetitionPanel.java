@@ -52,7 +52,7 @@ public class CompetitionPanel extends JPanel {
 
 	class SequenceTableModel extends DefaultTableModel {
 		private static final long serialVersionUID = 1L;
-		
+
 		public Class getColumnClass(int column) {
 			if (column >= 1)
 				return Boolean.class;
@@ -119,10 +119,6 @@ public class CompetitionPanel extends JPanel {
 		eastPanel = new JPanel();
 		eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
 		this.add(eastPanel, BorderLayout.CENTER);
-	}
-
-	private void createFlowPanelsInEastPanel() {
-		// this should be done in each of the children of this class
 	}
 
 	public String getCompetitionName() {

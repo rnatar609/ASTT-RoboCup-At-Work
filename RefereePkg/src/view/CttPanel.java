@@ -13,23 +13,22 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import model.BntTask;
+import model.BmtTask;
 import model.CttTask;
 import model.Task;
 
 public class CttPanel extends CompetitionPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final int GAP = 10;
+	private JComboBox<String> situationBox;
 	private JComboBox<String> placeBox;
-	private JComboBox<String> orientationBox;
-	private JComboBox<String> pauseBox;
+	private JComboBox<String> configurationBox;
+	private JComboBox<String> objectBox;
+	private DefaultComboBoxModel<String> situationCbm;
 	public DefaultComboBoxModel<String> placeCbm;
-	private DefaultComboBoxModel<String> orientationCbm;
-	private DefaultComboBoxModel<String> pauseCbm;
+	private DefaultComboBoxModel<String> configurationCbm;
+	private DefaultComboBoxModel<String> objectCbm;
 
 	CttPanel(BorderLayout borderLayout) {
 		super(borderLayout);
@@ -39,22 +38,32 @@ public class CttPanel extends CompetitionPanel {
 	}
 
 	private void createFlowPanelsInEastPanel() {
-		JPanel[] flowPanels = new JPanel[3];
-		flowPanels[0] = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		flowPanels[1] = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		flowPanels[2] = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		placeBox = new JComboBox<String>();
-		flowPanels[0].add(new JLabel("Place"));
-		flowPanels[0].add(placeBox);
+		JPanel[] flowPanels = new JPanel[4];
+		for (int i = 0; i < flowPanels.length; i++) {
+			flowPanels[i] = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		}
+		situationBox = new JComboBox<String>();
+		flowPanels[0].add(new JLabel("Situation"));
+		flowPanels[0].add(situationBox);
 		eastPanel.add(flowPanels[0]);
-		orientationBox = new JComboBox<String>();
-		flowPanels[1].add(new JLabel("Orientation"));
-		flowPanels[1].add(orientationBox);
+		placeBox = new JComboBox<String>();
+		flowPanels[1].add(new JLabel("Place"));
+		flowPanels[1].add(placeBox);
 		eastPanel.add(flowPanels[1]);
-		pauseBox = new JComboBox<String>();
-		flowPanels[2].add(new JLabel("Pause"));
-		flowPanels[2].add(pauseBox);
+		configurationBox = new JComboBox<String>();
+		flowPanels[2].add(new JLabel("Configuration"));
+		flowPanels[2].add(configurationBox);
 		eastPanel.add(flowPanels[2]);
+		objectBox = new JComboBox<String>();
+		flowPanels[3].add(new JLabel("Object"));
+		flowPanels[3].add(objectBox);
+		eastPanel.add(flowPanels[3]);
+	}
+
+	public void setValidSituations(List<String> situations) {
+		situationCbm = new DefaultComboBoxModel<String>(
+				situations.toArray(new String[situations.size()]));
+		situationBox.setModel(situationCbm);
 	}
 
 	/**
@@ -75,53 +84,52 @@ public class CttPanel extends CompetitionPanel {
 	}
 
 	/**
+	 * Update appropriate GUI components with the provided valid positions.
+	 * 
+	 * @param positions
+	 *            A set of valid place labels and their pixel positions.
+	 */
+	public void setValidConfigurations(List<String> configuration) {
+		configurationCbm = new DefaultComboBoxModel<String>(
+				configuration.toArray(new String[configuration.size()]));
+		configurationBox.setModel(configurationCbm);
+	}
+
+	/**
 	 * Update appropriate GUI components with the provided valid orientations.
 	 * 
 	 * @param orientations
 	 *            A list of strings representing valid orientations.
 	 */
-	public void setValidOrientations(List<String> orientations) {
-		orientationCbm = new DefaultComboBoxModel<String>(
-				orientations.toArray(new String[orientations.size()]));
-		orientationBox.setModel(orientationCbm);
-	}
-
-	/**
-	 * Update appropriate GUI components with the provided valid pause
-	 * durations.
-	 * 
-	 * @param pauses
-	 *            A list of short integers representing valid pauses.
-	 */
-	public void setValidPauses(List<String> pauses) {
-		pauseCbm = new DefaultComboBoxModel<String>(
-				pauses.toArray(new String[pauses.size()]));
-		pauseBox.setModel(pauseCbm);
-	}
-
-	public BntTask getSelectedTask() {
-		BntTask t = new BntTask();
-		t.setPlace((String) placeBox.getSelectedItem());
-		t.setOrientation((String) orientationBox.getSelectedItem());
-		t.setPause((String) pauseBox.getSelectedItem());
-		System.out.println(t.getString());
-		return t;
+	public void setValidObjects(List<String> object) {
+		objectCbm = new DefaultComboBoxModel<String>(
+				object.toArray(new String[object.size()]));
+		objectBox.setModel(objectCbm);
 	}
 
 	public void taskSpecChanged(ArrayList<CttTask> cttTaskList) {
-		sequenceTableModel.setRowCount(0);
+		sequenceTableModel.clearColumn(0);
 		sequenceTableModel.setRowCount(cttTaskList.size());
 		for (int i = 0; i < cttTaskList.size(); i++) {
-			sequenceTableModel.setValueAt(
+			super.sequenceTableModel.setValueAt(
 					((Task) cttTaskList.get(i)).getString(), i, 0);
 		}
 	}
 
+	public CttTask getSelectedTask() {
+		CttTask t = new CttTask();
+		t.setSituation((String) situationBox.getSelectedItem());
+		t.setConfiguration((String) configurationBox.getSelectedItem());
+		t.setPlace((String) placeBox.getSelectedItem());
+		t.setObject((String) objectBox.getSelectedItem());
+		return t;
+	}
+
 	public void setTaskBoxSected(Task task) {
-		/*
-		 * placeCbm.setSelectedItem(((CttTask)task).getPlace());
-		 * orientationCbm.setSelectedItem(((CttTask)task).getOrientation());
-		 * pauseCbm.setSelectedItem(((CttTask)task).getPause())
-		 */;
+		situationCbm.setSelectedItem(((CttTask) task).getSituation());
+		configurationCbm.setSelectedItem(((CttTask) task).getConfiguration());
+		placeCbm.setSelectedItem(((CttTask) task).getPlace());
+		configurationCbm.setSelectedItem(((CttTask) task).getConfiguration());
+		objectCbm.setSelectedItem(((CttTask) task).getObject());
 	}
 }

@@ -38,6 +38,7 @@ public class MapArea extends JScrollPane implements TaskListener {
 	private CompetitionIdentifier compIdent;
 	private BmtTask bmtTask;
 	private ArrayList<BttTask> bttList;
+	private ArrayList<CttTask> cttList;
 
 	public MapArea() {
 		super();
@@ -192,6 +193,31 @@ public class MapArea extends JScrollPane implements TaskListener {
 					}
 				}
 			}
+			if (compIdent == CompetitionIdentifier.CTT) {
+				g2.setStroke(new BasicStroke(2.0f));
+				for (CttTask tT : cttList) {
+					if (validPositions.containsKey(tT.getPlace())) {
+						if (tT.getSituation().equals("initial"))
+							g.setColor(Color.yellow);
+						else
+							g.setColor(Color.cyan);
+						Point p = validPositions.get(tT.getPlace());
+						g2.fillOval(p.x - R_CIRCLE, p.y - R_CIRCLE,
+								2 * R_CIRCLE, 2 * R_CIRCLE);
+						g2.setColor(Color.black);
+						g2.drawOval(p.x - R_CIRCLE, p.y - R_CIRCLE,
+								2 * R_CIRCLE, 2 * R_CIRCLE);
+						String ident;
+						g2.drawString(tT.getPlace(), p.x - 5, p.y + 4);
+						if (tT.getConfiguration().length() == 0)
+							g2.drawString(tT.getSituation(),
+									p.x + R_CIRCLE + 2, p.y + 4);
+						else
+							g2.drawString(tT.getConfiguration(), p.x + R_CIRCLE
+									+ 2, p.y + 4);
+					}
+				}
+			}
 		}
 
 		private void drawArrow(Graphics g2, Point point, double theta) {
@@ -280,7 +306,8 @@ public class MapArea extends JScrollPane implements TaskListener {
 	@Override
 	public void cttTaskSpecChanged(CttTask cttTask, int pos,
 			ArrayList<CttTask> cttTaskList) {
-		// TODO Auto-generated method stub
-
+		this.cttList = cttTaskList;
+		compIdent = CompetitionIdentifier.CTT;
+		mapPane.repaint();
 	}
 }

@@ -179,7 +179,7 @@ public class ValidTaskElements {
 			}
 		}
 		str = str.concat(")");
-		//System.out.println("Valid place pattern: " + str);
+		// System.out.println("Valid place pattern: " + str);
 		return str;
 	}
 
@@ -193,7 +193,7 @@ public class ValidTaskElements {
 			}
 		}
 		str = str.concat(")");
-		//System.out.println("Valid orientation pattern: " + str);
+		// System.out.println("Valid orientation pattern: " + str);
 		return str;
 	}
 
@@ -207,7 +207,7 @@ public class ValidTaskElements {
 			}
 		}
 		str = str.concat(")");
-		//System.out.println("Valid pause pattern: " + str);
+		// System.out.println("Valid pause pattern: " + str);
 		return str;
 	}
 
@@ -249,7 +249,7 @@ public class ValidTaskElements {
 		patStr = patStr.concat(constructPlacePattern());
 		patStr = patStr.concat("\\," + constructOrientationPattern());
 		patStr = patStr.concat("\\," + constructPausePattern() + "\\)");
-		//System.out.println("Valid triplet pattern " + patStr);
+		// System.out.println("Valid triplet pattern " + patStr);
 		return patStr;
 	}
 
@@ -345,6 +345,8 @@ public class ValidTaskElements {
 	public List<String> getValidCTTConfigurations() {
 		String str = cfgFile.getPropertyByName("ctt.configurations");
 		Scanner scnr = new Scanner(str).useDelimiter("(\\s*\\,\\s*)");
+		validCTTConfigurations.add(" "); // empty is a must for possible for
+		// initial tasks.
 		while (scnr.hasNext()) {
 			String i = new String(scnr.next());
 			validCTTConfigurations.add(i);
