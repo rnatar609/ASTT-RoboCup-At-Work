@@ -46,7 +46,8 @@ public class MainController implements TimerListener {
 	private MainGUI mG;
 	private TaskSpec tS;
 	private ConfigFile cfgFile;
-	private TaskServer tServer;
+	private TaskServer serverTeam1;
+	private TaskServer serverTeam2;
 	private Logging logg;
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
@@ -126,9 +127,7 @@ public class MainController implements TimerListener {
 					DialogType.DIALOG_OPEN);
 			if (file != null) {
 				loadConfigurationFile(file);
-				tServer.createServerSocket(cfgFile.getServerIP(),
-						cfgFile.getPortaddr());
-				tServer.listenForConnection();
+				createServers();
 			} else {
 				mG.setStatusLine("Load Config command cancelled by user.");
 			}
@@ -265,11 +264,32 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-
-			if (tServer.sendTaskSpecToClient(tS.getTaskSpecString(compIdent)))
-				mG.setStatusLine("Task specification sent to the team.");
-			else
-				mG.setStatusLine("<html><FONT COLOR=RED>Task specification could not be send to the team!</FONT>  </html>");
+			if (compIdent == CompetitionIdentifier.CTT) {
+				String taskSpec = tS.getTaskSpecString(compIdent);
+				String[] newTaskSpec = taskSpec.split("[#]");
+				String message = "";
+				if (newTaskSpec.length > 0
+						&& serverTeam1.sendTaskSpecToClient(newTaskSpec[0]))
+					message = message.concat("Task specification sent to the "
+							+ serverTeam1.getTeamName() + " ");
+				else
+					message = message
+							.concat("<html><FONT COLOR=RED>Task specification could not be send to the team1!</FONT>  </html>");
+				if (newTaskSpec.length > 1
+						&& serverTeam2.sendTaskSpecToClient(newTaskSpec[1]))
+					message = message.concat("Task specification sent to the "
+							+ serverTeam2.getTeamName() + " ");
+				else
+					message = message
+							.concat("<html><FONT COLOR=RED>Task specification could not be send to the team2!</FONT>  </html>");
+				mG.setStatusLine(message);
+			} else {
+				if (serverTeam1.sendTaskSpecToClient(tS
+						.getTaskSpecString(compIdent)))
+					mG.setStatusLine("Task specification sent to the team.");
+				else
+					mG.setStatusLine("<html><FONT COLOR=RED>Task specification could not be send to the team!</FONT>  </html>");
+			}
 		}
 	};
 
@@ -277,11 +297,11 @@ public class MainController implements TimerListener {
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent arg0) {
-			String teamName = tServer.getTeamName();
-			tServer.disconnectClient();
-			tServer.createServerSocket(cfgFile.getServerIP(),
-					cfgFile.getPortaddr());
-			tServer.listenForConnection();
+			String teamName = serverTeam1.getTeamName();
+			serverTeam1.disconnectClient();
+			serverTeam1.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortTeam1());
+			serverTeam1.listenForConnection();
 			mG.setStatusLine("Team " + teamName
 					+ " disconnected. Listening for new connection.....");
 		}
@@ -305,7 +325,7 @@ public class MainController implements TimerListener {
 				logg.setCompetitionLogging(true);
 			} else {
 				taskTimer.stopTimer();
-				tServer.disconnectClient();
+				serverTeam1.disconnectClient();
 				mG.setTimerStartStopButtonText("Timer Start");
 				mG.getTimerStartStopButton().setEnabled(false);
 				mG.getCompetitionFinishedButton().setEnabled(true);
@@ -327,10 +347,10 @@ public class MainController implements TimerListener {
 			taskTimer.resetTimer();
 			mG.getTimerStartStopButton().setEnabled(true);
 			tS.resetStates(compIdent);
-			tServer.disconnectClient();
-			tServer.createServerSocket(cfgFile.getServerIP(),
-					cfgFile.getPortaddr());
-			tServer.listenForConnection();
+			serverTeam1.disconnectClient();
+			serverTeam1.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortTeam1());
+			serverTeam1.listenForConnection();
 			mG.setStatusLine("Competition finished. Listening for next team.");
 		}
 	};
@@ -394,21 +414,25 @@ public class MainController implements TimerListener {
 				compIdent = CompetitionIdentifier.values()[pane
 						.getSelectedIndex()];
 				if (compIdent == CompetitionIdentifier.BNT) {
+					serverTeam2.shutdownSocket();
 					tS.notifyBntTaskSpecChanged(new BntTask(), 0,
 							tS.getBntTaskList());
 					return;
 				}
 				if (compIdent == CompetitionIdentifier.BMT) {
+					serverTeam2.shutdownSocket();
 					tS.notifyBmtTaskSpecChanged(new BmtTask(), 0,
 							tS.getBmtTaskList());
 					return;
 				}
 				if (compIdent == CompetitionIdentifier.BTT) {
+					serverTeam2.shutdownSocket();
 					tS.notifyBttTaskSpecChanged(new BttTask(), 0,
 							tS.getBttTaskList());
 					return;
 				}
 				if (compIdent == CompetitionIdentifier.CTT) {
+					createServers();
 					tS.notifyCttTaskSpecChanged(new CttTask(), 0,
 							tS.getCttTaskList());
 					return;
@@ -421,7 +445,8 @@ public class MainController implements TimerListener {
 		tS = new TaskSpec(compIdent.ordinal());
 		mG = new MainGUI(NUMBEROFCOMPETITIONS);
 		cfgFile = new ConfigFile();
-		tServer = new TaskServer();
+		serverTeam1 = new TaskServer();
+		serverTeam2 = new TaskServer();
 		taskTimer = new TaskTimer();
 		unsavedChanges = false;
 		competitionMode = false;
@@ -432,9 +457,7 @@ public class MainController implements TimerListener {
 			File file = new File(System.getProperty("user.home")
 					+ System.getProperty("file.separator") + args[0]);
 			loadConfigurationFile(file);
-			tServer.createServerSocket(cfgFile.getServerIP(),
-					cfgFile.getPortaddr());
-			tServer.listenForConnection();
+			createServers();
 		}
 	}
 
@@ -491,14 +514,16 @@ public class MainController implements TimerListener {
 		mG.addTabbChangedListener(tabbChangeListener);
 		tS.addTaskListener(mG);
 		tS.addTaskListener(mG.getMapArea());
-		tServer.addConnectionListener(mG);
+		serverTeam1.addConnectionListener(mG);
+		serverTeam2.addConnectionListener(mG);
 		mG.addWindowListener(windowAdapter);
 		mG.addtaskTableListener(taskTableListener);
 		mG.addTimerListener(timerListener);
 		mG.setButtonDimension();
 		taskTimer.addTimerListener(mG);
 		taskTimer.addTimerListener(this);
-		tServer.addConnectionListener(taskTimer);
+		serverTeam1.addConnectionListener(taskTimer);
+		serverTeam2.addConnectionListener(taskTimer);
 		mG.pack();
 	}
 
@@ -635,8 +660,19 @@ public class MainController implements TimerListener {
 		mG.setTimerStartStopButtonText("Timer Start");
 		mG.getTimerStartStopButton().setSelected(false);
 		mG.getCompetitionFinishedButton().setEnabled(true);
-		tServer.disconnectClient();
+		serverTeam1.disconnectClient();
 		mG.setStatusLine("Timeout. Team disconnected");
+	}
+
+	private void createServers() {
+		serverTeam1.createServerSocket(cfgFile.getServerIP(),
+				cfgFile.getPortTeam1());
+		serverTeam1.listenForConnection();
+		if (compIdent == CompetitionIdentifier.CTT) {
+			serverTeam2.createServerSocket(cfgFile.getServerIP(),
+					cfgFile.getPortTeam2());
+			serverTeam2.listenForConnection();
+		}
 	}
 
 }

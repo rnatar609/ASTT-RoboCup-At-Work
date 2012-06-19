@@ -61,7 +61,7 @@ public class ConfigFile {
 	}
 
 	public String getServerIP() {
-		String str = properties.getProperty("ServerIP");
+		String str = properties.getProperty("serverIP");
 		String refIP = null;
 		Scanner scnr = new Scanner(str);
 		if (scnr.hasNext()) {
@@ -74,8 +74,23 @@ public class ConfigFile {
 		return refIP;
 	}
 
-	public String getPortaddr() {
-		String str = properties.getProperty("Port");
+	public String getPortTeam1() {
+		String str = properties.getProperty("portTeam1");
+		String refPort = null;
+		Scanner scnr = new Scanner(str);
+		if (scnr.hasNext()) {
+			refPort = scnr.next();
+			System.out.println(refPort);
+		} else {
+			System.out.println("No Port specified in the config file");
+			logg.globalLogging(configLogID, "no Port specified");
+		}
+
+		return refPort;
+	}
+	
+	public String getPortTeam2() {
+		String str = properties.getProperty("portTeam2");
 		String refPort = null;
 		Scanner scnr = new Scanner(str);
 		if (scnr.hasNext()) {

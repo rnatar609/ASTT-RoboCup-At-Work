@@ -10,50 +10,56 @@ import controller.ConnectionListener;
 //import model.CompetitionLogging;
 import model.Logging;
 
-public class TaskServer implements Runnable{
+public class TaskServer implements Runnable {
 
 	private ZMQ.Socket refereeSocket;
 	private EventListenerList listOfConnectionListeners = new EventListenerList();
 	private Logging logg;
 	private Thread serverThread;
 	private String teamName;
-	private String commLogID= "Communication";
+	private String commLogID = "Communication";
 	private boolean activeConnection;
-	
+	private String serverIP;
+	private String serverPort;
+
 	public TaskServer() {
 		logg = Logging.getInstance();
 		teamName = "";
 		activeConnection = false;
 	}
 
-	public void createServerSocket(String ServerIP, String ServerPort){
+	public void createServerSocket(String ServerIP, String ServerPort) {
 		// Prepare context and socket
-		if(activeConnection == false){
+		if (activeConnection == false) {
+			serverIP = ServerIP;
+			serverPort = ServerPort;
 			ZMQ.Context context = ZMQ.context(1);
 			refereeSocket = context.socket(ZMQ.REP);
 			try {
 				refereeSocket.bind("tcp://" + ServerIP + ":" + ServerPort);
-			}
-			catch(Exception e) {
-				System.out.println("An exception occured the application will be terminated." + "\n" + "Exception: " + e);
+			} catch (Exception e) {
+				System.out
+						.println("An exception occured the application will be terminated."
+								+ "\n" + "Exception: " + e);
 				File file = new File(Logging.logFileName);
 				if (!file.delete()) {
-					System.out.println("Deletion of file >" + Logging.logFileName + "< failed.");
+					System.out.println("Deletion of file >"
+							+ Logging.logFileName + "< failed.");
 				}
-				//System.exit(1);
-			} 
+				// System.exit(1);
+			}
 			System.out.println("Server socket created: " + refereeSocket
 					+ " ipAddress: " + ServerIP + " port: " + ServerPort);
-			logg.globalLogging(commLogID, 
-					"Server socket created: " + " ipAddress: " + ServerIP + " port: " + ServerPort);
+			logg.globalLogging(commLogID, "Server socket created: "
+					+ " ipAddress: " + ServerIP + " port: " + ServerPort);
 		}
 	}
-	
+
 	public void listenForConnection() {
-		if(activeConnection == false){
+		if (activeConnection == false) {
 			activeConnection = true;
 			teamName = new String();
-			serverThread = new Thread(this, "Task Server Thread");
+			serverThread = new Thread(this, "Task Server Thread");	
 			serverThread.start();
 			System.out.println("Server thread started... ");
 			logg.globalLogging(commLogID, "Server thread started... ");
@@ -63,57 +69,69 @@ public class TaskServer implements Runnable{
 	public void run() {
 		System.out.println("Waiting for Client Requests on socket... "
 				+ refereeSocket);
-		logg.globalLogging(commLogID, "Waiting for Client Requests on socket... ");
+		logg.globalLogging(commLogID,
+				"Waiting for Client Requests on socket... ");
 		refereeSocket.setReceiveTimeOut(-1);
 		byte bytes[] = refereeSocket.recv(0);
+		if (new String(bytes).equals("Stop Thread"))
+			return;
 		teamName = new String(bytes);
 		System.out.println("Received message: " + teamName + " from client.");
 		logg.setTeamName(teamName);
-		logg.globalLogging(commLogID, "Received message: " + teamName + " from client.");
+		logg.globalLogging(commLogID, "Received message: " + teamName
+				+ " from client.");
 		notifyTeamConnected();
 	}
 
-	public ZMQ.Socket getrefereeSocket(){
+	public ZMQ.Socket getrefereeSocket() {
 		return refereeSocket;
 	}
-	
+
 	public boolean sendTaskSpecToClient(String tSpec) {
 		// Send task specification
-		if(activeConnection == false){
+		if (activeConnection == false) {
 			return false;
 		}
 		refereeSocket.send(tSpec.getBytes(), 0);
-		System.out.println("String sent to client: "+ tSpec);
-		logg.globalLogging(commLogID, "String sent to client: "+ tSpec);
-		logg.competitionLogging(commLogID, "String sent to client: "+ tSpec);
+		System.out.println("String sent to client: " + tSpec);
+		logg.globalLogging(commLogID, "String sent to client: " + tSpec);
+		logg.competitionLogging(commLogID, "String sent to client: " + tSpec);
 		refereeSocket.setReceiveTimeOut(1000);
 		String tripletAcknowledge = "";
 		byte bytes[] = refereeSocket.recv(0);
 
-		if(!(bytes==null)) {
+		if (!(bytes == null)) {
 			tripletAcknowledge = new String(bytes);
 		}
 
-		if(!tripletAcknowledge.equals("ACK")){
-			System.out.println("Could not send the task specification to the team: " + teamName);
-			logg.globalLogging(commLogID, "Could not send the task specification to the team: " + teamName);
-			logg.competitionLogging(commLogID, "Could not send the task specification to the team: " + teamName);
+		if (!tripletAcknowledge.equals("ACK")) {
+			System.out
+					.println("Could not send the task specification to the team: "
+							+ teamName);
+			logg.globalLogging(commLogID,
+					"Could not send the task specification to the team: "
+							+ teamName);
+			logg.competitionLogging(commLogID,
+					"Could not send the task specification to the team: "
+							+ teamName);
 			return false;
-		}else{
-			System.out.println("Message from " + teamName + ": " + tripletAcknowledge);
-			logg.globalLogging(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
-			logg.competitionLogging(commLogID, "Message from " + teamName + ": " + tripletAcknowledge);
+		} else {
+			System.out.println("Message from " + teamName + ": "
+					+ tripletAcknowledge);
+			logg.globalLogging(commLogID, "Message from " + teamName + ": "
+					+ tripletAcknowledge);
+			logg.competitionLogging(commLogID, "Message from " + teamName
+					+ ": " + tripletAcknowledge);
 			notifyTaskSpecSent();
 			return true;
 		}
 
 	}
 
-
 	public boolean disconnectClient() {
-		try{
-			
-			if(!teamName.equals("")){
+		try {
+
+			if (!teamName.equals("")) {
 				System.out.println("teamName " + teamName);
 				refereeSocket.close();
 				activeConnection = false;
@@ -122,14 +140,37 @@ public class TaskServer implements Runnable{
 				logg.globalLogging(commLogID, "Client Disconnected");
 				notifyTeamDisconnected();
 				return true;
-			}else{
+			} else {
 				return false;
 			}
-			
-		}
-		catch (Exception e) {
+
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean shutdownSocket() {
+		if (activeConnection) {
+			try {
+				ZMQ.Context context = ZMQ.context(1);
+				ZMQ.Socket dummyClientSocket = context.socket(ZMQ.REQ);
+				dummyClientSocket.connect("tcp://" + serverIP + ":" + serverPort);
+				String s = "Stop Thread";
+				dummyClientSocket.send(s.getBytes(), 0);
+				serverThread.join();
+				refereeSocket.close();
+				activeConnection = false;
+				teamName = "";
+				System.out.println("Socket closed");
+				logg.globalLogging(commLogID, "Socket closed");
+				notifyTeamDisconnected();
+				return true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
@@ -174,10 +215,9 @@ public class TaskServer implements Runnable{
 			}
 		}
 	}
-	
-	
+
 	public String getTeamName() {
 		return teamName;
 	}
-	
+
 }

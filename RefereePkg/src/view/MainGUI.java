@@ -117,6 +117,7 @@ public class MainGUI extends JFrame implements TaskListener,
 	private CompetitionPanel[] competitionPanel;
 	private JTabbedPane tabbedPane;
 	private final int NUMBEROFCOMPETITIONS;
+	private final String noTeam = "no team connected";
 
 	/** Default constructor */
 	public MainGUI(int num) {
@@ -175,7 +176,7 @@ public class MainGUI extends JFrame implements TaskListener,
 				"/view/resources/icons/status-busy.png")));
 		upperServerPanel.add(connectedIcon);
 		connectedLabel = new JLabel();
-		connectedLabel.setText("no team connected");
+		connectedLabel.setText(noTeam);
 		upperServerPanel.add(connectedLabel);
 		serverPanel.add(upperServerPanel);
 	}
@@ -630,10 +631,18 @@ public class MainGUI extends JFrame implements TaskListener,
 	 *            A string containing the name of the team that has connected.
 	 */
 	public void teamConnected(String teamName) {
+		if (!(connectedLabel.getText().equals(noTeam))) {
+			String s = connectedLabel.getText();
+			s = s.concat(" and ");
+			s = s.concat(teamName);
+			connectedLabel.setText(s);
+		} else {
+			connectedLabel.setText(teamName);
+		}
 		disconnectButton.setEnabled(true);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status.png")));
-		connectedLabel.setText(teamName);
+
 		if (timerStartStopButton.getText().equals("Timer Stop")) {
 			sendTripletsButton.setEnabled(true);
 		}
@@ -644,7 +653,7 @@ public class MainGUI extends JFrame implements TaskListener,
 		disconnectButton.setEnabled(false);
 		connectedIcon.setIcon(new ImageIcon(getClass().getResource(
 				"/view/resources/icons/status-busy.png")));
-		connectedLabel.setText("no client connected");
+		connectedLabel.setText(noTeam);
 	}
 
 	/** Update the view after task specification has been sent to the team. */
