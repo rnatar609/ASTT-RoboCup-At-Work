@@ -58,8 +58,9 @@ public class TaskServer implements Runnable {
 	public void listenForConnection() {
 		if (activeConnection == false) {
 			activeConnection = true;
-			teamName = new String();
-			serverThread = new Thread(this, "Task Server Thread");	
+			teamName = new String("");
+			logg.setTeamName(teamName);
+			serverThread = new Thread(this, "Task Server Thread");
 			serverThread.start();
 			System.out.println("Server thread started... ");
 			logg.globalLogging(commLogID, "Server thread started... ");
@@ -156,7 +157,8 @@ public class TaskServer implements Runnable {
 			try {
 				ZMQ.Context context = ZMQ.context(1);
 				ZMQ.Socket dummyClientSocket = context.socket(ZMQ.REQ);
-				dummyClientSocket.connect("tcp://" + serverIP + ":" + serverPort);
+				dummyClientSocket.connect("tcp://" + serverIP + ":"
+						+ serverPort);
 				String s = "Stop Thread";
 				dummyClientSocket.send(s.getBytes(), 0);
 				serverThread.join();

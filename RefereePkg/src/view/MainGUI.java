@@ -752,6 +752,10 @@ public class MainGUI extends JFrame implements TaskListener,
 				if (i != compIdent.ordinal())
 					tabbedPane.setEnabledAt(i, false);
 			}
+			if(openButton.isEnabled()){
+				openButton.setEnabled(false);
+				openFileMenuItem.setEnabled(false);
+			}
 		} else {
 			compTableModel.setColumnCount(1);
 			compTable.getColumn("Subgoals").setCellRenderer(compTableRend);
@@ -769,6 +773,8 @@ public class MainGUI extends JFrame implements TaskListener,
 			for (int i = 0; i < competitionPanel.length; i++) {
 				tabbedPane.setEnabledAt(i, true);
 			}
+			openButton.setEnabled(true);
+			openFileMenuItem.setEnabled(true);
 		}
 		compTable.getColumnModel().getColumn(0).setPreferredWidth(180);
 		competitionPanel[compIdent.ordinal()].getSequenceTableScrollPane()
