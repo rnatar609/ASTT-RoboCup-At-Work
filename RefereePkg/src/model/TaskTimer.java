@@ -80,7 +80,7 @@ public class TaskTimer implements ConnectionListener {
 					+ millisecToString(this.configTime));
 			logg.globalLogging(logId, "New run time "
 					+ millisecToString(this.runTime));
-			logg.globalLogging(logId, "Setup time startet at "
+			logg.globalLogging(logId, "Setup time started at "
 					+ millisecToString(usedTime));
 			notifyTimerReset(millisecToString(usedTime));
 			notifyTimerSetMaximumTime(("setup time: ")
