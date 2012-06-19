@@ -51,8 +51,9 @@ public class MainController implements TimerListener {
 	private boolean unsavedChanges = false;
 	private boolean competitionMode = false;
 	private TaskTimer taskTimer;
-	private final String unsavedWarningMsg = "Warning: Unsaved data will be lost. Proceed? ";
-	private final String exitNotAllowedMsg = "System is in Competition Mode. To exit, press Competition Finished button.";
+	private final String unsavedWarningMsg    = "Warning: Unsaved data will be lost. Proceed? ";
+	private final String exitNotAllowedMsg    = "System is in Competition Mode. To exit, press Competition Finished button.";
+	private final String uncheckedSubgoalsMsg = "One or more subgoals are still unchecked.";
 	private final int NUMBEROFCOMPETITIONS = 4;
 	protected CompetitionIdentifier compIdent = CompetitionIdentifier.BNT;
 
@@ -320,6 +321,10 @@ public class MainController implements TimerListener {
 
 		@Override
 		public void actionPerformed(ActionEvent evt) {
+			if (!tS.checkAllSubgoals(compIdent)) {
+				mG.showMessageDialog(uncheckedSubgoalsMsg, "Unchecked subgoals");
+				return;
+			}
 			logg.renameCompetitionFile();
 			logg.setCompetitionLogging(false);
 			mG.getCompetitionFinishedButton().setEnabled(false);

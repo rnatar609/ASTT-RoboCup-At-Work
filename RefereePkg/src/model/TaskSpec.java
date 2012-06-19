@@ -749,6 +749,42 @@ public class TaskSpec {
 		}
 	}
 
+	public boolean checkAllSubgoals(CompetitionIdentifier compIdent){
+		switch (compIdent) {
+		case BNT:
+			for (BntTask tT : bntTaskList) {
+				if(tT.getState() == StateOfTask.INIT){
+					return false;
+				}
+			}
+			break;
+		case BMT:
+			for (BmtTask tT : bmtTaskList) {
+				if(tT.getState() == StateOfTask.INIT){
+					return false;
+				}
+			}
+			break;
+		case BTT:
+			for (BttTask tT : bttTaskList) {
+				if(tT.getState() == StateOfTask.INIT){
+					return false;
+				}
+			}
+			break;
+		case CTT:
+			for (CttTask tT : cttTaskList) {
+				if(tT.getState() == StateOfTask.INIT){
+					return false;
+				}
+			}
+			break;
+		default:
+			return false;
+		}
+		return true;
+	}
+	
 	public ArrayList<BntTask> getBntTaskList() {
 		return bntTaskList;
 	}
