@@ -126,83 +126,82 @@ public class TaskSpec {
 				String sTeam2 = "";
 				do {
 					if (ctt.getSituation().equals("initial")) {
-						sTeam1 = sTeam1.concat(ctt.getSituation()
-								+ "situation(");
-						sTeam2 = sTeam2.concat(ctt.getSituation()
-								+ "situation(");
-					} else {
-						sTeam1 = sTeam1.concat("goalsituation(");
-						sTeam2 = sTeam2.concat("goalsituation(");
-					}
-
-					while (ctt.getSituation().equals("initial")) {
-						sTeam1 = sTeam1.concat(ctt.getPlace() + ",");
-						sTeam2 = sTeam2.concat(ctt.getPlace() + ",");
+						sTeam1 = sTeam1
+								.concat(ctt.getSituation() + "situation");
+						sTeam2 = sTeam2
+								.concat(ctt.getSituation() + "situation");
 						do {
-							sTeam1 = sTeam1.concat(ctt.getObject() + ",");
-							sTeam2 = sTeam2.concat(ctt.getObject() + ",");
-							previous = ctt;
-							if (itCtt.hasNext())
-								ctt = itCtt.next();
-							else
-								ctt = new CttTask();
-						} while (ctt.getPlace().equals(previous.getPlace())
-								&& (ctt.getConfiguration().equals(previous
-										.getConfiguration())));
-						sTeam1 = sTeam1.substring(0, sTeam1.length() - 1);
-						sTeam2 = sTeam2.substring(0, sTeam2.length() - 1);
+							sTeam1 = sTeam1.concat("(" + ctt.getPlace() + "(");
+							sTeam2 = sTeam2.concat("(" + ctt.getPlace() + "(");
+							do {
+								sTeam1 = sTeam1.concat(ctt.getObject() + ",");
+								sTeam2 = sTeam2.concat(ctt.getObject() + ",");
+								previous = ctt;
+								if (itCtt.hasNext())
+									ctt = itCtt.next();
+								else
+									ctt = new CttTask();
+							} while (ctt.getPlace().equals(previous.getPlace())
+									&& (ctt.getConfiguration().equals(previous
+											.getConfiguration())));
+							sTeam1 = sTeam1.substring(0, sTeam1.length() - 1);
+							sTeam2 = sTeam2.substring(0, sTeam2.length() - 1);
+							sTeam1 = sTeam1.concat(")");
+							sTeam2 = sTeam2.concat(")");
+						} while (ctt.getSituation().equals(
+								previous.getSituation()));
 						sTeam1 = sTeam1.concat(")");
 						sTeam2 = sTeam2.concat(")");
-					}
-					while (ctt.getSituation().equals("goalTeam1")) {
-						sTeam1 = sTeam1.concat(ctt.getPlace() + ",");
-						sTeam1 = sTeam1.concat(ctt.getConfiguration() + ",(");
-						do {
-							sTeam1 = sTeam1.concat(ctt.getObject() + ",");
-							previous = ctt;
-							if (itCtt.hasNext())
-								ctt = itCtt.next();
-							else
-								ctt = new CttTask();
-						} while (ctt.getPlace().equals(previous.getPlace())
-								&& (ctt.getConfiguration().equals(previous
-										.getConfiguration())));
-						sTeam1 = sTeam1.substring(0, sTeam1.length() - 1);
-						sTeam1 = sTeam1.concat(")");
-					}
-
-					while (ctt.getSituation().equals("goalTeam2")) {
-						sTeam2 = sTeam2.concat(ctt.getPlace() + ",");
-						sTeam2 = sTeam2.concat(ctt.getConfiguration() + ",(");
-						do {
-							sTeam1 = sTeam1.concat(ctt.getObject() + ",");
-							sTeam2 = sTeam2.concat(ctt.getObject() + ",");
-							previous = ctt;
-							if (itCtt.hasNext())
-								ctt = itCtt.next();
-							else
-								ctt = new CttTask();
-						} while (ctt.getPlace().equals(previous.getPlace())
-								&& (ctt.getConfiguration().equals(previous
-										.getConfiguration())));
-						sTeam2 = sTeam2.substring(0, sTeam2.length() - 1);// comma
-																		// is
-																		// no
-						// longer needed
-						sTeam2 = sTeam2.concat(")");
-
-					}
-
-					sTeam1 = sTeam1.concat(")");
-					sTeam2 = sTeam2.concat(")");
-					if (ctt.getSituation().length() != 0) {
 						sTeam1 = sTeam1.concat(";");
 						sTeam2 = sTeam2.concat(";");
+					} else if (ctt.getSituation().equals("team1Goal")) {
+						sTeam1 = sTeam1.concat("goalsituation");
+						do {
+							sTeam1 = sTeam1.concat("(" + ctt.getPlace() + ",");
+							sTeam1 = sTeam1
+									.concat(ctt.getConfiguration() + "(");
+							do {
+								sTeam1 = sTeam1.concat(ctt.getObject() + ",");
+								previous = ctt;
+								if (itCtt.hasNext())
+									ctt = itCtt.next();
+								else
+									ctt = new CttTask();
+							} while (ctt.getPlace().equals(previous.getPlace())
+									&& (ctt.getConfiguration().equals(previous
+											.getConfiguration())));
+							sTeam1 = sTeam1.substring(0, sTeam1.length() - 1);
+							sTeam1 = sTeam1.concat(")");
+						} while (ctt.getSituation().equals(
+								previous.getSituation()));
+						sTeam1 = sTeam1.concat(")");
+					} else if (ctt.getSituation().equals("team2Goal")) {
+						sTeam2 = sTeam2.concat("goalsituation");
+						do {
+							sTeam2 = sTeam2.concat("(" + ctt.getPlace() + ",");
+							sTeam2 = sTeam2
+									.concat(ctt.getConfiguration() + "(");
+							do {
+								sTeam2 = sTeam2.concat(ctt.getObject() + ",");
+								previous = ctt;
+								if (itCtt.hasNext())
+									ctt = itCtt.next();
+								else {
+									ctt = new CttTask();
+								}
+							} while (ctt.getPlace().equals(previous.getPlace())
+									&& (ctt.getConfiguration().equals(previous
+											.getConfiguration())));
+							sTeam2 = sTeam2.substring(0, sTeam2.length() - 1);
+							sTeam2 = sTeam2.concat(")");
+						} while (ctt.getSituation().equals(
+								previous.getSituation()));
+						sTeam2 = sTeam2.concat(")");
 					}
 				} while (ctt.getSituation().length() != 0);
 
 				s = s.concat(sTeam1);
-				s = s.concat("#");
+				s = s.concat(">#<");
 				s = s.concat(sTeam2);
 			}
 			break;
@@ -807,32 +806,32 @@ public class TaskSpec {
 		}
 	}
 
-	public boolean checkAllSubgoals(CompetitionIdentifier compIdent){
+	public boolean checkAllSubgoals(CompetitionIdentifier compIdent) {
 		switch (compIdent) {
 		case BNT:
 			for (BntTask tT : bntTaskList) {
-				if(tT.getState() == StateOfTask.INIT){
+				if (tT.getState() == StateOfTask.INIT) {
 					return false;
 				}
 			}
 			break;
 		case BMT:
 			for (BmtTask tT : bmtTaskList) {
-				if(tT.getState() == StateOfTask.INIT){
+				if (tT.getState() == StateOfTask.INIT) {
 					return false;
 				}
 			}
 			break;
 		case BTT:
 			for (BttTask tT : bttTaskList) {
-				if(tT.getState() == StateOfTask.INIT){
+				if (tT.getState() == StateOfTask.INIT) {
 					return false;
 				}
 			}
 			break;
 		case CTT:
 			for (CttTask tT : cttTaskList) {
-				if(tT.getState() == StateOfTask.INIT){
+				if (tT.getState() == StateOfTask.INIT) {
 					return false;
 				}
 			}
@@ -842,7 +841,7 @@ public class TaskSpec {
 		}
 		return true;
 	}
-	
+
 	public ArrayList<BntTask> getBntTaskList() {
 		return bntTaskList;
 	}

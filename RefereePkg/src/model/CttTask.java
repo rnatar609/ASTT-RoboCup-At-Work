@@ -77,7 +77,8 @@ public class CttTask extends Task implements Comparable<CttTask> {
 	@Override
 	public int compareTo(CttTask cttTask) {
 
-		int i = cttTask.situation.compareTo(this.situation);
+		int i = 0;
+			i = this.situation.compareTo(cttTask.situation);
 		if (i != 0)
 			return i;
 		i = this.configuration.compareTo(cttTask.configuration);
