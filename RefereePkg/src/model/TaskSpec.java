@@ -107,7 +107,7 @@ public class TaskSpec {
 								&& (btt.getConfiguration().equals(previous
 										.getConfiguration())));
 						s = s.substring(0, s.length() - 1); // comma is no
-															// longer needed
+						// longer needed
 						s = s.concat(")");
 					} while (btt.getSituation().equals(previous.getSituation()));
 					s = s.concat(")");
@@ -306,8 +306,8 @@ public class TaskSpec {
 				bntTaskList.add(pos - 1, bntTask);
 				logg.globalLogging(taskListName,
 						CompetitionIdentifier.BNT + bntTask.getString()
-								+ " no. " + bntTaskList.indexOf(bntTask)
-								+ " moved up");
+						+ " no. " + bntTaskList.indexOf(bntTask)
+						+ " moved up");
 				notifyBntTaskSpecChanged(bntTask, pos, bntTaskList);
 				return bntTask;
 			case BMT:
@@ -315,8 +315,8 @@ public class TaskSpec {
 				bmtTaskList.add(pos - 1, bmtTask);
 				logg.globalLogging(taskListName,
 						CompetitionIdentifier.BMT + bmtTask.getString()
-								+ " no. " + bmtTaskList.indexOf(bmtTask)
-								+ " moved up");
+						+ " no. " + bmtTaskList.indexOf(bmtTask)
+						+ " moved up");
 				notifyBmtTaskSpecChanged(bmtTask, pos, bmtTaskList);
 				return bmtTask;
 			case BTT:
@@ -325,8 +325,8 @@ public class TaskSpec {
 				Collections.sort(bttTaskList);
 				logg.globalLogging(taskListName,
 						CompetitionIdentifier.BTT + bttTask.getString()
-								+ " no. " + bttTaskList.indexOf(bttTask)
-								+ " moved up");
+						+ " no. " + bttTaskList.indexOf(bttTask)
+						+ " moved up");
 				notifyBttTaskSpecChanged(bttTask, pos, bttTaskList);
 				return bttTask;
 			case CTT:
@@ -335,8 +335,8 @@ public class TaskSpec {
 				Collections.sort(cttTaskList);
 				logg.globalLogging(taskListName,
 						CompetitionIdentifier.CTT + cttTask.getString()
-								+ " no. " + cttTaskList.indexOf(cttTask)
-								+ " moved up");
+						+ " no. " + cttTaskList.indexOf(cttTask)
+						+ " moved up");
 				notifyCttTaskSpecChanged(cttTask, pos, cttTaskList);
 				return cttTask;
 			default:
@@ -672,52 +672,77 @@ public class TaskSpec {
 				String delimssemicolon = "[;]";
 				String delimsbracket = "[()]";
 				String delimskomma = "[,]";
-				String[] taskspec = tSpecStr.split("[<>]");
-				if (taskspec.length > 1) {
-					String[] initgoalsituation = taskspec[1]
-							.split(delimssemicolon);
+				String[] teams = tSpecStr.split("[#]");
+				if (teams.length > 1) {
+					teams[0] = teams[0].split("[<>]")[1];
+					teams[1] = teams[1].split("[<>]")[1];
+			
+				//	for (int e = 0; e < teams.length; e++) {
+				//		System.out.println("team: "+ teams[e]);
+				//	}
+					for (int e = 0; e < teams.length; e++) {
+						String[] initgoalsituation = teams[e].split(delimssemicolon);
+						//for (int f = 0; f < initgoalsituation.length; f++) {
+						//	System.out.println("initgoalsituation: "+ initgoalsituation[f]);
+						//}
 
-					for (int d = 0; d < initgoalsituation.length; d++) {
+						for (int d = 0; d < initgoalsituation.length; d++) {
 
-						String[] tokens = initgoalsituation[d]
-								.split(delimsbracket);
+							String[] tokens = initgoalsituation[d]
+									.split(delimsbracket);
+							
+						//	for (int f = 0; f < tokens.length; f++) {
+						//		System.out.println("tokens"+f+": "+ tokens[f] + "  e= "+e);
+						//	}
 
-						String pose;
-						String config;
-						String situation = "";
-						if (tokens[0].contains("initial"))
-							situation = "initial";
-						if (tokens[0].contains("goal"))
-							situation = "goal";
+							String pose;
+							String config;
+							String situation = "";
+							
+							if (tokens[0].contains("initial")){
+								if(e == 0){
+									situation = "initial";
+								}else{
+									continue;
+								}
+							}
+							if (tokens[0].contains("goal")){
+								if(e == 0){
+									situation = "team1Goal";
+								}else{
+									situation = "team2Goal";
+								}
+							}
 
-						for (int i = 1; i < tokens.length; i++) {
-							String test[] = tokens[i].split(delimskomma);
-							pose = test[0];
-							if (test.length > 1)
-								config = tokens[i].split(delimskomma)[1];
-							else
-								config = "";
-							i++;
-							String[] objects = tokens[i].split(delimskomma);
-							for (int u = 0; u < objects.length; u++) {
+							for (int i = 1; i < tokens.length; i++) {
+								String test[] = tokens[i].split(delimskomma);
+								pose = test[0];
+								if (test.length > 1)
+									config = tokens[i].split(delimskomma)[1];
+								else
+									config = "";
+								i++;
+								String[] objects = tokens[i].split(delimskomma);
+								for (int u = 0; u < objects.length; u++) {
 
-								CttTask nextTask = new CttTask();
+									CttTask nextTask = new CttTask();
 
-								// System.out.println("pose: "+ pose);
-								// System.out.println("config: "+ config);
-								// System.out.println("objects: "+ objects[u]);
-								nextTask.setSituation(situation);
-								nextTask.setPlace(pose);
-								nextTask.setConfiguration(config);
-								nextTask.setObject(objects[u]);
-								cttTaskList.add(nextTask);
-								logg.globalLogging(taskListName,
-										nextTask.getString() + " no. "
-												+ bttTaskList.indexOf(nextTask)
-												+ " added");
-								notifyCttTaskSpecChanged(nextTask,
-										cttTaskList.indexOf(nextTask),
-										cttTaskList);
+									// System.out.println("pose: "+ pose);
+									// System.out.println("config: "+ config);
+									// System.out.println("objects: "+ objects[u]);
+									nextTask.setSituation(situation);
+									nextTask.setPlace(pose);
+									nextTask.setConfiguration(config);
+									nextTask.setObject(objects[u]);
+									cttTaskList.add(nextTask);
+									logg.globalLogging(taskListName,
+											nextTask.getString() + " no. "
+													+ cttTaskList.indexOf(nextTask)
+													+ " added");
+									notifyCttTaskSpecChanged(nextTask,
+											cttTaskList.indexOf(nextTask),
+											cttTaskList);
+								}
 							}
 						}
 					}
