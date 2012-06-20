@@ -95,7 +95,7 @@ public class TaskSpec {
 					s = s.concat(btt.getSituation() + "situation(");
 					do {
 						s = s.concat(btt.getPlace() + ",");
-						s = s.concat(btt.getConfiguration() + ",(");
+						s = s.concat(btt.getConfiguration() + "(");
 						do {
 							s = s.concat(btt.getObject() + ",");
 							previous = btt;
