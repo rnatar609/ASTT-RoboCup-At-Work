@@ -58,7 +58,7 @@ public class CttTask extends Task implements Comparable<CttTask> {
 	}
 
 	public String getString() {
-		if (configuration.equals(" "))
+		if (configuration.equals(" ") || configuration.equals(""))
 			return (new String("(" + situation + "," + place + "," + object
 					+ ")"));
 		else
