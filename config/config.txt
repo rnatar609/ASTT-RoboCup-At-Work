@@ -21,4 +21,4 @@ btt.situations: initial, goal
 ctt.places: D0(50/200), D1(145/60), D2(145/340), O1(250/200), O2(440/200), O3(595/200), S1(870/60), S2(870/200), S3(870/340), T2(345/200), T4(530/60), T6(530/340)
 ctt.configurations: line, zigzag, circle
 ctt.objects: screw, nut, nutm20
-ctt.situations: initial, goalTeam1, goalTeam2
+ctt.situations: initial, team1Goal, team2Goal
